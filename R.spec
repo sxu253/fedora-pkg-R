@@ -1,6 +1,6 @@
 Name: R
 Version: 2.0.1
-Release: 10
+Release: 50
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -12,8 +12,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
-BuildRequires: XFree86-devel
-BuildRequires: tcl-devel, tk-devel
+BuildRequires: XFree86-devel, libglade-devel
+BuildRequires: tcl-devel, tk-devel, gnome-libs-devel
+BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 Requires: evince, cups, firefox
 
 # These are the submodules that R provides. Sometimes R modules say they
@@ -79,6 +80,7 @@ Install R-devel if you are going to develop or compile R packages.
 %package -n libRmath
 Summary: standalone math library from the R project
 Group: Development/Libraries
+
 %description -n libRmath
 A standalone library of mathematical and statistical functions derived
 from the R project.  This packages provides the shared libRmath library.
@@ -87,6 +89,7 @@ from the R project.  This packages provides the shared libRmath library.
 Summary: standalone math library from the R project
 Group: Development/Libraries
 Requires: libRmath = %{version}
+
 %description -n libRmath-devel
 A standalone library of mathematical and statistical functions derived
 from the R project.  This packages provides the static libRmath library
@@ -105,6 +108,7 @@ export F77="gfortran"
 ( %configure \
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
+    --with-gnome \
     --enable-R-shlib )\
  | egrep '^R is now|^ |^$' - > CAPABILITIES
 make 
@@ -209,6 +213,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Apr 14 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.1-50
+- big bump. This is the fc4 package, the fc3 package is 2.0.1-11
+- enable gnome gui, add requires as needed
+
 * Thu Apr 14 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.1-10
 - bump for cvs errors
 
