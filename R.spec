@@ -1,19 +1,19 @@
 Name: R
-Version: 2.0.1
+Version: 2.1.0
 Release: 50
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Patch0: R-LANG.patch
-Patch1: R-2.0.1-gcc4.patch
+Patch1: R-2.1.0-gcc4.patch
 License: GPL
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
-BuildRequires: XFree86-devel, libglade-devel
-BuildRequires: tcl-devel, tk-devel, gnome-libs-devel
+BuildRequires: XFree86-devel
+BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 Requires: evince, cups, firefox
 
@@ -108,7 +108,6 @@ export F77="gfortran"
 ( %configure \
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
-    --with-gnome \
     --enable-R-shlib )\
  | egrep '^R is now|^ |^$' - > CAPABILITIES
 make 
@@ -213,6 +212,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Apr 18 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.0-50
+- 2.1.0, fc4 version.
+- The GNOME GUI is unbundled, now provided as a package on CRAN
+
 * Thu Apr 14 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.1-50
 - big bump. This is the fc4 package, the fc3 package is 2.0.1-11
 - enable gnome gui, add requires as needed
