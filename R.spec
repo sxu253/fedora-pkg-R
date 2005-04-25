@@ -1,6 +1,6 @@
 Name: R
 Version: 2.1.0
-Release: 50
+Release: 51
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -146,12 +146,16 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/search/index.txt
 (cd %{buildroot}%{_libdir}/R;
  rm -f AUTHORS COPYING COPYING.LIB COPYRIGHTS FAQ NEWS ONEWS RESOURCES THANKS)
 
+mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
+echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
 %{_libdir}/R
 %{_infodir}/R-*.info*
 %{_mandir}/man1/*
+/etc/ld.so.conf.d/*
 %doc AUTHORS CAPABILITIES COPYING COPYING.LIB COPYRIGHTS FAQ NEWS
 %doc ONEWS README RESOURCES THANKS VERSION Y2K
 %doc doc/manual/R-admin.pdf
@@ -185,6 +189,7 @@ for doc in admin exts FAQ intro lang; do
       /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null
    fi
 done
+/sbin/ldconfig
 
 # Update package indices
 %{_bindir}/R CMD perl %{_libdir}/R/share/perl/build-help.pl --htmllists > /dev/null 2>/dev/null
@@ -205,6 +210,9 @@ if [ $1 = 0 ]; then
    %__rm -f %{_libdir}/R/doc/html/search/index.txt
 fi
 
+%postun
+/sbin/ldconfig
+
 %post -n libRmath
 /sbin/ldconfig
 
@@ -212,6 +220,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Apr 18 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.0-51
+- proper library handling
+
 * Mon Apr 18 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.0-50
 - 2.1.0, fc4 version.
 - The GNOME GUI is unbundled, now provided as a package on CRAN
