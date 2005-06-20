@@ -1,11 +1,9 @@
 Name: R
-Version: 2.1.0
-Release: 51
+Version: 2.1.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
-Patch0: R-LANG.patch
-Patch1: R-2.1.0-gcc4.patch
 License: GPL
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -97,8 +95,6 @@ and header files.
 
 %prep
 %setup -q 
-%patch0 -p1
-%patch1 -p1
 
 %build
 export R_PDFVIEWER="%{_bindir}/evince"
