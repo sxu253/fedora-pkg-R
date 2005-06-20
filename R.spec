@@ -216,6 +216,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jun 20 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.1-1
+- bugfix update
+
 * Mon Apr 18 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.0-51
 - proper library handling
 
