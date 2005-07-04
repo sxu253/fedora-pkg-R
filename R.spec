@@ -1,6 +1,6 @@
 Name: R
 Version: 2.1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -19,31 +19,31 @@ Requires: evince, cups, firefox
 # depend on one of these submodules rather than just R. These are 
 # provided for packager convenience. 
 Provides: R-base = %{version}
-Provides: R-boot = %{version}
+Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = %{version}
+Provides: R-cluster = 1.10.0
 Provides: R-datasets = %{version}
-Provides: R-foreign = %{version}
+Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = %{version}
-Provides: R-lattice = %{version}
+Provides: R-KernSmooth = 2.22
+Provides: R-lattice = 0.11
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
-Provides: R-mgcv = %{version}
-Provides: R-nlme = %{version}
+Provides: R-mgcv = 1.3
+Provides: R-nlme = 3.1
 Provides: R-nnet = %{version}
-Provides: R-rpart = %{version}
+Provides: R-rpart = 3.1
 Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = %{version}
+Provides: R-survival = 2.18
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
-Provides: R-VR = %{version}
+Provides: R-VR = 7.2
 
 # Temporary fix to avoid the SNAFU of the 0.fdr.2.* release
 Conflicts: R-devel < %{version}-%{release}
@@ -216,6 +216,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jul  4 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.1-2
+- fix version numbers on supplemental package provides
+
 * Mon Jun 20 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.1-1
 - bugfix update
 
