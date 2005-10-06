@@ -1,6 +1,6 @@
 Name: R
-Version: 2.1.1
-Release: 2%{?dist}
+Version: 2.2.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -13,6 +13,7 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
 BuildRequires: XFree86-devel
 BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
+BuildRequires: java-1.4.2-gcj-compat
 Requires: evince, cups, firefox
 
 # These are the submodules that R provides. Sometimes R modules say they
@@ -21,14 +22,14 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.10.0
+Provides: R-cluster = 1.10.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.11
+Provides: R-lattice = 0.12
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -39,7 +40,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.18
+Provides: R-survival = 2.20
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -102,6 +103,7 @@ export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/firefox"
 export F77="gfortran"
 ( %configure \
+    --with-system-zlib --with-system-bzlib --with-system-pcre \
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib )\
@@ -216,6 +218,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Oct  6 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.0-1
+- bump to 2.2.0
+
 * Mon Jul  4 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.1.1-2
 - fix version numbers on supplemental package provides
 
