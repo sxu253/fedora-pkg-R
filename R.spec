@@ -1,6 +1,6 @@
 Name: R
 Version: 2.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -13,7 +13,7 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
 BuildRequires: XFree86-devel
 BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
-BuildRequires: java-1.4.2-gcj-compat
+BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 Requires: evince, cups, firefox
 
 # These are the submodules that R provides. Sometimes R modules say they
@@ -104,6 +104,7 @@ export R_BROWSER="%{_bindir}/firefox"
 export F77="gfortran"
 ( %configure \
     --with-system-zlib --with-system-bzlib --with-system-pcre \
+    --with-lapack \
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib )\
@@ -218,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Oct  6 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.0-2
+- use fixed system lapack for FC-4 and devel
+
 * Thu Oct  6 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.0-1
 - bump to 2.2.0
 
