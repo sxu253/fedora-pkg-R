@@ -1,6 +1,6 @@
 Name: R
 Version: 2.2.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -13,7 +13,7 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
 BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.4.2-gcj-compat, lapack-devel
-BuildRequires: libSM-devel, libX11-devel, libICE-devel
+BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: evince, cups, firefox
 
 # These are the submodules that R provides. Sometimes R modules say they
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Sat Dec 31 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-2
+- missing BR: libXt-devel for FC-5
+
 * Tue Dec 20 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-1
 - bump to 2.2.1
 
