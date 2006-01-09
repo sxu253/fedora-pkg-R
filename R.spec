@@ -1,6 +1,6 @@
 Name: R
 Version: 2.2.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -70,7 +70,7 @@ Requires: R = %{version}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
-Requires: XFree86-devel
+Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: tcl-devel, tk-devel
 
 %description devel
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jan  9 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-3
+- fix BR: XFree86-devel for FC-5
+
 * Sat Dec 31 2005 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-2
 - missing BR: libXt-devel for FC-5
 
