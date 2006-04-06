@@ -1,6 +1,6 @@
 Name: R
 Version: 2.2.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -8,7 +8,7 @@ License: GPL
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
-BuildRequires: gcc-c++, tetex-latex, texinfo 
+BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
 BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Feb 28 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-5
+- now BR is texinfo-tex, not texinfo in rawhide
+
 * Tue Feb 28 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-4
 - bump for FC-5
 
