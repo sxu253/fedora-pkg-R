@@ -1,6 +1,6 @@
 Name: R
-Version: 2.2.1
-Release: 5%{?dist}
+Version: 2.3.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -22,14 +22,14 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.10.2
+Provides: R-cluster = 1.10.5
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.12
+Provides: R-lattice = 0.13
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -40,7 +40,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.20
+Provides: R-survival = 2.24
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -155,8 +155,8 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %{_infodir}/R-*.info*
 %{_mandir}/man1/*
 /etc/ld.so.conf.d/*
-%doc AUTHORS CAPABILITIES COPYING COPYING.LIB COPYRIGHTS FAQ NEWS
-%doc ONEWS README RESOURCES THANKS VERSION Y2K
+%doc doc/AUTHORS CAPABILITIES doc/COPYING doc/COPYING.LIB doc/COPYRIGHTS doc/FAQ NEWS
+%doc ONEWS README doc/RESOURCES doc/THANKS VERSION
 %doc doc/manual/R-admin.pdf
 %doc doc/manual/R-FAQ.pdf
 %doc doc/manual/R-lang.pdf
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Apr 24 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.0-1
+- bump to 2.3.0 (also, bump module revisions)
+
 * Tue Feb 28 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.2.1-5
 - now BR is texinfo-tex, not texinfo in rawhide
 
