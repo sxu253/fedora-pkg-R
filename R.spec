@@ -1,6 +1,6 @@
 Name: R
 Version: 2.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Apr 25 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.0-2
+- fix ppc build for FC-4 (artificial bump for everyone else)
+
 * Mon Apr 24 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.0-1
 - bump to 2.3.0 (also, bump module revisions)
 
