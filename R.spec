@@ -1,6 +1,6 @@
 Name: R
-Version: 2.3.0
-Release: 2%{?dist}
+Version: 2.3.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -22,7 +22,7 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.10.5
+Provides: R-cluster = 1.11.0
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
@@ -40,7 +40,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.24
+Provides: R-survival = 2.26
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Jun  2 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-1
+- bump to 2.3.1
+
 * Tue Apr 25 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.0-2
 - fix ppc build for FC-4 (artificial bump for everyone else)
 
