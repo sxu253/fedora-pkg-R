@@ -1,6 +1,6 @@
 Name: R
-Version: 2.3.1
-Release: 2%{?dist}
+Version: 2.4.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -22,14 +22,14 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.0
+Provides: R-cluster = 1.11.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.13
+Provides: R-lattice = 0.14
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -40,7 +40,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.26
+Provides: R-survival = 2.29
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Sun Oct 15 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-1
+- bump for 2.4.0
+
 * Wed Sep 12 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-2
 - bump for FC-6
 
