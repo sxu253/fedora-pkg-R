@@ -1,6 +1,6 @@
 Name: R
 Version: 2.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -15,6 +15,9 @@ BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: evince, cups, firefox
+
+# This syncs us with the "patched" development tree.
+Patch0: R-2.4.0-patched-2006-11-03.patch
 
 # These are the submodules that R provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are 
@@ -95,7 +98,8 @@ from the R project.  This packages provides the static libRmath library
 and header files.
 
 %prep
-%setup -q 
+%setup -q
+%patch0 -p1
 
 %build
 export R_PDFVIEWER="%{_bindir}/evince"
@@ -108,7 +112,7 @@ export F77="gfortran"
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib )\
- | egrep '^R is now|^ |^$' - > CAPABILITIES
+ | grep -A30 'R is now' - > CAPABILITIES
 make 
 (cd src/nmath/standalone; make)
 #make check-all
@@ -219,6 +223,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Nov  3 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-2
+- sync with patched 2006-11-03 level to fix PR#9339
+
 * Sun Oct 15 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-1
 - bump for 2.4.0
 
