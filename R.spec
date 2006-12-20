@@ -1,6 +1,6 @@
 Name: R
-Version: 2.4.0
-Release: 2%{?dist}
+Version: 2.4.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -16,16 +16,13 @@ BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: evince, cups, firefox
 
-# This syncs us with the "patched" development tree.
-Patch0: R-2.4.0-patched-2006-11-03.patch
-
 # These are the submodules that R provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are 
 # provided for packager convenience. 
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.2
+Provides: R-cluster = 1.11.4
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
@@ -43,7 +40,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.29
+Provides: R-survival = 2.30
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -99,7 +96,6 @@ and header files.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 export R_PDFVIEWER="%{_bindir}/evince"
@@ -189,7 +185,7 @@ rm -rf ${RPM_BUILD_ROOT};
 for doc in admin exts FAQ intro lang; do
    file=%{_infodir}/R-${doc}.info.gz
    if [ -e $file ]; then
-      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null
+      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
    fi
 done
 /sbin/ldconfig
@@ -204,7 +200,7 @@ if [ $1 = 0 ]; then
    for doc in admin exts FAQ intro lang; do
       file=%{_infodir}/R-${doc}.info.gz
       if [ -e ${file} ]; then
-         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null
+         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
       fi
    done
    # Remove package indices
@@ -223,6 +219,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Dec 19 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-1
+- bump to 2.4.1
+- fix install-info invocations in post/preun (bz 219407)
+
 * Fri Nov  3 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-2
 - sync with patched 2006-11-03 level to fix PR#9339
 
