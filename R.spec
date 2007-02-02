@@ -1,6 +1,6 @@
 Name: R
 Version: 2.4.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Feb  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-2
+- rebuild for new tcl/tk
+
 * Tue Dec 19 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-1
 - bump to 2.4.1
 - fix install-info invocations in post/preun (bz 219407)
