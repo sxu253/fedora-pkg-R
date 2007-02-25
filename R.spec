@@ -1,6 +1,6 @@
 Name: R
 Version: 2.4.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -219,6 +219,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Sun Feb  25 2007 Jef Spaleta <jspaleta@gmail.com> 2.4.1-3
+- rebuild for reverted tcl/tk
+
 * Fri Feb  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-2
 - rebuild for new tcl/tk
 
