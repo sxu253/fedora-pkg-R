@@ -1,6 +1,6 @@
 Name: R
 Version: 2.4.1
-Release: 1%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -98,6 +98,9 @@ and header files.
 %setup -q
 
 %build
+# Add PATHS to Renviron for R_LIBS
+echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
+
 export R_PDFVIEWER="%{_bindir}/evince"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/firefox"
@@ -219,6 +222,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Mar  13 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-4
+- add /usr/share/R/library as a valid R_LIBS directory for noarch bits
+
 * Tue Dec 19 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-1
 - bump to 2.4.1
 - fix install-info invocations in post/preun (bz 219407)
