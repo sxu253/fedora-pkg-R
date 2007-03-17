@@ -1,6 +1,6 @@
 Name: R
 Version: 2.4.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -9,10 +9,10 @@ Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
-BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
-BuildRequires: tcl-devel, tk-devel
+BuildRequires: libpng-devel, libjpeg-devel, readline-devel
+BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
-BuildRequires: java-1.4.2-gcj-compat, lapack-devel
+BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: evince, cups, firefox
 
@@ -69,7 +69,7 @@ Group: Applications/Engineering
 Requires: R = %{version}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
-Requires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
+Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 Requires: tcl-devel, tk-devel
 
@@ -98,6 +98,9 @@ and header files.
 %setup -q
 
 %build
+# Add PATHS to Renviron for R_LIBS
+echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
+
 export R_PDFVIEWER="%{_bindir}/evince"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/firefox"
@@ -148,9 +151,12 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/search/index.txt
 mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
 echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/R/library
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
+%{_datadir}/R
 %{_libdir}/R
 %{_infodir}/R-*.info*
 %{_mandir}/man1/*
@@ -219,6 +225,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Mar  13 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-4
+- get rid of termcap related requires, replace with ncurses
+- use java-1.5.0-gcj instead of old java-1.4.2
+- add /usr/share/R/library as a valid R_LIBS directory for noarch bits
+
 * Sun Feb  25 2007 Jef Spaleta <jspaleta@gmail.com> 2.4.1-3
 - rebuild for reverted tcl/tk
 
