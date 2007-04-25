@@ -1,6 +1,6 @@
 Name: R
-Version: 2.4.1
-Release: 4%{?dist}
+Version: 2.5.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -22,25 +22,27 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.4
+Provides: R-cluster = 1.11.5
+Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.14
+Provides: R-lattice = 0.15
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
 Provides: R-nlme = 3.1
 Provides: R-nnet = %{version}
+Provides: R-rcompgen = 0.1
 Provides: R-rpart = 3.1
 Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.30
+Provides: R-survival = 2.31
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -71,7 +73,7 @@ Requires: R = %{version}
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-Requires: tcl-devel, tk-devel
+Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
 Install R-devel if you are going to develop or compile R packages.
@@ -87,7 +89,7 @@ from the R project.  This packages provides the shared libRmath library.
 %package -n libRmath-devel
 Summary: standalone math library from the R project
 Group: Development/Libraries
-Requires: libRmath = %{version}
+Requires: libRmath = %{version}, pkgconfig
 
 %description -n libRmath-devel
 A standalone library of mathematical and statistical functions derived
@@ -138,6 +140,12 @@ sed -e "s@R_HOME_DIR=.*@R_HOME_DIR=%{_libdir}/R@" < bin/R \
 chmod 755 ${RPM_BUILD_ROOT}%{_libdir}/R/bin/R 
 chmod 755 ${RPM_BUILD_ROOT}%{_bindir}/R
 
+# Get rid of buildroot in script
+for i in $RPM_BUILD_ROOT%{_libdir}/R/bin/Rscript $RPM_BUILD_ROOT%{_bindir}/Rscript $RPM_BUILD_ROOT%{_libdir}/pkgconfig/libR*.pc;
+do
+  sed -i "s|$RPM_BUILD_ROOT||g" $i;
+done
+
 # Remove package indices. They are rebuilt by the postinstall script.
 #
 rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/function.html
@@ -151,9 +159,13 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/search/index.txt
 mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
 echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/R/library
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
+%{_bindir}/Rscript
+%{_datadir}/R
 %{_libdir}/R
 %{_infodir}/R-*.info*
 %{_mandir}/man1/*
@@ -169,6 +181,7 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %files devel
 %defattr(-, root, root)
 %doc doc/manual/R-exts.pdf
+%{_libdir}/pkgconfig/libR.pc
 
 %files -n libRmath
 %defattr(-, root, root)
@@ -178,6 +191,7 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 %defattr(-, root, root)
 %{_libdir}/libRmath.a
 %{_includedir}/Rmath.h
+%{_libdir}/pkgconfig/libRmath.pc
 
 %clean
 rm -rf ${RPM_BUILD_ROOT};
@@ -222,6 +236,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Wed Apr  25 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-1
+- bump to 2.5.0
+
 * Tue Mar  13 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-4
 - add /usr/share/R/library as a valid R_LIBS directory for noarch bits
 
