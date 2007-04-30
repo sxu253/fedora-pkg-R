@@ -1,11 +1,12 @@
 Name: R
 Version: 2.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 License: GPL
 Group: Applications/Engineering
+Patch0: R-2.5.0-pkgconfig.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
@@ -14,6 +15,8 @@ BuildRequires: tcl-devel, tk-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
+# This isn't entirely true, but Martyn Plummer thinks it will be soon.
+BuildRequires: gcc-objc
 Requires: evince, cups, firefox
 
 # These are the submodules that R provides. Sometimes R modules say they
@@ -98,6 +101,7 @@ and header files.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 # Add PATHS to Renviron for R_LIBS
@@ -236,6 +240,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Apr 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-2
+- patch from Martyn Plummer fixes .pc files
+- add new BR: gcc-objc
+
 * Wed Apr  25 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-1
 - bump to 2.5.0
 
