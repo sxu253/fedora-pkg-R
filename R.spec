@@ -1,6 +1,6 @@
 Name: R
 Version: 2.5.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -10,12 +10,12 @@ Patch0: R-2.5.0-pkgconfig.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
-BuildRequires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
-BuildRequires: tcl-devel, tk-devel
+BuildRequires: libpng-devel, libjpeg-devel, readline-devel
+BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-# This isn't entirely true, but Martyn Plummer thinks it will be soon.
+BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
 Requires: evince, cups, firefox
 
@@ -74,8 +74,9 @@ Group: Applications/Engineering
 Requires: R = %{version}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
-Requires: libpng-devel, libjpeg-devel, readline-devel, libtermcap-devel
+Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
+Requires: bzip2-devel, libXmu-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -240,6 +241,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri May 25 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-3
+- add missing BR: bzip2-devel, libXmu-devel
+- cleanup macros from changelog
+- switch from termcap to ncurses
+
 * Mon Apr 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-2
 - patch from Martyn Plummer fixes .pc files
 - add new BR: gcc-objc
@@ -408,8 +414,8 @@ fi
   avoiding warnings about UTF-8 locale not being supported
 
 * Mon Mar 15 2004 Martyn Plummer <plummer@iarc.fr>
-- No need to export optimization flags. This is done by %configure
-- Folded info installation into %makeinstall 
+- No need to export optimization flags. This is done by %%configure
+- Folded info installation into %%makeinstall 
 - Check that RPM_BASE_ROOT is not set to "/" before cleaning up
 
 * Thu Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
@@ -418,7 +424,7 @@ fi
 * Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
 - Changes from James Henstridge <james@daa.com.au> to allow building on IA64:
 - Added BuildRequires for tcl-devel tk-devel tetex-latex
-- Use the %configure macro to call the configure script
+- Use the %%configure macro to call the configure script
 - Pass --with-tcl-config and --with-tk-config arguments to configure
 - Set rhome to point to the build root during "make install"
 
