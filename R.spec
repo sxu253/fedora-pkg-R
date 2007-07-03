@@ -1,12 +1,11 @@
 Name: R
-Version: 2.5.0
-Release: 2%{?dist}
+Version: 2.5.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 License: GPL
 Group: Applications/Engineering
-Patch0: R-2.5.0-pkgconfig.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
@@ -15,7 +14,7 @@ BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-# This isn't entirely true, but Martyn Plummer thinks it will be soon.
+BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
 Requires: evince, cups, firefox
 
@@ -25,7 +24,7 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.5
+Provides: R-cluster = 1.11.7
 Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -45,7 +44,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.31
+Provides: R-survival = 2.32
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -76,6 +75,7 @@ Requires: R = %{version}
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
+Requires: bzip2-devel, libXmu-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -101,7 +101,6 @@ and header files.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 # Add PATHS to Renviron for R_LIBS
@@ -125,7 +124,6 @@ make pdf
 make info
 
 %install
-
 %makeinstall rhome=${RPM_BUILD_ROOT}%{_libdir}/R install-info
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
@@ -240,6 +238,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jul  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1
+- drop patch, upstream fixed
+- bump to 2.5.1
+
 * Mon Apr 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-2
 - patch from Martyn Plummer fixes .pc files
 - add new BR: gcc-objc
