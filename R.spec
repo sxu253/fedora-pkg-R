@@ -1,19 +1,18 @@
 Name: R
-Version: 2.5.0
-Release: 3%{?dist}
+Version: 2.5.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 License: GPL
 Group: Applications/Engineering
-Patch0: R-2.5.0-pkgconfig.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
-BuildRequires: java-1.4.2-gcj-compat, lapack-devel
+BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
@@ -25,7 +24,7 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.5
+Provides: R-cluster = 1.11.7
 Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -45,7 +44,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.31
+Provides: R-survival = 2.32
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -102,7 +101,6 @@ and header files.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 # Add PATHS to Renviron for R_LIBS
@@ -126,7 +124,6 @@ make pdf
 make info
 
 %install
-
 %makeinstall rhome=${RPM_BUILD_ROOT}%{_libdir}/R install-info
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
@@ -241,10 +238,9 @@ fi
 /sbin/ldconfig
 
 %changelog
-* Fri May 25 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-3
-- add missing BR: bzip2-devel, libXmu-devel
-- cleanup macros from changelog
-- switch from termcap to ncurses
+* Mon Jul  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1
+- drop patch, upstream fixed
+- bump to 2.5.1
 
 * Mon Apr 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.0-2
 - patch from Martyn Plummer fixes .pc files
@@ -254,7 +250,15 @@ fi
 - bump to 2.5.0
 
 * Tue Mar  13 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-4
+- get rid of termcap related requires, replace with ncurses
+- use java-1.5.0-gcj instead of old java-1.4.2
 - add /usr/share/R/library as a valid R_LIBS directory for noarch bits
+
+* Sun Feb  25 2007 Jef Spaleta <jspaleta@gmail.com> 2.4.1-3
+- rebuild for reverted tcl/tk
+
+* Fri Feb  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-2
+- rebuild for new tcl/tk
 
 * Tue Dec 19 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.1-1
 - bump to 2.4.1
@@ -414,8 +418,8 @@ fi
   avoiding warnings about UTF-8 locale not being supported
 
 * Mon Mar 15 2004 Martyn Plummer <plummer@iarc.fr>
-- No need to export optimization flags. This is done by %%configure
-- Folded info installation into %%makeinstall 
+- No need to export optimization flags. This is done by %configure
+- Folded info installation into %makeinstall 
 - Check that RPM_BASE_ROOT is not set to "/" before cleaning up
 
 * Thu Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
@@ -424,7 +428,7 @@ fi
 * Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
 - Changes from James Henstridge <james@daa.com.au> to allow building on IA64:
 - Added BuildRequires for tcl-devel tk-devel tetex-latex
-- Use the %%configure macro to call the configure script
+- Use the %configure macro to call the configure script
 - Pass --with-tcl-config and --with-tk-config arguments to configure
 - Set rhome to point to the build root during "make install"
 
