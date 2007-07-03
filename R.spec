@@ -1,6 +1,6 @@
 Name: R
 Version: 2.5.1
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -12,7 +12,7 @@ BuildRequires: gcc-c++, tetex-latex, texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
-BuildRequires: java-1.5.0-gcj, lapack-devel
+BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
@@ -238,6 +238,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Jul  3 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1.1
+- fix BR for EL-5
+
 * Mon Jul  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1
 - drop patch, upstream fixed
 - bump to 2.5.1
