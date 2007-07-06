@@ -1,9 +1,11 @@
 Name: R
 Version: 2.5.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
+Source1: macros.R
+Source2: R-make-search-index.sh
 License: GPL
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -163,13 +165,23 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/R/library
 
+# Install rpm helper macros
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
+install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
+
+# Install rpm helper script
+mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
+install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
 %{_bindir}/Rscript
 %{_datadir}/R
 %{_libdir}/R
+/usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
+%{_sysconfdir}/rpm/macros.R
 %{_mandir}/man1/*
 /etc/ld.so.conf.d/*
 %doc doc/AUTHORS CAPABILITIES doc/COPYING doc/COPYING.LIB doc/COPYRIGHTS doc/FAQ NEWS
@@ -212,6 +224,8 @@ done
 # Update package indices
 %{_bindir}/R CMD perl %{_libdir}/R/share/perl/build-help.pl --htmllists > /dev/null 2>/dev/null
 %__cat %{_libdir}/R/library/*/CONTENTS > %{_libdir}/R/doc/html/search/index.txt 2>/dev/null
+# This could fail if there are no noarch R libraries on the system.
+%__cat %{_datadir}/R/library/*/CONTENTS >> %{_libdir}/R/doc/html/search/index.txt 2>/dev/null || exit 0
 
 %preun 
 if [ $1 = 0 ]; then
@@ -238,6 +252,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Jul  5 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-2
+- add rpm helper macros, script
+
 * Mon Jul  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1
 - drop patch, upstream fixed
 - bump to 2.5.1
