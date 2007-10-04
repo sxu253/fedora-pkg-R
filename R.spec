@@ -1,6 +1,6 @@
 Name: R
-Version: 2.5.1
-Release: 3%{?dist}
+Version: 2.6.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -26,7 +26,7 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.7
+Provides: R-cluster = 1.11.9
 Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -34,7 +34,7 @@ Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.15
+Provides: R-lattice = 0.16
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -252,6 +252,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Oct  4 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-1
+- bump to 2.6.0
+
 * Sun Aug 26 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-3
 - fix license tag
 - rebuild for ppc32
