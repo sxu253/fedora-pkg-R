@@ -185,6 +185,7 @@ install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 # Fix multilib
 touch -r NEWS CAPABILITIES
 touch -r NEWS doc/manual/*.pdf
+touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
 %files
 %defattr(-, root, root)
