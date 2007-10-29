@@ -1,6 +1,6 @@
 Name: R
 Version: 2.6.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -18,7 +18,7 @@ BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
-Requires: evince, cups, firefox
+Requires: xdg-utils, cups
 
 # These are the submodules that R provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are 
@@ -104,13 +104,22 @@ and header files.
 %prep
 %setup -q
 
+# Filter false positive provides.
+cat <<EOF > %{name}-prov
+#!/bin/sh
+%{__perl_provides} \
+| grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
+EOF
+%define __perl_provides %{_builddir}/R-%{version}/%{name}-prov
+chmod +x %{__perl_provides}
+
 %build
 # Add PATHS to Renviron for R_LIBS
 echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
 
-export R_PDFVIEWER="%{_bindir}/evince"
+export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
-export R_BROWSER="%{_bindir}/firefox"
+export R_BROWSER="%{_bindir}/xdg-open"
 export F77="gfortran"
 ( %configure \
     --with-system-zlib --with-system-bzlib --with-system-pcre \
@@ -220,6 +229,7 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
+R CMD javareconf || exit 0
 
 # Update package indices
 %{_bindir}/R CMD perl %{_libdir}/R/share/perl/build-help.pl --htmllists > /dev/null 2>/dev/null
@@ -252,6 +262,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-2
+- add R CMD javareconf to post (bz 354541)
+- don't pickup bogus perl provides (bz 356071)
+- use xdg-open, drop requires for firefox/evince (bz 351841)
+
 * Thu Oct  4 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-1
 - bump to 2.6.0
 
