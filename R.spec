@@ -182,6 +182,10 @@ install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
 mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
+# Fix multilib
+touch -r NEWS CAPABILITIES
+touch -r NEWS doc/manual/*.pdf
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
@@ -262,6 +266,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3
+- fix multilib conflicts (bz 343061)
+
 * Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-2
 - add R CMD javareconf to post (bz 354541)
 - don't pickup bogus perl provides (bz 356071)
