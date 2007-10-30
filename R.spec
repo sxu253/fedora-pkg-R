@@ -1,6 +1,6 @@
 Name: R
 Version: 2.6.0
-Release: 3%{?dist}
+Release: 3%{?dist}.1
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -112,6 +112,15 @@ cat <<EOF > %{name}-prov
 EOF
 %define __perl_provides %{_builddir}/R-%{version}/%{name}-prov
 chmod +x %{__perl_provides}
+
+# Filter unwanted Requires:
+cat << \EOF > %{name}-req
+#!/bin/sh
+%{__perl_requires} \
+| grep -v 'perl(Text::DelimMatch)'
+EOF
+%define __perl_requires %{_builddir}/R-%{version}/%{name}-req
+chmod +x %{__perl_requires}
 
 %build
 # Add PATHS to Renviron for R_LIBS
@@ -267,6 +276,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue Oct 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3.1
+- fix missing perl requires
+
 * Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3
 - fix multilib conflicts (bz 343061)
 
