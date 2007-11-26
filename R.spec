@@ -1,6 +1,6 @@
 Name: R
-Version: 2.6.0
-Release: 3%{?dist}.1
+Version: 2.6.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -34,7 +34,7 @@ Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.16
+Provides: R-lattice = 0.17
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -46,7 +46,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.32
+Provides: R-survival = 2.34
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -276,6 +276,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Nov 26 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-1
+- bump to 2.6.1
+
 * Tue Oct 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3.1
 - fix missing perl requires
 
