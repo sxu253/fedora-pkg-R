@@ -1,6 +1,6 @@
 Name: R
 Version: 2.6.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -179,7 +179,7 @@ touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 %{_bindir}/Rscript
 %{_datadir}/R
 %dir %{_libdir}/R
-%{_libdir}/R/bin/[!I]*
+%{_libdir}/R/bin
 %{_libdir}/R/etc
 %{_libdir}/R/lib
 %{_libdir}/R/library
@@ -199,7 +199,6 @@ touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 %defattr(-, root, root)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
-%{_libdir}/R/bin/INSTALL
 
 %files -n libRmath
 %defattr(-, root, root)
@@ -252,6 +251,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jan  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-3
+- move INSTALL back into R main package, as it is useful without the 
+  other -devel bits (e.g. installing noarch package from CRAN)
+
 * Tue Dec 11 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-2
 - based on changes from Martyn Plummer <martyn.plummer@r-project.org>
 - use configure options rdocdir, rincludedir, rsharedir 
