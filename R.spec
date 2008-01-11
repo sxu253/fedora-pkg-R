@@ -1,6 +1,6 @@
 Name: R
-Version: 2.5.1
-Release: 2%{?dist}
+Version: 2.6.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -18,7 +18,7 @@ BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel
 BuildRequires: gcc-objc
-Requires: evince, cups, firefox
+Requires: xdg-utils, cups
 
 # These are the submodules that R provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are 
@@ -26,7 +26,7 @@ Requires: evince, cups, firefox
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = %{version}
-Provides: R-cluster = 1.11.7
+Provides: R-cluster = 1.11.9
 Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -34,7 +34,7 @@ Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.15
+Provides: R-lattice = 0.17
 Provides: R-MASS = %{version}
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
@@ -46,7 +46,7 @@ Provides: R-spatial = %{version}
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.32
+Provides: R-survival = 2.34
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -104,13 +104,31 @@ and header files.
 %prep
 %setup -q
 
+# Filter false positive provides.
+cat <<EOF > %{name}-prov
+#!/bin/sh
+%{__perl_provides} \
+| grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
+EOF
+%define __perl_provides %{_builddir}/R-%{version}/%{name}-prov
+chmod +x %{__perl_provides}
+
+# Filter unwanted Requires:
+cat << \EOF > %{name}-req
+#!/bin/sh
+%{__perl_requires} \
+| grep -v 'perl(Text::DelimMatch)'
+EOF
+%define __perl_requires %{_builddir}/R-%{version}/%{name}-req
+chmod +x %{__perl_requires}
+
 %build
 # Add PATHS to Renviron for R_LIBS
 echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
 
-export R_PDFVIEWER="%{_bindir}/evince"
+export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
-export R_BROWSER="%{_bindir}/firefox"
+export R_BROWSER="%{_bindir}/xdg-open"
 export F77="gfortran"
 ( %configure \
     --with-system-zlib --with-system-bzlib --with-system-pcre \
@@ -173,6 +191,11 @@ install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
 mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
+# Fix multilib
+touch -r NEWS CAPABILITIES
+touch -r NEWS doc/manual/*.pdf
+touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
@@ -220,6 +243,7 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
+R CMD javareconf || exit 0
 
 # Update package indices
 %{_bindir}/R CMD perl %{_libdir}/R/share/perl/build-help.pl --htmllists > /dev/null 2>/dev/null
@@ -252,6 +276,27 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Nov 26 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-1
+- bump to 2.6.1
+
+* Tue Oct 30 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3.1
+- fix missing perl requires
+
+* Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-3
+- fix multilib conflicts (bz 343061)
+
+* Mon Oct 29 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-2
+- add R CMD javareconf to post (bz 354541)
+- don't pickup bogus perl provides (bz 356071)
+- use xdg-open, drop requires for firefox/evince (bz 351841)
+
+* Thu Oct  4 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.0-1
+- bump to 2.6.0
+
+* Sun Aug 26 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-3
+- fix license tag
+- rebuild for ppc32
+
 * Thu Jul  5 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-2
 - add rpm helper macros, script
 
