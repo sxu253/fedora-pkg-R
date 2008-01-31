@@ -1,6 +1,6 @@
 Name: R
 Version: 2.6.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -129,7 +129,23 @@ echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/
 export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
-export F77="gfortran"
+
+case "%{_build_cpu}" in
+      x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
+          export CC="gcc -m64"
+          export CXX="g++ -m64"
+          export F77="gfortran -m64"
+          export FC="gfortran -m64"
+      ;;
+      *)
+          export CC="gcc -m32"
+          export CXX="g++ -m32"
+          export F77="gfortran -m32"
+          export FC="gfortran -m32"
+      ;;    
+esac
+
+export FCFLAGS="%{optflags}"
 ( %configure \
     --with-system-zlib --with-system-bzlib --with-system-pcre \
     --with-lapack \
@@ -223,12 +239,13 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
-R CMD javareconf || exit 0
+setarch %{_build_cpu} R CMD javareconf || exit 0
 
 # Update package indices
-%__cat %{_libdir}/R/library/*/CONTENTS > %{_libdir}/R/doc/html/search/index.txt 2>/dev/null
+%__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+
 # This could fail if there are no noarch R libraries on the system.
-%__cat %{_datadir}/R/library/*/CONTENTS >> %{_libdir}/R/doc/html/search/index.txt 2>/dev/null || exit 0
+%__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
 
 %preun 
 if [ $1 = 0 ]; then
@@ -251,6 +268,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Thu Jan 31 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-4
+- multilib handling (thanks Martyn Plummer)
+- Update indices in the right place.
+
 * Mon Jan  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-3
 - move INSTALL back into R main package, as it is useful without the 
   other -devel bits (e.g. installing noarch package from CRAN)
