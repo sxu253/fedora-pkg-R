@@ -1,6 +1,6 @@
 Name: R
-Version: 2.6.1
-Release: 4%{?dist}
+Version: 2.6.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -25,7 +25,7 @@ Requires: xdg-utils, cups
 # provided for packager convenience. 
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
-Provides: R-class = %{version}
+Provides: R-class = 7.2
 Provides: R-cluster = 1.11.9
 Provides: R-codetools = 0.1
 Provides: R-datasets = %{version}
@@ -35,14 +35,14 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
 Provides: R-lattice = 0.17
-Provides: R-MASS = %{version}
+Provides: R-MASS = 7.2
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
 Provides: R-nlme = 3.1
-Provides: R-nnet = %{version}
+Provides: R-nnet = 7.2
 Provides: R-rcompgen = 0.1
 Provides: R-rpart = 3.1
-Provides: R-spatial = %{version}
+Provides: R-spatial = 7.2
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -130,7 +130,7 @@ export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
 
-case "%{_build_cpu}" in
+case "%{_target_cpu}" in
       x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
           export CC="gcc -m64"
           export CXX="g++ -m64"
@@ -239,7 +239,7 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
-setarch %{_build_cpu} R CMD javareconf || exit 0
+R CMD javareconf || exit 0
 
 # Update package indices
 %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
@@ -268,6 +268,12 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Feb  8 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.2-1
+- properly version the items in the VR bundle
+- 2.6.2
+- don't use setarch for java setup
+- fix R post script file
+
 * Thu Jan 31 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-4
 - multilib handling (thanks Martyn Plummer)
 - Update indices in the right place.
