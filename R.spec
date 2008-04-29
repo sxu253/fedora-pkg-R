@@ -1,5 +1,5 @@
 Name: R
-Version: 2.6.2
+Version: 2.7.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -26,8 +26,8 @@ Requires: xdg-utils, cups
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = 7.2
-Provides: R-cluster = 1.11.9
-Provides: R-codetools = 0.1
+Provides: R-cluster = 1.11.10
+Provides: R-codetools = 0.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
@@ -40,7 +40,6 @@ Provides: R-methods = %{version}
 Provides: R-mgcv = 1.3
 Provides: R-nlme = 3.1
 Provides: R-nnet = 7.2
-Provides: R-rcompgen = 0.1
 Provides: R-rpart = 3.1
 Provides: R-spatial = 7.2
 Provides: R-splines = %{version}
@@ -51,9 +50,6 @@ Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
 Provides: R-VR = 7.2
-
-# Temporary fix to avoid the SNAFU of the 0.fdr.2.* release
-Conflicts: R-devel < %{version}-%{release}
 
 %description
 A language and environment for statistical computing and graphics. 
@@ -239,13 +235,18 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
-R CMD javareconf || exit 0
+R CMD javareconf > /dev/null 2>&1 || exit 0
 
 # Update package indices
 %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+# Don't use .. based paths, substitute RHOME
+sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
 
 # This could fail if there are no noarch R libraries on the system.
 %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
+# Don't use .. based paths, substitute /usr/share/R
+sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
 
 %preun 
 if [ $1 = 0 ]; then
@@ -268,6 +269,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Apr 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-1
+- update to 2.70
+- rcompgen is no longer a standalone package
+- redirect javareconf to /dev/null (bz 442366)
+
 * Fri Feb  8 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.2-1
 - properly version the items in the VR bundle
 - 2.6.2
