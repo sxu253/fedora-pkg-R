@@ -1,11 +1,12 @@
 Name: R
 Version: 2.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+Patch0: R-2.7.0-bad-path.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -99,6 +100,7 @@ and header files.
 
 %prep
 %setup -q
+%patch0 -p0
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -132,6 +134,12 @@ case "%{_target_cpu}" in
           export CXX="g++ -m64"
           export F77="gfortran -m64"
           export FC="gfortran -m64"
+      ;;
+      ia64)
+          export CC="gcc"
+          export CXX="g++"
+          export F77="gfortran"
+          export FC="gfortran"
       ;;
       *)
           export CC="gcc -m32"
@@ -269,6 +277,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Tue May 13 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-2
+- add patch from Martyn Plummer to avoid possible bad path hardcoding in 
+  /usr/bin/Rscript
+- properly handle ia64 case (bz 446181)
+
 * Mon Apr 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-1
 - update to 2.70
 - rcompgen is no longer a standalone package
