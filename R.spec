@@ -1,6 +1,6 @@
 Name: R
 Version: 2.7.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -69,7 +69,7 @@ and called at run time.
 %package devel
 Summary: files for development of R packages.
 Group: Applications/Engineering
-Requires: R = %{version}
+Requires: R = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
@@ -195,7 +195,11 @@ touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
 # Fix html/packages.html
 # We can safely use RHOME here, because all of these are system packages.
-sed -i "s!../..!%{_libdir}/R!g" $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+
+for i in $RPM_BUILD_ROOT%{_libdir}/R/library/*/html/*.html; do
+	sed -i 's|\..\/\..\/..\/doc|%{_docdir}/R-%{version}|g' $i
+done
 
 %files
 %defattr(-, root, root)
@@ -281,6 +285,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-4
+- fixup sed invocation added in -3
+- make -devel package depend on base R = version-release
+- fix bad paths in package html files
+
 * Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-3
 - fix poorly constructed file paths in html/packages.html (bz 442727)
 
