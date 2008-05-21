@@ -1,6 +1,6 @@
 Name: R
 Version: 2.7.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -193,6 +193,10 @@ touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
 touch -r NEWS doc/manual/*.pdf
 touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
+# Fix html/packages.html
+# We can safely use RHOME here, because all of these are system packages.
+sed -i "s!../..!%{_libdir}/R!g" $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+
 %files
 %defattr(-, root, root)
 %{_bindir}/R
@@ -277,6 +281,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-3
+- fix poorly constructed file paths in html/packages.html (bz 442727)
+
 * Tue May 13 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-2
 - add patch from Martyn Plummer to avoid possible bad path hardcoding in 
   /usr/bin/Rscript
