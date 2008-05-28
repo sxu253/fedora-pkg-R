@@ -1,6 +1,6 @@
 Name: R
 Version: 2.7.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -17,7 +17,7 @@ BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-BuildRequires: bzip2-devel, libXmu-devel
+BuildRequires: bzip2-devel, libXmu-devel, cairo-devel
 BuildRequires: gcc-objc
 Requires: xdg-utils, cups
 
@@ -74,7 +74,7 @@ Requires: R = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-Requires: bzip2-devel, libXmu-devel
+Requires: bzip2-devel, libXmu-devel, cairo-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -285,6 +285,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Wed May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-5
+- add cairo-devel to BR/R, so that cairo backend gets built
+
 * Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-4
 - fixup sed invocation added in -3
 - make -devel package depend on base R = version-release
