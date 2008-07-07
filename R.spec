@@ -1,12 +1,11 @@
 Name: R
-Version: 2.7.0
-Release: 5%{?dist}
+Version: 2.7.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-Patch0: R-2.7.0-bad-path.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -27,7 +26,7 @@ Requires: xdg-utils, cups
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = 7.2
-Provides: R-cluster = 1.11.10
+Provides: R-cluster = 1.11.11
 Provides: R-codetools = 0.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -38,7 +37,7 @@ Provides: R-KernSmooth = 2.22
 Provides: R-lattice = 0.17
 Provides: R-MASS = 7.2
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.3
+Provides: R-mgcv = 1.4
 Provides: R-nlme = 3.1
 Provides: R-nnet = 7.2
 Provides: R-rpart = 3.1
@@ -100,7 +99,6 @@ and header files.
 
 %prep
 %setup -q
-%patch0 -p0
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -285,6 +283,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jul  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.1-1
+- update to 2.7.1
+
 * Wed May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-5
 - add cairo-devel to BR/R, so that cairo backend gets built
 
