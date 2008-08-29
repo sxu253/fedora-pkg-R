@@ -1,11 +1,14 @@
 Name: R
-Version: 2.6.1
+Version: 2.7.2
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+# Sent upstream:
+# http://bugs.r-project.org/cgi-bin/R/incoming?id=12636
+Patch0: R-2.7.1-javareconf-tmpfix.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -16,7 +19,7 @@ BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.4.2-gcj-compat, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-BuildRequires: bzip2-devel, libXmu-devel
+BuildRequires: bzip2-devel, libXmu-devel, cairo-devel
 BuildRequires: gcc-objc
 Requires: xdg-utils, cups
 
@@ -25,9 +28,9 @@ Requires: xdg-utils, cups
 # provided for packager convenience. 
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
-Provides: R-class = %{version}
-Provides: R-cluster = 1.11.9
-Provides: R-codetools = 0.1
+Provides: R-class = 7.2
+Provides: R-cluster = 1.11.11
+Provides: R-codetools = 0.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
 Provides: R-graphics = %{version}
@@ -35,14 +38,13 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
 Provides: R-lattice = 0.17
-Provides: R-MASS = %{version}
+Provides: R-MASS = 7.2
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.3
+Provides: R-mgcv = 1.4
 Provides: R-nlme = 3.1
-Provides: R-nnet = %{version}
-Provides: R-rcompgen = 0.1
+Provides: R-nnet = 7.2
 Provides: R-rpart = 3.1
-Provides: R-spatial = %{version}
+Provides: R-spatial = 7.2
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -51,9 +53,6 @@ Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
 Provides: R-VR = 7.2
-
-# Temporary fix to avoid the SNAFU of the 0.fdr.2.* release
-Conflicts: R-devel < %{version}-%{release}
 
 %description
 A language and environment for statistical computing and graphics. 
@@ -72,12 +71,12 @@ and called at run time.
 %package devel
 Summary: files for development of R packages.
 Group: Applications/Engineering
-Requires: R = %{version}
+Requires: R = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-Requires: bzip2-devel, libXmu-devel
+Requires: bzip2-devel, libXmu-devel, cairo-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -103,6 +102,7 @@ and header files.
 
 %prep
 %setup -q
+%patch0 -p1 -b .javareconf-tmpfix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -129,13 +129,38 @@ echo 'R_LIBS=${R_LIBS-'"'%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/
 export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
-export F77="gfortran"
+
+case "%{_target_cpu}" in
+      x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
+          export CC="gcc -m64"
+          export CXX="g++ -m64"
+          export F77="gfortran -m64"
+          export FC="gfortran -m64"
+      ;;
+      ia64|alpha)
+          export CC="gcc"
+          export CXX="g++"
+          export F77="gfortran"
+          export FC="gfortran"
+      ;;
+      *)
+          export CC="gcc -m32"
+          export CXX="g++ -m32"
+          export F77="gfortran -m32"
+          export FC="gfortran -m32"
+      ;;    
+esac
+
+export FCFLAGS="%{optflags}"
 ( %configure \
     --with-system-zlib --with-system-bzlib --with-system-pcre \
     --with-lapack \
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
-    --enable-R-shlib )\
+    --enable-R-shlib \
+    rdocdir=%{_docdir}/R-%{version} \
+    rincludedir=%{_includedir}/R \
+    rsharedir=%{_datadir}/R) \
  | grep -A30 'R is now' - > CAPABILITIES
 make 
 (cd src/nmath/standalone; make)
@@ -144,39 +169,13 @@ make pdf
 make info
 
 %install
-%makeinstall rhome=${RPM_BUILD_ROOT}%{_libdir}/R install-info
+make DESTDIR=${RPM_BUILD_ROOT} install install-info install-pdf
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
+install -p CAPABILITIES ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}
 
 #Install libRmath files
-(cd src/nmath/standalone; make install \
-    includedir=${RPM_BUILD_ROOT}%{_includedir} \
-    libdir=${RPM_BUILD_ROOT}%{_libdir})
-
-#Fix location of R_HOME_DIR in shell wrapper.
-#
-sed -e "s@R_HOME_DIR=.*@R_HOME_DIR=%{_libdir}/R@" < bin/R \
-  > ${RPM_BUILD_ROOT}%{_libdir}/R/bin/R
-sed -e "s@R_HOME_DIR=.*@R_HOME_DIR=%{_libdir}/R@" < bin/R \
-   > ${RPM_BUILD_ROOT}%{_bindir}/R
-chmod 755 ${RPM_BUILD_ROOT}%{_libdir}/R/bin/R 
-chmod 755 ${RPM_BUILD_ROOT}%{_bindir}/R
-
-# Get rid of buildroot in script
-for i in $RPM_BUILD_ROOT%{_libdir}/R/bin/Rscript $RPM_BUILD_ROOT%{_bindir}/Rscript $RPM_BUILD_ROOT%{_libdir}/pkgconfig/libR*.pc;
-do
-  sed -i "s|$RPM_BUILD_ROOT||g" $i;
-done
-
-# Remove package indices. They are rebuilt by the postinstall script.
-#
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/function.html
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/packages.html
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/R/doc/html/search/index.txt
-
-# Some doc files are also installed. We don't need them
-(cd %{buildroot}%{_libdir}/R;
- rm -f AUTHORS COPYING COPYING.LIB COPYRIGHTS FAQ NEWS ONEWS RESOURCES THANKS)
+(cd src/nmath/standalone; make install DESTDIR=${RPM_BUILD_ROOT})
 
 mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
 echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
@@ -192,33 +191,44 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 # Fix multilib
-touch -r NEWS CAPABILITIES
+touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
 touch -r NEWS doc/manual/*.pdf
 touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
+
+# Fix html/packages.html
+# We can safely use RHOME here, because all of these are system packages.
+sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+
+for i in $RPM_BUILD_ROOT%{_libdir}/R/library/*/html/*.html; do
+	sed -i 's|\..\/\..\/..\/doc|%{_docdir}/R-%{version}|g' $i
+done
 
 %files
 %defattr(-, root, root)
 %{_bindir}/R
 %{_bindir}/Rscript
 %{_datadir}/R
-%{_libdir}/R
+%dir %{_libdir}/R
+%{_libdir}/R/bin
+%{_libdir}/R/etc
+%{_libdir}/R/lib
+%{_libdir}/R/library
+%{_libdir}/R/modules
+%{_libdir}/R/COPYING
+%{_libdir}/R/NEWS
+%{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
 %{_sysconfdir}/rpm/macros.R
 %{_mandir}/man1/*
+%{_docdir}/R-%{version}
+%docdir %{_docdir}/R-%{version}
 /etc/ld.so.conf.d/*
-%doc doc/AUTHORS CAPABILITIES doc/COPYING doc/COPYING.LIB doc/COPYRIGHTS doc/FAQ NEWS
-%doc ONEWS README doc/RESOURCES doc/THANKS VERSION
-%doc doc/manual/R-admin.pdf
-%doc doc/manual/R-FAQ.pdf
-%doc doc/manual/R-lang.pdf
-%doc doc/manual/R-data.pdf
-%doc doc/manual/R-intro.pdf
 
 %files devel
 %defattr(-, root, root)
-%doc doc/manual/R-exts.pdf
 %{_libdir}/pkgconfig/libR.pc
+%{_includedir}/R
 
 %files -n libRmath
 %defattr(-, root, root)
@@ -243,13 +253,18 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
-R CMD javareconf || exit 0
+R CMD javareconf > /dev/null 2>&1 || exit 0
 
 # Update package indices
-%{_bindir}/R CMD perl %{_libdir}/R/share/perl/build-help.pl --htmllists > /dev/null 2>/dev/null
-%__cat %{_libdir}/R/library/*/CONTENTS > %{_libdir}/R/doc/html/search/index.txt 2>/dev/null
+%__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+# Don't use .. based paths, substitute RHOME
+sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
 # This could fail if there are no noarch R libraries on the system.
-%__cat %{_datadir}/R/library/*/CONTENTS >> %{_libdir}/R/doc/html/search/index.txt 2>/dev/null || exit 0
+%__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
+# Don't use .. based paths, substitute /usr/share/R
+sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
 
 %preun 
 if [ $1 = 0 ]; then
@@ -260,10 +275,6 @@ if [ $1 = 0 ]; then
          /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
       fi
    done
-   # Remove package indices
-   %__rm -f %{_libdir}/R/doc/html/function.html
-   %__rm -f %{_libdir}/R/doc/html/packages.html
-   %__rm -f %{_libdir}/R/doc/html/search/index.txt
 fi
 
 %postun
@@ -276,6 +287,56 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Aug 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.2-1
+- update to 2.7.2
+- fix spec for alpha compile (bz 458931)
+- fix security issue in javareconf script (bz 460658)
+
+* Mon Jul  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.1-1
+- update to 2.7.1
+
+* Wed May 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-5
+- add cairo-devel to BR/R, so that cairo backend gets built
+
+* Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-4
+- fixup sed invocation added in -3
+- make -devel package depend on base R = version-release
+- fix bad paths in package html files
+
+* Wed May 21 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-3
+- fix poorly constructed file paths in html/packages.html (bz 442727)
+
+* Tue May 13 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-2
+- add patch from Martyn Plummer to avoid possible bad path hardcoding in 
+  /usr/bin/Rscript
+- properly handle ia64 case (bz 446181)
+
+* Mon Apr 28 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-1
+- update to 2.70
+- rcompgen is no longer a standalone package
+- redirect javareconf to /dev/null (bz 442366)
+
+* Fri Feb  8 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.2-1
+- properly version the items in the VR bundle
+- 2.6.2
+- don't use setarch for java setup
+- fix R post script file
+
+* Thu Jan 31 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-4
+- multilib handling (thanks Martyn Plummer)
+- Update indices in the right place.
+
+* Mon Jan  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-3
+- move INSTALL back into R main package, as it is useful without the 
+  other -devel bits (e.g. installing noarch package from CRAN)
+
+* Tue Dec 11 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-2
+- based on changes from Martyn Plummer <martyn.plummer@r-project.org>
+- use configure options rdocdir, rincludedir, rsharedir 
+- use DESTDIR at installation
+- remove obsolete generation of packages.html
+- move header files and INSTALL R-devel package
+
 * Mon Nov 26 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-1
 - bump to 2.6.1
 
@@ -299,9 +360,6 @@ fi
 
 * Thu Jul  5 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-2
 - add rpm helper macros, script
-
-* Tue Jul  3 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1.1
-- fix BR for EL-5
 
 * Mon Jul  2 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.5.1-1
 - drop patch, upstream fixed
