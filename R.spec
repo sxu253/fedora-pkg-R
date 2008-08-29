@@ -1,11 +1,14 @@
 Name: R
-Version: 2.7.1
+Version: 2.7.2
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+# Sent upstream:
+# http://bugs.r-project.org/cgi-bin/R/incoming?id=12636
+Patch0: R-2.7.1-javareconf-tmpfix.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -99,6 +102,7 @@ and header files.
 
 %prep
 %setup -q
+%patch0 -p1 -b .javareconf-tmpfix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -133,7 +137,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64)
+      ia64|alpha)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -283,6 +287,11 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Fri Aug 29 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.2-1
+- update to 2.7.2
+- fix spec for alpha compile (bz 458931)
+- fix security issue in javareconf script (bz 460658)
+
 * Mon Jul  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.1-1
 - update to 2.7.1
 
