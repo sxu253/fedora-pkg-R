@@ -1,6 +1,6 @@
 Name: R
 Version: 2.8.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -19,7 +19,7 @@ BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-BuildRequires: bzip2-devel, libXmu-devel, cairo-devel
+BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
 BuildRequires: gcc-objc
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
@@ -101,7 +101,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
 Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
 Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-Requires: bzip2-devel, libXmu-devel, cairo-devel
+Requires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -316,6 +316,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Sun Oct 26 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.0-2
+- enable libtiff interface
+
 * Sun Oct 26 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.0-1
 - Update to 2.8.0
 - New subpackage layout: R-core is functional userspace, R is metapackage 
