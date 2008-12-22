@@ -1,14 +1,18 @@
+%ifarch x86_64
+%define java_arch amd64
+%else
+%define java_arch %{_arch}
+%endif
+
 Name: R
-Version: 2.8.0
-Release: 2%{?dist}
+Version: 2.8.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
 Patch1: R-2.7.2-filter_asoption.patch
-# fix bzlib2 detection, sent upstream 10-26-2008
-Patch2: R-2.8.0-HAVE_BZLIB_H.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -128,7 +132,6 @@ and header files.
 %prep
 %setup -q
 %patch1 -p1 -b .filter-little-out
-%patch2 -p1 -b .BZLIB_H
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -282,7 +285,18 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
-R CMD javareconf > /dev/null 2>&1 || exit 0
+R CMD javareconf \
+    JAR=%{jar} \
+    JAVA=%{java} \
+    JAVAC=%{javac} \
+    JAVA_HOME=%{java_home}/jre \
+    JAVAH=%{java_home}/bin/javah \
+    JAVA_CPPFLAGS='-I%{java_home}/include\ -I%{java_home}/include/linux' \
+    JAVA_LIBS='-L%{java_home}/jre/lib/%{java_arch}/server \
+    -L%{java_home}/jre/lib/%{java_arch}\ -L%{java_home}/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{java_home}/jre/lib/%{java_arch}/server:%{java_home}/jre/lib/%{java_arch}:%{java_home}/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
 
 # Update package indices
 %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
@@ -316,6 +330,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Dec 22 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.1-1
+- update javareconf call in %%post (bz 477076)
+- 2.8.1
+
 * Sun Oct 26 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.0-2
 - enable libtiff interface
 
