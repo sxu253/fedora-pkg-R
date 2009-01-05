@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.8.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -24,7 +24,7 @@ BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
-BuildRequires: gcc-objc
+BuildRequires: gcc-objc, pango-devel
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -122,7 +122,7 @@ from the R project.  This packages provides the shared libRmath library.
 %package -n libRmath-devel
 Summary: standalone math library from the R project
 Group: Development/Libraries
-Requires: libRmath = %{version}, pkgconfig
+Requires: libRmath = %{version}-%{release}, pkgconfig
 
 %description -n libRmath-devel
 A standalone library of mathematical and statistical functions derived
@@ -330,6 +330,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Jan  5 2009 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.1-2
+- add pango-devel to BuildRequires (thanks to Martyn Plummer and Peter Dalgaard)
+- fix libRmath requires to need V-R (thanks to Martyn Plummer)
+
 * Mon Dec 22 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.1-1
 - update javareconf call in %%post (bz 477076)
 - 2.8.1
