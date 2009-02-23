@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.8.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -330,6 +330,9 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Mon Jan  5 2009 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.1-2
 - add pango-devel to BuildRequires (thanks to Martyn Plummer and Peter Dalgaard)
 - fix libRmath requires to need V-R (thanks to Martyn Plummer)
