@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.8.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -98,7 +98,7 @@ computationally intensive tasks, C, C++ and Fortran code can be linked
 and called at run time.
 
 %package devel
-Summary: files for development of R packages.
+Summary: Files for development of R packages
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
@@ -110,6 +110,39 @@ Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
 Install R-devel if you are going to develop or compile R packages.
+
+%package java
+Summary: R with Fedora provided Java Runtime Environment
+Group: Applications/Engineering
+Requires(post): R-core = %{version}-%{release}
+Requires(post): java
+
+%description java
+A language and environment for statistical computing and graphics.
+R is similar to the award-winning S system, which was developed at
+Bell Laboratories by John Chambers et al. It provides a wide
+variety of statistical and graphical techniques (linear and
+nonlinear modelling, statistical tests, time series analysis,
+classification, clustering, ...).
+
+R is designed as a true computer language with control-flow
+constructions for iteration and alternation, and it allows users to
+add additional functionality by defining new functions. For
+computationally intensive tasks, C, C++ and Fortran code can be linked
+and called at run time.
+
+This package also has an additional dependency on java, as provided by
+Fedora's openJDK.
+
+%package java-devel
+Summary: Development package for use with Java enabled R components
+Group: Applications/Engineering
+Requires(post): R-devel = %{version}-%{release}
+Requires(post): java-devel
+
+%description java-devel
+Install R-java-devel if you are going to develop or compile R packages
+that assume java is present and configured on the system.
 
 %package -n libRmath
 Summary: standalone math library from the R project
@@ -262,6 +295,12 @@ done
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
 
+%files java
+# Nothing, all files provided by R-core
+
+%files java-devel
+# Nothing, all files provided by R-devel
+
 %files -n libRmath
 %defattr(-, root, root, -)
 %{_libdir}/libRmath.so
@@ -319,6 +358,26 @@ fi
 %postun core
 /sbin/ldconfig
 
+%post java
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+%post java-devel
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
 %post -n libRmath
 /sbin/ldconfig
 
@@ -326,6 +385,10 @@ fi
 /sbin/ldconfig
 
 %changelog
+* Mon Mar 23 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-5
+- add R-java and R-java-devel "dummy" packages, so that we can get java dependent R-modules 
+  to build/install
+
 * Wed Mar  4 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-4
 - update post scriptlet (bz 477076)
 
