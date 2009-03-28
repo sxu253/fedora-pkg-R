@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.8.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -962,6 +962,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sat Mar 28 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-8
+- fix profile scripts for situation where R_HOME is already defined
+  (bugzilla 492706)
+
 * Tue Mar 24 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-7
 - bump for new tag
 
