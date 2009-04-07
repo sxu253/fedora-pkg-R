@@ -6,14 +6,12 @@
 
 Name: R
 Version: 2.8.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-Source3: R.sh
-Source4: R.csh
 Patch1: R-2.7.2-filter_asoption.patch
 License: GPLv2+
 Group: Applications/Engineering
@@ -53,6 +51,7 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
+Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vim
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -104,10 +103,8 @@ Summary: Files for development of R packages
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
-Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo 
-Requires: libpng-devel, libjpeg-devel, readline-devel, ncurses-devel
-Requires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
-Requires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
+Requires: gcc-c++, gcc-gfortran, tetex-latex
+Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 
 %description devel
@@ -259,11 +256,6 @@ install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
 # Install rpm helper script
 mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
-
-# Install profile.d RHOME scripts
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/
-install -m0644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/
-install	-m0644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/profile.d/
 
 # Fix multilib
 touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
@@ -863,7 +855,6 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
-%{_sysconfdir}/profile.d/R.*sh
 %{_sysconfdir}/rpm/macros.R
 %{_mandir}/man1/*
 %{_docdir}/R-%{version}
@@ -962,6 +953,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Apr  7 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-9
+- drop profile.d scripts, they broke more than they fixed
+- minimize hard-coded Requires based on Martyn Plummer's analysis
+
 * Sat Mar 28 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-8
 - fix profile scripts for situation where R_HOME is already defined
   (bugzilla 492706)
