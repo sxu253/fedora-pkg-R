@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.8.1
-Release: 9%{?dist}
+Version: 2.9.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -51,7 +51,7 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
-Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vim
+Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -59,7 +59,7 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vim
 Provides: R-base = %{version}
 Provides: R-boot = 1.2
 Provides: R-class = 7.2
-Provides: R-cluster = 1.11.11
+Provides: R-cluster = 1.11.13
 Provides: R-codetools = 0.2
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8
@@ -69,8 +69,9 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
 Provides: R-lattice = 0.17
 Provides: R-MASS = 7.2
+Provides: R-Matrix = 0.999375
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.4
+Provides: R-mgcv = 1.5
 Provides: R-nlme = 3.1
 Provides: R-nnet = 7.2
 Provides: R-rpart = 3.1
@@ -78,7 +79,7 @@ Provides: R-spatial = 7.2
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.34
+Provides: R-survival = 2.35
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -562,6 +563,27 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/MASS/R/
 %{_libdir}/R/library/MASS/R-ex/
 %{_libdir}/R/library/MASS/scripts/
+# Matrix
+%dir %{_libdir}/R/library/Matrix/
+%{_libdir}/R/library/Matrix/CONTENTS
+%{_libdir}/R/library/Matrix/Copyrights
+%{_libdir}/R/library/Matrix/data/
+%{_libdir}/R/library/Matrix/doc/
+%{_libdir}/R/library/Matrix/DESCRIPTION
+%{_libdir}/R/library/Matrix/Doxyfile
+%{_libdir}/R/library/Matrix/external/
+%{_libdir}/R/library/Matrix/help/
+%{_libdir}/R/library/Matrix/html/
+%{_libdir}/R/library/Matrix/include/
+%{_libdir}/R/library/Matrix/INDEX
+%{_libdir}/R/library/Matrix/latex/
+%{_libdir}/R/library/Matrix/libs/
+%{_libdir}/R/library/Matrix/man/
+%{_libdir}/R/library/Matrix/Meta/
+%{_libdir}/R/library/Matrix/NAMESPACE
+%{_libdir}/R/library/Matrix/R-ex/
+%{_libdir}/R/library/Matrix/R/
+%{_libdir}/R/library/Matrix/test-tools.R
 # methods
 %dir %{_libdir}/R/library/methods/
 %{_libdir}/R/library/methods/CONTENTS
@@ -774,7 +796,6 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/survival/NAMESPACE
 %{_libdir}/R/library/survival/R/
 %{_libdir}/R/library/survival/R-ex/
-%{_libdir}/R/library/survival/survival.ps*
 # tcltk
 %dir %{_libdir}/R/library/tcltk/
 %{_libdir}/R/library/tcltk/CONTENTS
@@ -953,6 +974,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Apr 17 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-1
+- update to 2.9.0, change vim dep to vi
+
 * Tue Apr  7 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-9
 - drop profile.d scripts, they broke more than they fixed
 - minimize hard-coded Requires based on Martyn Plummer's analysis
