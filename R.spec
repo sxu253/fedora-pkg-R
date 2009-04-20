@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.9.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -69,7 +69,8 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.22
 Provides: R-lattice = 0.17
 Provides: R-MASS = 7.2
-Provides: R-Matrix = 0.999375
+Provides: R-Matrix = 0.999375-7
+Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.5
 Provides: R-nlme = 3.1
@@ -107,6 +108,8 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
+Provides: R-Matrix-devel = 0.999375-7
+Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
 Install R-devel if you are going to develop or compile R packages.
@@ -974,6 +977,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Apr 20 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-2
+- properly Provide/Obsolete R-Matrix
+
 * Fri Apr 17 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-1
 - update to 2.9.0, change vim dep to vi
 
