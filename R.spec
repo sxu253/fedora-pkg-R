@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.9.0
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -51,7 +51,7 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
-Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
+Requires: perl, sed, gawk, tetex-latex, less, vim-minimal
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -915,6 +915,10 @@ fi
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Apr 29 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-1.1
+- take out incorrect texlive Requires (no texlive until RHEL 6)
+- fix Requires: vi to be Requires: vim-minimal
+
 * Fri Apr 17 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-1
 - update to 2.9.0, change vim dep to vi
 - EL-5 version, no java subpackages
