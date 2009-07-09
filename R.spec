@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.9.0
-Release: 2%{?dist}
+Version: 2.9.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -24,7 +24,7 @@ BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
-BuildRequires: gcc-objc, pango-devel
+BuildRequires: gcc-objc, pango-devel, libicu-devel
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -57,34 +57,34 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.2
-Provides: R-class = 7.2
-Provides: R-cluster = 1.11.13
-Provides: R-codetools = 0.2
+Provides: R-boot = 1.2.37
+Provides: R-class = 7.2.47
+Provides: R-cluster = 1.12.0
+Provides: R-codetools = 0.2.2
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8
+Provides: R-foreign = 0.8.36
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.22
-Provides: R-lattice = 0.17
-Provides: R-MASS = 7.2
-Provides: R-Matrix = 0.999375-7
+Provides: R-KernSmooth = 2.23.2
+Provides: R-lattice = 0.17.25
+Provides: R-MASS = 7.2.47
+Provides: R-Matrix = 0.999375.29
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.5
-Provides: R-nlme = 3.1
-Provides: R-nnet = 7.2
-Provides: R-rpart = 3.1
-Provides: R-spatial = 7.2
+Provides: R-mgcv = 1.5.5
+Provides: R-nlme = 3.1.92
+Provides: R-nnet = 7.2.47
+Provides: R-rpart = 3.1.44
+Provides: R-spatial = 7.2.47
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.35
+Provides: R-survival = 2.35.4
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
-Provides: R-VR = 7.2
+Provides: R-VR = 7.2.47
 
 %description core
 A language and environment for statistical computing and graphics.
@@ -372,6 +372,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/class/NAMESPACE
 %{_libdir}/R/library/class/NEWS
 %dir %{_libdir}/R/library/class/po/
+%lang(de) %{_libdir}/R/library/class/po/de/
 %lang(en) %{_libdir}/R/library/class/po/en*/
 %lang(fr) %{_libdir}/R/library/class/po/fr/
 %{_libdir}/R/library/class/R/
@@ -434,6 +435,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/foreign/Meta/
 %{_libdir}/R/library/foreign/NAMESPACE
 %dir %{_libdir}/R/library/foreign/po/
+%lang(de) %{_libdir}/R/library/foreign/po/de/
 %lang(en) %{_libdir}/R/library/foreign/po/en*/
 %lang(fr) %{_libdir}/R/library/foreign/po/fr/
 %{_libdir}/R/library/foreign/R/
@@ -524,6 +526,9 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/KernSmooth/man/
 %{_libdir}/R/library/KernSmooth/Meta/
 %{_libdir}/R/library/KernSmooth/NAMESPACE
+%dir %{_libdir}/R/library/KernSmooth/po/
+%lang(de) %{_libdir}/R/library/KernSmooth/po/de/
+%lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
 %{_libdir}/R/library/KernSmooth/R/
 %{_libdir}/R/library/KernSmooth/R-ex/
 # lattice
@@ -542,6 +547,10 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/lattice/Meta/
 %{_libdir}/R/library/lattice/NAMESPACE
 %{_libdir}/R/library/lattice/NEWS
+%dir %{_libdir}/R/library/lattice/po/
+%lang(de) %{_libdir}/R/library/lattice/po/de/
+%lang(en) %{_libdir}/R/library/lattice/po/en*/
+%lang(fr) %{_libdir}/R/library/lattice/po/fr/
 %{_libdir}/R/library/lattice/R/
 %{_libdir}/R/library/lattice/R-ex/
 # MASS
@@ -561,6 +570,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/MASS/NAMESPACE
 %{_libdir}/R/library/MASS/NEWS
 %dir %{_libdir}/R/library/MASS/po
+%lang(de) %{_libdir}/R/library/MASS/po/de/
 %lang(en) %{_libdir}/R/library/MASS/po/en*/
 %lang(fr) %{_libdir}/R/library/MASS/po/fr/
 %{_libdir}/R/library/MASS/R/
@@ -584,6 +594,9 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/Matrix/man/
 %{_libdir}/R/library/Matrix/Meta/
 %{_libdir}/R/library/Matrix/NAMESPACE
+%dir %{_libdir}/R/library/Matrix/po/
+%lang(de) %{_libdir}/R/library/Matrix/po/de/
+%lang(en) %{_libdir}/R/library/Matrix/po/en*/
 %{_libdir}/R/library/Matrix/R-ex/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
@@ -643,6 +656,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/nlme/mlbook/
 %{_libdir}/R/library/nlme/NAMESPACE
 %dir %{_libdir}/R/library/nlme/po/
+%lang(de) %{_libdir}/R/library/nlme/po/de/
 %lang(en) %{_libdir}/R/library/nlme/po/en*/
 %lang(fr) %{_libdir}/R/library/nlme/po/fr/
 %{_libdir}/R/library/nlme/R/
@@ -664,6 +678,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/nnet/NAMESPACE
 %{_libdir}/R/library/nnet/NEWS
 %dir %{_libdir}/R/library/nnet/po
+%lang(de) %{_libdir}/R/library/nnet/po/de/
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
 %{_libdir}/R/library/nnet/R/
@@ -683,6 +698,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/rpart/Meta/
 %{_libdir}/R/library/rpart/NAMESPACE
 %dir %{_libdir}/R/library/rpart/po
+%lang(de) %{_libdir}/R/library/rpart/po/de/
 %lang(en) %{_libdir}/R/library/rpart/po/en*/
 %lang(fr) %{_libdir}/R/library/rpart/po/fr/
 %lang(ru) %{_libdir}/R/library/rpart/po/ru/
@@ -704,6 +720,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/spatial/NAMESPACE
 %{_libdir}/R/library/spatial/NEWS
 %dir %{_libdir}/R/library/spatial/po
+%lang(de) %{_libdir}/R/library/spatial/po/de/
 %lang(en) %{_libdir}/R/library/spatial/po/en*/
 %lang(fr) %{_libdir}/R/library/spatial/po/fr/
 %{_libdir}/R/library/spatial/ppdata/
@@ -977,6 +994,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Jul  9 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.1-1
+- update to 2.9.1
+- fix versioned provides
+
 * Mon Apr 20 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.0-2
 - properly Provide/Obsolete R-Matrix
 
