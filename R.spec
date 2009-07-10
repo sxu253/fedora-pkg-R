@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.9.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -230,7 +230,11 @@ export FCFLAGS="%{optflags}"
 make 
 (cd src/nmath/standalone; make)
 #make check-all
+# 2009-07-10 
+# PDF generation is not working correctly in i586/rawhide, probably a texlive bug
+%ifnarch i586
 make pdf
+%endif
 make info
 
 # Convert to UTF-8
@@ -240,7 +244,11 @@ for i in doc/manual/R-intro.info doc/manual/R-FAQ.info-1 doc/FAQ doc/manual/R-ex
 done
 
 %install
-make DESTDIR=${RPM_BUILD_ROOT} install install-info install-pdf
+make DESTDIR=${RPM_BUILD_ROOT} install install-info
+%ifnarch i586
+make DESTDIR=${RPM_BUILD_ROOT} install-pdf
+%endif
+
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
 install -p CAPABILITIES ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}
@@ -263,7 +271,9 @@ install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 # Fix multilib
 touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
+%ifnarch i586
 touch -r NEWS doc/manual/*.pdf
+%endif
 touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
 # Fix html/packages.html
@@ -994,6 +1004,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jul 10 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.1-2
+- don't try to make the PDFs in rawhide/i586
+
 * Thu Jul  9 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.1-1
 - update to 2.9.1
 - fix versioned provides
