@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.9.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -208,6 +208,12 @@ case "%{_target_cpu}" in
           export F77="gfortran"
           export FC="gfortran"
       ;;
+      s390)
+          export CC="gcc -m31"
+          export CXX="g++ -m31"
+          export F77="gfortran -m31"
+          export FC="gfortran -m31"
+      ;;    
       *)
           export CC="gcc -m32"
           export CXX="g++ -m32"
@@ -996,6 +1002,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Oct 15 2009 Karsten Hopp <karsten@redhat.com> 2.9.2-2
+- s390 (not s390x) needs the -m31 compiler flag
+
 * Mon Aug 24 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.9.2-1
 - Update to 2.9.2
 
