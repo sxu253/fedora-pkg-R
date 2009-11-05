@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.9.2
-Release: 2%{?dist}
+Version: 2.10.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -57,34 +57,34 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.2.38
-Provides: R-class = 7.2.48
-Provides: R-cluster = 1.12.0
+Provides: R-boot = 1.2.41
+Provides: R-class = 7.3.1
+Provides: R-cluster = 1.12.1
 Provides: R-codetools = 0.2.2
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.37
+Provides: R-foreign = 0.8.38
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.2
-Provides: R-lattice = 0.17.25
-Provides: R-MASS = 7.2.48
-Provides: R-Matrix = 0.999375.30
+Provides: R-KernSmooth = 2.23.3
+Provides: R-lattice = 0.17.26
+Provides: R-MASS = 7.3.3
+Provides: R-Matrix = 0.999375.31
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.5.5
-Provides: R-nlme = 3.1.93
-Provides: R-nnet = 7.2.48
+Provides: R-mgcv = 1.5.6
+Provides: R-nlme = 3.1.96
+Provides: R-nnet = 7.3.1
 Provides: R-rpart = 3.1.45
-Provides: R-spatial = 7.2.48
+Provides: R-spatial = 7.3.1
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.35.4
+Provides: R-survival = 2.35.7
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
-Provides: R-VR = 7.2.48
+Provides: R-VR = 7.3.1
 
 %description core
 A language and environment for statistical computing and graphics.
@@ -108,7 +108,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 0.999375-7
+Provides: R-Matrix-devel = 0.999375.31
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
@@ -202,7 +202,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|sh*)
+      ia64|alpha|arm*|sh*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -283,7 +283,7 @@ for i in $RPM_BUILD_ROOT%{_libdir}/R/library/*/html/*.html; do
 done
 
 # Fix exec bits
-chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/help-links.sh $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
+chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
 chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
 
 %files
@@ -306,6 +306,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(it) %{_datadir}/R/locale/it/
 %lang(ja) %{_datadir}/R/locale/ja/
 %lang(ko) %{_datadir}/R/locale/ko/
+%lang(nn) %{_datadir}/R/locale/nn/
 %lang(pt) %{_datadir}/R/locale/pt*/
 %lang(ru) %{_datadir}/R/locale/ru/
 %lang(zh) %{_datadir}/R/locale/zh*/
@@ -324,14 +325,11 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 # base
 %dir %{_libdir}/R/library/base/
 %{_libdir}/R/library/base/CITATION
-%{_libdir}/R/library/base/CONTENTS
 %{_libdir}/R/library/base/demo/
 %{_libdir}/R/library/base/DESCRIPTION
 %{_libdir}/R/library/base/help/
 %{_libdir}/R/library/base/html/
 %{_libdir}/R/library/base/INDEX
-%{_libdir}/R/library/base/latex/
-%{_libdir}/R/library/base/man/
 %{_libdir}/R/library/base/Meta/
 %dir %{_libdir}/R/library/base/po/
 %lang(de) %{_libdir}/R/library/base/po/de/
@@ -344,38 +342,31 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/base/po/ru/
 %lang(zh) %{_libdir}/R/library/base/po/zh*/
 %{_libdir}/R/library/base/R/
-%{_libdir}/R/library/base/R-ex/
 # boot
 %dir %{_libdir}/R/library/boot/
 %{_libdir}/R/library/boot/CITATION
-%{_libdir}/R/library/boot/CONTENTS
 %{_libdir}/R/library/boot/data/
 %{_libdir}/R/library/boot/DESCRIPTION
 %{_libdir}/R/library/boot/help/
 %{_libdir}/R/library/boot/html/
 %{_libdir}/R/library/boot/INDEX
-%{_libdir}/R/library/boot/latex/
-%{_libdir}/R/library/boot/man/
 %{_libdir}/R/library/boot/Meta/
 %{_libdir}/R/library/boot/NAMESPACE
 %dir %{_libdir}/R/library/boot/po/
+%lang(de) %{_libdir}/R/library/boot/po/de/
 %lang(en) %{_libdir}/R/library/boot/po/en*/
 %lang(fr) %{_libdir}/R/library/boot/po/fr/
 %lang(ru) %{_libdir}/R/library/boot/po/ru/
 %{_libdir}/R/library/boot/R/
-%{_libdir}/R/library/boot/R-ex/
 # class
 %dir %{_libdir}/R/library/class/
 %{_libdir}/R/library/class/CITATION
-%{_libdir}/R/library/class/CONTENTS
 %{_libdir}/R/library/class/DESCRIPTION
 %{_libdir}/R/library/class/help/
 %{_libdir}/R/library/class/html/
 %{_libdir}/R/library/class/INDEX
-%{_libdir}/R/library/class/latex/
 %{_libdir}/R/library/class/libs/
 %{_libdir}/R/library/class/LICENCE
-%{_libdir}/R/library/class/man/
 %{_libdir}/R/library/class/Meta/
 %{_libdir}/R/library/class/NAMESPACE
 %{_libdir}/R/library/class/NEWS
@@ -384,62 +375,46 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/class/po/en*/
 %lang(fr) %{_libdir}/R/library/class/po/fr/
 %{_libdir}/R/library/class/R/
-%{_libdir}/R/library/class/R-ex/
 # cluster
 %dir %{_libdir}/R/library/cluster/
 %{_libdir}/R/library/cluster/CITATION
-%{_libdir}/R/library/cluster/CONTENTS
 %{_libdir}/R/library/cluster/data/
 %{_libdir}/R/library/cluster/DESCRIPTION
 %{_libdir}/R/library/cluster/help/
 %{_libdir}/R/library/cluster/html/
 %{_libdir}/R/library/cluster/INDEX
-%{_libdir}/R/library/cluster/latex/
 %{_libdir}/R/library/cluster/libs/
-%{_libdir}/R/library/cluster/man/
 %{_libdir}/R/library/cluster/Meta/
 %{_libdir}/R/library/cluster/NAMESPACE
 %{_libdir}/R/library/cluster/R/
-%{_libdir}/R/library/cluster/R-ex/
 # codetools
 %dir %{_libdir}/R/library/codetools/
-%{_libdir}/R/library/codetools/CONTENTS
 %{_libdir}/R/library/codetools/DESCRIPTION
 %{_libdir}/R/library/codetools/help/
 %{_libdir}/R/library/codetools/html/
 %{_libdir}/R/library/codetools/INDEX
-%{_libdir}/R/library/codetools/latex/
-%{_libdir}/R/library/codetools/man/
 %{_libdir}/R/library/codetools/Meta/
 %{_libdir}/R/library/codetools/NAMESPACE
 %{_libdir}/R/library/codetools/R/
-%{_libdir}/R/library/codetools/R-ex/
 # datasets
 %dir %{_libdir}/R/library/datasets/
-%{_libdir}/R/library/datasets/CONTENTS
 %{_libdir}/R/library/datasets/data/
 %{_libdir}/R/library/datasets/DESCRIPTION
 %{_libdir}/R/library/datasets/help/
 %{_libdir}/R/library/datasets/html/
 %{_libdir}/R/library/datasets/INDEX
-%{_libdir}/R/library/datasets/latex/
-%{_libdir}/R/library/datasets/man/
 %{_libdir}/R/library/datasets/Meta/
 %{_libdir}/R/library/datasets/R/
-%{_libdir}/R/library/datasets/R-ex/
 # foreign
 %dir %{_libdir}/R/library/foreign/
-%{_libdir}/R/library/foreign/CONTENTS
 %{_libdir}/R/library/foreign/COPYING
 %{_libdir}/R/library/foreign/DESCRIPTION
 %{_libdir}/R/library/foreign/files/
 %{_libdir}/R/library/foreign/help/
 %{_libdir}/R/library/foreign/html/
 %{_libdir}/R/library/foreign/INDEX
-%{_libdir}/R/library/foreign/latex/
 %{_libdir}/R/library/foreign/libs/
 %{_libdir}/R/library/foreign/LICENCE
-%{_libdir}/R/library/foreign/man/
 %{_libdir}/R/library/foreign/Meta/
 %{_libdir}/R/library/foreign/NAMESPACE
 %dir %{_libdir}/R/library/foreign/po/
@@ -447,17 +422,13 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/foreign/po/en*/
 %lang(fr) %{_libdir}/R/library/foreign/po/fr/
 %{_libdir}/R/library/foreign/R/
-%{_libdir}/R/library/foreign/R-ex/
 # graphics
 %dir %{_libdir}/R/library/graphics/
-%{_libdir}/R/library/graphics/CONTENTS
 %{_libdir}/R/library/graphics/demo/
 %{_libdir}/R/library/graphics/DESCRIPTION
 %{_libdir}/R/library/graphics/help/
 %{_libdir}/R/library/graphics/html/
 %{_libdir}/R/library/graphics/INDEX
-%{_libdir}/R/library/graphics/latex/
-%{_libdir}/R/library/graphics/man/
 %{_libdir}/R/library/graphics/Meta/
 %{_libdir}/R/library/graphics/NAMESPACE
 %dir %{_libdir}/R/library/graphics/po/
@@ -470,19 +441,15 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/graphics/po/ru/
 %lang(zh) %{_libdir}/R/library/graphics/po/zh*/
 %{_libdir}/R/library/graphics/R/
-%{_libdir}/R/library/graphics/R-ex/
 # grDevices
 %dir %{_libdir}/R/library/grDevices
 %{_libdir}/R/library/grDevices/afm/
-%{_libdir}/R/library/grDevices/CONTENTS
 %{_libdir}/R/library/grDevices/DESCRIPTION
 %{_libdir}/R/library/grDevices/enc/
 %{_libdir}/R/library/grDevices/help/
 %{_libdir}/R/library/grDevices/html/
 %{_libdir}/R/library/grDevices/INDEX
-%{_libdir}/R/library/grDevices/latex/
 %{_libdir}/R/library/grDevices/libs/
-%{_libdir}/R/library/grDevices/man/
 %{_libdir}/R/library/grDevices/Meta/
 %{_libdir}/R/library/grDevices/NAMESPACE
 %dir %{_libdir}/R/library/grDevices/po/
@@ -495,18 +462,14 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/grDevices/po/ru/
 %lang(zh) %{_libdir}/R/library/grDevices/po/zh*/
 %{_libdir}/R/library/grDevices/R/
-%{_libdir}/R/library/grDevices/R-ex/
 # grid
 %dir %{_libdir}/R/library/grid/
-%{_libdir}/R/library/grid/CONTENTS
 %{_libdir}/R/library/grid/DESCRIPTION
 %{_libdir}/R/library/grid/doc/
 %{_libdir}/R/library/grid/help/
 %{_libdir}/R/library/grid/html/
 %{_libdir}/R/library/grid/INDEX
-%{_libdir}/R/library/grid/latex/
 %{_libdir}/R/library/grid/libs/
-%{_libdir}/R/library/grid/man/
 %{_libdir}/R/library/grid/Meta/
 %{_libdir}/R/library/grid/NAMESPACE
 %dir %{_libdir}/R/library/grid/po/
@@ -520,28 +483,22 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/grid/po/ru/
 %lang(zh) %{_libdir}/R/library/grid/po/zh*/
 %{_libdir}/R/library/grid/R/
-%{_libdir}/R/library/grid/R-ex/
 # KernSmooth
 %dir %{_libdir}/R/library/KernSmooth/
-%{_libdir}/R/library/KernSmooth/CONTENTS
 %{_libdir}/R/library/KernSmooth/DESCRIPTION
 %{_libdir}/R/library/KernSmooth/help/
 %{_libdir}/R/library/KernSmooth/html/
 %{_libdir}/R/library/KernSmooth/INDEX
-%{_libdir}/R/library/KernSmooth/latex/
 %{_libdir}/R/library/KernSmooth/libs/
 %{_libdir}/R/library/KernSmooth/LICENCE
-%{_libdir}/R/library/KernSmooth/man/
 %{_libdir}/R/library/KernSmooth/Meta/
 %{_libdir}/R/library/KernSmooth/NAMESPACE
 %dir %{_libdir}/R/library/KernSmooth/po/
 %lang(de) %{_libdir}/R/library/KernSmooth/po/de/
 %lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
 %{_libdir}/R/library/KernSmooth/R/
-%{_libdir}/R/library/KernSmooth/R-ex/
 # lattice
 %dir %{_libdir}/R/library/lattice/
-%{_libdir}/R/library/lattice/CONTENTS
 %{_libdir}/R/library/lattice/COPYING
 %{_libdir}/R/library/lattice/data/
 %{_libdir}/R/library/lattice/demo/
@@ -549,9 +506,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/lattice/help/
 %{_libdir}/R/library/lattice/html/
 %{_libdir}/R/library/lattice/INDEX
-%{_libdir}/R/library/lattice/latex/
 %{_libdir}/R/library/lattice/libs/
-%{_libdir}/R/library/lattice/man/
 %{_libdir}/R/library/lattice/Meta/
 %{_libdir}/R/library/lattice/NAMESPACE
 %{_libdir}/R/library/lattice/NEWS
@@ -560,20 +515,16 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/lattice/po/en*/
 %lang(fr) %{_libdir}/R/library/lattice/po/fr/
 %{_libdir}/R/library/lattice/R/
-%{_libdir}/R/library/lattice/R-ex/
 # MASS
 %dir %{_libdir}/R/library/MASS/
 %{_libdir}/R/library/MASS/CITATION
-%{_libdir}/R/library/MASS/CONTENTS
 %{_libdir}/R/library/MASS/data/
 %{_libdir}/R/library/MASS/DESCRIPTION
 %{_libdir}/R/library/MASS/help/
 %{_libdir}/R/library/MASS/html/
 %{_libdir}/R/library/MASS/INDEX
-%{_libdir}/R/library/MASS/latex/
 %{_libdir}/R/library/MASS/libs/
 %{_libdir}/R/library/MASS/LICENCE
-%{_libdir}/R/library/MASS/man/
 %{_libdir}/R/library/MASS/Meta/
 %{_libdir}/R/library/MASS/NAMESPACE
 %{_libdir}/R/library/MASS/NEWS
@@ -582,11 +533,9 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/MASS/po/en*/
 %lang(fr) %{_libdir}/R/library/MASS/po/fr/
 %{_libdir}/R/library/MASS/R/
-%{_libdir}/R/library/MASS/R-ex/
 %{_libdir}/R/library/MASS/scripts/
 # Matrix
 %dir %{_libdir}/R/library/Matrix/
-%{_libdir}/R/library/Matrix/CONTENTS
 %{_libdir}/R/library/Matrix/Copyrights
 %{_libdir}/R/library/Matrix/data/
 %{_libdir}/R/library/Matrix/doc/
@@ -597,27 +546,21 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/Matrix/html/
 %{_libdir}/R/library/Matrix/include/
 %{_libdir}/R/library/Matrix/INDEX
-%{_libdir}/R/library/Matrix/latex/
 %{_libdir}/R/library/Matrix/libs/
-%{_libdir}/R/library/Matrix/man/
 %{_libdir}/R/library/Matrix/Meta/
 %{_libdir}/R/library/Matrix/NAMESPACE
 %dir %{_libdir}/R/library/Matrix/po/
 %lang(de) %{_libdir}/R/library/Matrix/po/de/
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
-%{_libdir}/R/library/Matrix/R-ex/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
 # methods
 %dir %{_libdir}/R/library/methods/
-%{_libdir}/R/library/methods/CONTENTS
 %{_libdir}/R/library/methods/DESCRIPTION
 %{_libdir}/R/library/methods/help/
 %{_libdir}/R/library/methods/html/
 %{_libdir}/R/library/methods/INDEX
-%{_libdir}/R/library/methods/latex/
 %{_libdir}/R/library/methods/libs/
-%{_libdir}/R/library/methods/man/
 %{_libdir}/R/library/methods/Meta/
 %{_libdir}/R/library/methods/NAMESPACE
 %dir %{_libdir}/R/library/methods/po/
@@ -630,36 +573,28 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/methods/po/ru/
 %lang(zh) %{_libdir}/R/library/methods/po/zh*/
 %{_libdir}/R/library/methods/R/
-%{_libdir}/R/library/methods/R-ex/
 # mgcv
 %dir %{_libdir}/R/library/mgcv/
 %{_libdir}/R/library/mgcv/CITATION
-%{_libdir}/R/library/mgcv/CONTENTS
 %{_libdir}/R/library/mgcv/DESCRIPTION
 %{_libdir}/R/library/mgcv/help/
 %{_libdir}/R/library/mgcv/html/
 %{_libdir}/R/library/mgcv/INDEX
-%{_libdir}/R/library/mgcv/latex/
 %{_libdir}/R/library/mgcv/libs/
-%{_libdir}/R/library/mgcv/man/
 %{_libdir}/R/library/mgcv/Meta/
 %{_libdir}/R/library/mgcv/NAMESPACE
 %{_libdir}/R/library/mgcv/R/
-%{_libdir}/R/library/mgcv/R-ex/
 # nlme
 %dir %{_libdir}/R/library/nlme/
 %{_libdir}/R/library/nlme/CITATION
-%{_libdir}/R/library/nlme/CONTENTS
 %{_libdir}/R/library/nlme/COPYING
 %{_libdir}/R/library/nlme/data/
 %{_libdir}/R/library/nlme/DESCRIPTION
 %{_libdir}/R/library/nlme/help/
 %{_libdir}/R/library/nlme/html/
 %{_libdir}/R/library/nlme/INDEX
-%{_libdir}/R/library/nlme/latex/
 %{_libdir}/R/library/nlme/libs/
 %{_libdir}/R/library/nlme/LICENCE
-%{_libdir}/R/library/nlme/man/
 %{_libdir}/R/library/nlme/Meta/
 %{_libdir}/R/library/nlme/mlbook/
 %{_libdir}/R/library/nlme/NAMESPACE
@@ -668,20 +603,16 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/nlme/po/en*/
 %lang(fr) %{_libdir}/R/library/nlme/po/fr/
 %{_libdir}/R/library/nlme/R/
-%{_libdir}/R/library/nlme/R-ex/
 %{_libdir}/R/library/nlme/scripts/
 # nnet
 %dir %{_libdir}/R/library/nnet/
 %{_libdir}/R/library/nnet/CITATION
-%{_libdir}/R/library/nnet/CONTENTS
 %{_libdir}/R/library/nnet/DESCRIPTION
 %{_libdir}/R/library/nnet/help/
 %{_libdir}/R/library/nnet/html/
 %{_libdir}/R/library/nnet/INDEX
-%{_libdir}/R/library/nnet/latex/
 %{_libdir}/R/library/nnet/libs/
 %{_libdir}/R/library/nnet/LICENCE
-%{_libdir}/R/library/nnet/man/
 %{_libdir}/R/library/nnet/Meta/
 %{_libdir}/R/library/nnet/NAMESPACE
 %{_libdir}/R/library/nnet/NEWS
@@ -690,19 +621,15 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
 %{_libdir}/R/library/nnet/R/
-%{_libdir}/R/library/nnet/R-ex/
 # rpart
 %dir %{_libdir}/R/library/rpart/
-%{_libdir}/R/library/rpart/CONTENTS
 %{_libdir}/R/library/rpart/data/
 %{_libdir}/R/library/rpart/DESCRIPTION
 %{_libdir}/R/library/rpart/help/
 %{_libdir}/R/library/rpart/html/
 %{_libdir}/R/library/rpart/INDEX
-%{_libdir}/R/library/rpart/latex/
 %{_libdir}/R/library/rpart/libs/
 %{_libdir}/R/library/rpart/LICENCE
-%{_libdir}/R/library/rpart/man/
 %{_libdir}/R/library/rpart/Meta/
 %{_libdir}/R/library/rpart/NAMESPACE
 %dir %{_libdir}/R/library/rpart/po
@@ -711,19 +638,15 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(fr) %{_libdir}/R/library/rpart/po/fr/
 %lang(ru) %{_libdir}/R/library/rpart/po/ru/
 %{_libdir}/R/library/rpart/R/
-%{_libdir}/R/library/rpart/R-ex/
 # spatial
 %dir %{_libdir}/R/library/spatial/
 %{_libdir}/R/library/spatial/CITATION
-%{_libdir}/R/library/spatial/CONTENTS
 %{_libdir}/R/library/spatial/DESCRIPTION
 %{_libdir}/R/library/spatial/help/
 %{_libdir}/R/library/spatial/html/
 %{_libdir}/R/library/spatial/INDEX
-%{_libdir}/R/library/spatial/latex/
 %{_libdir}/R/library/spatial/libs/
 %{_libdir}/R/library/spatial/LICENCE
-%{_libdir}/R/library/spatial/man/
 %{_libdir}/R/library/spatial/Meta/
 %{_libdir}/R/library/spatial/NAMESPACE
 %{_libdir}/R/library/spatial/NEWS
@@ -734,17 +657,13 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/spatial/ppdata/
 %{_libdir}/R/library/spatial/PP.files
 %{_libdir}/R/library/spatial/R/
-%{_libdir}/R/library/spatial/R-ex/
 # splines
 %dir %{_libdir}/R/library/splines/
-%{_libdir}/R/library/splines/CONTENTS
 %{_libdir}/R/library/splines/DESCRIPTION
 %{_libdir}/R/library/splines/help/
 %{_libdir}/R/library/splines/html/
 %{_libdir}/R/library/splines/INDEX
-%{_libdir}/R/library/splines/latex/
 %{_libdir}/R/library/splines/libs/
-%{_libdir}/R/library/splines/man/
 %{_libdir}/R/library/splines/Meta/
 %{_libdir}/R/library/splines/NAMESPACE
 %dir %{_libdir}/R/library/splines/po
@@ -757,19 +676,15 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/splines/po/ru/
 %lang(zh) %{_libdir}/R/library/splines/po/zh*/
 %{_libdir}/R/library/splines/R/
-%{_libdir}/R/library/splines/R-ex/
 # stats
 %dir %{_libdir}/R/library/stats/
-%{_libdir}/R/library/stats/CONTENTS
 %{_libdir}/R/library/stats/COPYRIGHTS.modreg
 %{_libdir}/R/library/stats/demo/
 %{_libdir}/R/library/stats/DESCRIPTION
 %{_libdir}/R/library/stats/help/
 %{_libdir}/R/library/stats/html/
 %{_libdir}/R/library/stats/INDEX
-%{_libdir}/R/library/stats/latex/
 %{_libdir}/R/library/stats/libs/
-%{_libdir}/R/library/stats/man/
 %{_libdir}/R/library/stats/Meta/
 %{_libdir}/R/library/stats/NAMESPACE
 %dir %{_libdir}/R/library/stats/po
@@ -783,17 +698,13 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/stats/po/ru/
 %lang(zh) %{_libdir}/R/library/stats/po/zh*/
 %{_libdir}/R/library/stats/R/
-%{_libdir}/R/library/stats/R-ex/
 %{_libdir}/R/library/stats/SOURCES.ts
 # stats4
 %dir %{_libdir}/R/library/stats4/
-%{_libdir}/R/library/stats4/CONTENTS
 %{_libdir}/R/library/stats4/DESCRIPTION
 %{_libdir}/R/library/stats4/help/
 %{_libdir}/R/library/stats4/html/
 %{_libdir}/R/library/stats4/INDEX
-%{_libdir}/R/library/stats4/latex/
-%{_libdir}/R/library/stats4/man/
 %{_libdir}/R/library/stats4/Meta/
 %{_libdir}/R/library/stats4/NAMESPACE
 %dir %{_libdir}/R/library/stats4/po
@@ -807,35 +718,27 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/stats4/po/ru/
 %lang(zh) %{_libdir}/R/library/stats4/po/zh*/
 %{_libdir}/R/library/stats4/R/
-%{_libdir}/R/library/stats4/R-ex/
 # survival
 %dir %{_libdir}/R/library/survival/
-%{_libdir}/R/library/survival/CONTENTS
 %{_libdir}/R/library/survival/COPYING
 %{_libdir}/R/library/survival/data/
 %{_libdir}/R/library/survival/DESCRIPTION
 %{_libdir}/R/library/survival/help/
 %{_libdir}/R/library/survival/html/
 %{_libdir}/R/library/survival/INDEX
-%{_libdir}/R/library/survival/latex/
 %{_libdir}/R/library/survival/libs/
-%{_libdir}/R/library/survival/man/
 %{_libdir}/R/library/survival/Meta/
 %{_libdir}/R/library/survival/NAMESPACE
 %{_libdir}/R/library/survival/R/
-%{_libdir}/R/library/survival/R-ex/
 # tcltk
 %dir %{_libdir}/R/library/tcltk/
-%{_libdir}/R/library/tcltk/CONTENTS
 %{_libdir}/R/library/tcltk/demo/
 %{_libdir}/R/library/tcltk/DESCRIPTION
 %{_libdir}/R/library/tcltk/exec/
 %{_libdir}/R/library/tcltk/help/
 %{_libdir}/R/library/tcltk/html/
 %{_libdir}/R/library/tcltk/INDEX
-%{_libdir}/R/library/tcltk/latex/
 %{_libdir}/R/library/tcltk/libs/
-%{_libdir}/R/library/tcltk/man/
 %{_libdir}/R/library/tcltk/Meta/
 %{_libdir}/R/library/tcltk/NAMESPACE
 %dir %{_libdir}/R/library/tcltk/po/
@@ -849,17 +752,13 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/tcltk/po/ru/
 %lang(zh) %{_libdir}/R/library/tcltk/po/zh*/
 %{_libdir}/R/library/tcltk/R/
-%{_libdir}/R/library/tcltk/R-ex/
 # tools
 %dir %{_libdir}/R/library/tools/
-%{_libdir}/R/library/tools/CONTENTS
 %{_libdir}/R/library/tools/DESCRIPTION
 %{_libdir}/R/library/tools/help/
 %{_libdir}/R/library/tools/html/
 %{_libdir}/R/library/tools/INDEX
-%{_libdir}/R/library/tools/latex/
 %{_libdir}/R/library/tools/libs/
-%{_libdir}/R/library/tools/man/
 %{_libdir}/R/library/tools/Meta/
 %{_libdir}/R/library/tools/NAMESPACE
 %dir %{_libdir}/R/library/tools/po
@@ -873,17 +772,13 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/tools/po/ru/
 %lang(zh) %{_libdir}/R/library/tools/po/zh*/
 %{_libdir}/R/library/tools/R/
-%{_libdir}/R/library/tools/R-ex/
 # utils
 %dir %{_libdir}/R/library/utils/
-%{_libdir}/R/library/utils/CONTENTS
 %{_libdir}/R/library/utils/DESCRIPTION
 %{_libdir}/R/library/utils/help/
 %{_libdir}/R/library/utils/html/
 %{_libdir}/R/library/utils/iconvlist
 %{_libdir}/R/library/utils/INDEX
-%{_libdir}/R/library/utils/latex/
-%{_libdir}/R/library/utils/man/
 %{_libdir}/R/library/utils/Meta/
 %{_libdir}/R/library/utils/misc/
 %{_libdir}/R/library/utils/NAMESPACE
@@ -896,7 +791,6 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_libdir}/R/library/utils/po/ru/
 %lang(zh) %{_libdir}/R/library/utils/po/zh*/
 %{_libdir}/R/library/utils/R/
-%{_libdir}/R/library/utils/R-ex/
 %{_libdir}/R/library/utils/Sweave/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
@@ -1002,6 +896,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Nov  4 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.0-1
+- update to 2.10.0
+- use correct compiler for ARM
+
 * Thu Oct 15 2009 Karsten Hopp <karsten@redhat.com> 2.9.2-2
 - s390 (not s390x) needs the -m31 compiler flag
 
