@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.10.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -847,15 +847,17 @@ R CMD javareconf \
     JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
     > /dev/null 2>&1 || exit 0
 
+# With 2.10.0, we no longer need to do any of this.
+
 # Update package indices
-%__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+# %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
 # Don't use .. based paths, substitute RHOME
-sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+# sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
 
 # This could fail if there are no noarch R libraries on the system.
-%__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
+# %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
 # Don't use .. based paths, substitute /usr/share/R
-sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+# sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
 
 
 %preun core
@@ -896,6 +898,11 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Nov  9 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.0-2
+- get rid of index.txt scriptlet on R-core (bz 533572)
+- leave macro in place, but don't call /usr/lib/rpm/R-make-search-index.sh equivalent anymore
+- add version check to see if we need to run R-make-search-index.sh guts
+
 * Wed Nov  4 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.0-1
 - update to 2.10.0
 - use correct compiler for ARM
