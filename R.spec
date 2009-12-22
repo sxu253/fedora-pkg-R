@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.10.0
-Release: 2%{?dist}
+Version: 2.10.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -68,11 +68,11 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.3
 Provides: R-lattice = 0.17.26
-Provides: R-MASS = 7.3.3
-Provides: R-Matrix = 0.999375.31
+Provides: R-MASS = 7.3.4
+Provides: R-Matrix = 0.999375.33
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.5.6
+Provides: R-mgcv = 1.6.1
 Provides: R-nlme = 3.1.96
 Provides: R-nnet = 7.3.1
 Provides: R-rpart = 3.1.45
@@ -229,6 +229,7 @@ export FCFLAGS="%{optflags}"
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
+    --enable-prebuilt-html \
     rdocdir=%{_docdir}/R-%{version} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
@@ -898,6 +899,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Dec 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.1-1
+- update to 2.10.1
+- enable static html pages
+
 * Mon Nov  9 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.0-2
 - get rid of index.txt scriptlet on R-core (bz 533572)
 - leave macro in place, but don't call /usr/lib/rpm/R-make-search-index.sh equivalent anymore
