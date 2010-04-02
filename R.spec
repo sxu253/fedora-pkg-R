@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.10.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -899,6 +899,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Apr 02 2010 Caolán McNamara <caolanm@redhat.com> - 2.10.1-2
+- rebuild for icu 4.4
+
 * Mon Dec 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.1-1
 - update to 2.10.1
 - enable static html pages
