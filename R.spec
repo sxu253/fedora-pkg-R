@@ -5,14 +5,13 @@
 %endif
 
 Name: R
-Version: 2.10.1
+Version: 2.11.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-Patch1: R-2.7.2-filter_asoption.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -57,34 +56,33 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.2.41
-Provides: R-class = 7.3.1
-Provides: R-cluster = 1.12.1
+Provides: R-boot = 1.2.42
+Provides: R-class = 7.3.2
+Provides: R-cluster = 1.12.3
 Provides: R-codetools = 0.2.2
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.38
+Provides: R-foreign = 0.8.40
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.3
-Provides: R-lattice = 0.17.26
-Provides: R-MASS = 7.3.4
-Provides: R-Matrix = 0.999375.33
+Provides: R-lattice = 0.18.5
+Provides: R-MASS = 7.3.5
+Provides: R-Matrix = 0.999375.38
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.6.1
 Provides: R-nlme = 3.1.96
 Provides: R-nnet = 7.3.1
-Provides: R-rpart = 3.1.45
-Provides: R-spatial = 7.3.1
+Provides: R-rpart = 3.1.46
+Provides: R-spatial = 7.3.2
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.35.7
+Provides: R-survival = 2.35.8
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
-Provides: R-VR = 7.3.1
 
 %description core
 A language and environment for statistical computing and graphics.
@@ -108,7 +106,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 0.999375.31
+Provides: R-Matrix-devel = 0.999375.38
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
@@ -167,7 +165,6 @@ and header files.
 
 %prep
 %setup -q
-%patch1 -p1 -b .filter-little-out
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -730,6 +727,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/survival/libs/
 %{_libdir}/R/library/survival/Meta/
 %{_libdir}/R/library/survival/NAMESPACE
+%{_libdir}/R/library/survival/noweb/
 %{_libdir}/R/library/survival/R/
 # tcltk
 %dir %{_libdir}/R/library/tcltk/
@@ -899,6 +897,12 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Apr 22 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.0-1
+- update to 2.11.0
+
+* Fri Apr 02 2010 Caolán McNamara <caolanm@redhat.com> - 2.10.1-2
+- rebuild for icu 4.4
+
 * Mon Dec 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.1-1
 - update to 2.10.1
 - enable static html pages
