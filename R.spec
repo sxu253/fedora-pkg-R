@@ -112,6 +112,10 @@ Obsoletes: R-Matrix-devel < 0.999375-7
 %description devel
 Install R-devel if you are going to develop or compile R packages.
 
+%package -n libRmath
+Summary: Standalone math library from the R project
+Group: Development/Libraries
+
 %description -n libRmath
 A standalone library of mathematical and statistical functions derived
 from the R project.  This package provides the shared libRmath library.
