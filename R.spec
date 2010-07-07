@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.11.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -824,6 +824,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 
 %files -n libRmath
 %defattr(-, root, root, -)
+%doc doc/COPYING
 %{_libdir}/libRmath.so
 
 %files -n libRmath-devel
@@ -908,6 +909,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Jul  7 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.1-4
+- include COPYING in libRmath package
+
 * Wed Jun 30 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.1-3
 - move libRmath static lib into libRmath-static subpackage
 
