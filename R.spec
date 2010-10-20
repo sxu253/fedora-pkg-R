@@ -317,7 +317,6 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_datadir}/R/locale/ru/
 %lang(zh) %{_datadir}/R/locale/zh*/
 %{_datadir}/R/make/
-%{_datadir}/R/perl/
 %{_datadir}/R/R/
 %{_datadir}/R/sh/
 %{_datadir}/R/texmf/
