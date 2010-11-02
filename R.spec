@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.11.1
-Release: 3%{?dist}
+Version: 2.12.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -56,23 +56,23 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.2.42
+Provides: R-boot = 1.2.43
 Provides: R-class = 7.3.2
-Provides: R-cluster = 1.12.3
+Provides: R-cluster = 1.13.1
 Provides: R-codetools = 0.2.2
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.40
+Provides: R-foreign = 0.8.41
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.3
-Provides: R-lattice = 0.18.8
-Provides: R-MASS = 7.3.6
-Provides: R-Matrix = 0.999375.39
+Provides: R-KernSmooth = 2.23.4
+Provides: R-lattice = 0.19.13
+Provides: R-MASS = 7.3.8
+Provides: R-Matrix = 0.999375.44
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.6.2
-Provides: R-nlme = 3.1.96
+Provides: R-nlme = 3.1.97
 Provides: R-nnet = 7.3.1
 Provides: R-rpart = 3.1.46
 Provides: R-spatial = 7.3.2
@@ -106,7 +106,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 0.999375.39
+Provides: R-Matrix-devel = 0.999375.44
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
@@ -317,7 +317,6 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ru) %{_datadir}/R/locale/ru/
 %lang(zh) %{_datadir}/R/locale/zh*/
 %{_datadir}/R/make/
-%{_datadir}/R/perl/
 %{_datadir}/R/R/
 %{_datadir}/R/sh/
 %{_datadir}/R/texmf/
@@ -505,6 +504,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/KernSmooth/R/
 # lattice
 %dir %{_libdir}/R/library/lattice/
+%{_libdir}/R/library/lattice/CITATION
 %{_libdir}/R/library/lattice/COPYING
 %{_libdir}/R/library/lattice/data/
 %{_libdir}/R/library/lattice/demo/
@@ -801,7 +801,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/utils/Sweave/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
-%{_libdir}/R/NEWS
+%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
@@ -824,6 +824,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 
 %files -n libRmath
 %defattr(-, root, root, -)
+%doc doc/COPYING
 %{_libdir}/libRmath.so
 
 %files -n libRmath-devel
@@ -908,6 +909,12 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Oct 20 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.12.0-1
+- update to 2.12.0
+
+* Wed Jul  7 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.1-4
+- include COPYING in libRmath package
+
 * Wed Jun 30 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.1-3
 - move libRmath static lib into libRmath-static subpackage
 
