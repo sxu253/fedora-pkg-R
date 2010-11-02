@@ -767,7 +767,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/utils/Sweave/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
-%{_libdir}/R/NEWS
+%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
