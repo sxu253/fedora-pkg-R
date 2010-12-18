@@ -583,6 +583,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %dir %{_libdir}/R/library/mgcv/
 %{_libdir}/R/library/mgcv/CITATION
 %{_libdir}/R/library/mgcv/DESCRIPTION
+%{_libdir}/R/library/mgcv/data/
 %{_libdir}/R/library/mgcv/help/
 %{_libdir}/R/library/mgcv/html/
 %{_libdir}/R/library/mgcv/INDEX
@@ -729,6 +730,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/survival/COPYING
 %{_libdir}/R/library/survival/data/
 %{_libdir}/R/library/survival/DESCRIPTION
+%{_libdir}/R/library/survival/doc/
 %{_libdir}/R/library/survival/help/
 %{_libdir}/R/library/survival/html/
 %{_libdir}/R/library/survival/INDEX
