@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.12.1
-Release: 2%{?dist}
+Version: 2.12.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -910,6 +910,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sun Feb 27 2011 Tom Callaway <spot@fedoraproject.org> - 2.12.2-1
+- update to 2.12.2
+
 * Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.12.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
