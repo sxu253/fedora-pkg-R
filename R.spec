@@ -5,7 +5,7 @@
 %endif
 
 Name: R
-Version: 2.12.1
+Version: 2.12.2
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -58,28 +58,28 @@ Requires: perl, sed, gawk, tetex-latex, less, vim-minimal
 Provides: R-base = %{version}
 Provides: R-boot = 1.2.43
 Provides: R-class = 7.3.3
-Provides: R-cluster = 1.13.2
-Provides: R-codetools = 0.2.6
+Provides: R-cluster = 1.13.3
+Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.41
+Provides: R-foreign = 0.8.42
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.4
-Provides: R-lattice = 0.19.13
-Provides: R-MASS = 7.3.9
+Provides: R-lattice = 0.19.17
+Provides: R-MASS = 7.3.11
 Provides: R-Matrix = 0.999375.46
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.2
-Provides: R-nlme = 3.1.97
+Provides: R-mgcv = 1.7.3
+Provides: R-nlme = 3.1.98
 Provides: R-nnet = 7.3.1
 Provides: R-rpart = 3.1.48
 Provides: R-spatial = 7.3.2
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.2
+Provides: R-survival = 2.36.5
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -409,6 +409,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(it) %{_libdir}/R/library/graphics/po/it/
 %lang(ja) %{_libdir}/R/library/graphics/po/ja/
 %lang(ko) %{_libdir}/R/library/graphics/po/ko/
+%lang(pt) %{_libdir}/R/library/graphics/po/pt*/
 %lang(ru) %{_libdir}/R/library/graphics/po/ru/
 %lang(zh) %{_libdir}/R/library/graphics/po/zh*/
 %{_libdir}/R/library/graphics/R/
@@ -430,6 +431,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(it) %{_libdir}/R/library/grDevices/po/it/
 %lang(ja) %{_libdir}/R/library/grDevices/po/ja/
 %lang(ko) %{_libdir}/R/library/grDevices/po/ko/
+%lang(pt) %{_libdir}/R/library/grDevices/po/pt*/
 %lang(ru) %{_libdir}/R/library/grDevices/po/ru/
 %lang(zh) %{_libdir}/R/library/grDevices/po/zh*/
 %{_libdir}/R/library/grDevices/R/
@@ -703,6 +705,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/survival/libs/
 %{_libdir}/R/library/survival/Meta/
 %{_libdir}/R/library/survival/NAMESPACE
+%{_libdir}/R/library/survival/NEWS.Rd
 %{_libdir}/R/library/survival/R/
 # tcltk
 %dir %{_libdir}/R/library/tcltk/
@@ -762,6 +765,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(fr) %{_libdir}/R/library/utils/po/fr/
 %lang(ja) %{_libdir}/R/library/utils/po/ja/
 %lang(ko) %{_libdir}/R/library/utils/po/ko/
+%lang(pt) %{_libdir}/R/library/utils/po/pt*/
 %lang(ru) %{_libdir}/R/library/utils/po/ru/
 %lang(zh) %{_libdir}/R/library/utils/po/zh*/
 %{_libdir}/R/library/utils/R/
@@ -850,6 +854,9 @@ fi
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sun Feb 27 2011 Tom Callaway <spot@fedoraproject.org> - 2.12.2-1
+- update to 2.12.2
+
 * Mon Dec 20 2010 Tom Callaway <spot@fedoraproject.org> - 2.12.1-1
 - update to 2.12.1
 
