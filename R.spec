@@ -444,6 +444,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ja) %{_libdir}/R/library/graphics/po/ja/
 %lang(ko) %{_libdir}/R/library/graphics/po/ko/
 %lang(ru) %{_libdir}/R/library/graphics/po/ru/
+%lang(pt) %{_libdir}/R/library/graphics/po/pt*/
 %lang(zh) %{_libdir}/R/library/graphics/po/zh*/
 %{_libdir}/R/library/graphics/R/
 # grDevices
@@ -465,6 +466,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ja) %{_libdir}/R/library/grDevices/po/ja/
 %lang(ko) %{_libdir}/R/library/grDevices/po/ko/
 %lang(ru) %{_libdir}/R/library/grDevices/po/ru/
+%lang(pt) %{_libdir}/R/library/grDevices/po/pt*/
 %lang(zh) %{_libdir}/R/library/grDevices/po/zh*/
 %{_libdir}/R/library/grDevices/R/
 # grid
@@ -737,6 +739,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %{_libdir}/R/library/survival/libs/
 %{_libdir}/R/library/survival/Meta/
 %{_libdir}/R/library/survival/NAMESPACE
+%{_libdir}/R/library/survival/NEWS.Rd
 %{_libdir}/R/library/survival/R/
 # tcltk
 %dir %{_libdir}/R/library/tcltk/
@@ -797,6 +800,7 @@ chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_d
 %lang(ja) %{_libdir}/R/library/utils/po/ja/
 %lang(ko) %{_libdir}/R/library/utils/po/ko/
 %lang(ru) %{_libdir}/R/library/utils/po/ru/
+%lang(pt) %{_libdir}/R/library/utils/po/pt*/
 %lang(zh) %{_libdir}/R/library/utils/po/zh*/
 %{_libdir}/R/library/utils/R/
 %{_libdir}/R/library/utils/Sweave/
