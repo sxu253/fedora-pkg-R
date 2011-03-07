@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.12.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -914,6 +914,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 2.12.2-2
+- rebuild for icu 4.6
+
 * Sun Feb 27 2011 Tom Callaway <spot@fedoraproject.org> - 2.12.2-1
 - update to 2.12.2
 
