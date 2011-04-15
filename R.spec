@@ -779,6 +779,7 @@ popd
 # utils
 %dir %{_libdir}/R/library/utils/
 %{_libdir}/R/library/utils/DESCRIPTION
+%{_libdir}/R/library/utils/doc/
 %{_libdir}/R/library/utils/help/
 %{_libdir}/R/library/utils/html/
 %{_libdir}/R/library/utils/iconvlist
