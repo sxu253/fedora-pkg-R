@@ -5,7 +5,7 @@
 %endif
 
 Name: R
-Version: 2.13.0
+Version: 2.13.1
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -56,30 +56,30 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.2.43
+Provides: R-boot = 1.3.2
 Provides: R-class = 7.3.3
-Provides: R-cluster = 1.13.3
+Provides: R-cluster = 1.14.0
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.43
+Provides: R-foreign = 0.8.44
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.4
-Provides: R-lattice = 0.19.23
-Provides: R-MASS = 7.3.12
+Provides: R-KernSmooth = 2.23.6
+Provides: R-lattice = 0.19.30
+Provides: R-MASS = 7.3.13
 Provides: R-Matrix = 0.999375.50
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.5
-Provides: R-nlme = 3.1.100
+Provides: R-mgcv = 1.7.6
+Provides: R-nlme = 3.1.101
 Provides: R-nnet = 7.3.1
-Provides: R-rpart = 3.1.49
+Provides: R-rpart = 3.1.50
 Provides: R-spatial = 7.3.3
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.5
+Provides: R-survival = 2.36.9
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -662,7 +662,6 @@ popd
 %{_libdir}/R/library/rpart/html/
 %{_libdir}/R/library/rpart/INDEX
 %{_libdir}/R/library/rpart/libs/
-%{_libdir}/R/library/rpart/LICENCE
 %{_libdir}/R/library/rpart/Meta/
 %{_libdir}/R/library/rpart/NAMESPACE
 %dir %{_libdir}/R/library/rpart/po
@@ -945,6 +944,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Jul 11 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-1
+- update to 2.13.1
+
 * Thu Apr 12 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.0-1
 - update to 2.13.0
 - add convenience symlink for include directory (bz 688295)
