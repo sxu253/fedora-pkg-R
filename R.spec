@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.13.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -294,9 +294,23 @@ chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
 chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
 
 # Symbolic link for convenience
-pushd %{buildroot}%{_libdir}/R
+pushd $RPM_BUILD_ROOT%{_libdir}/R
 ln -s ../../include/R include
 popd
+
+# Symbolic link for LaTeX
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
+pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
+ln -s ../../../R/texmf/tex/latex R
+popd
+
+%postun
+if [ $1 -eq 0 ] ; then
+    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+fi
+
+%posttrans
+/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
 
 %files
 # Metapackage
@@ -327,6 +341,7 @@ popd
 %{_datadir}/R/R/
 %{_datadir}/R/sh/
 %{_datadir}/R/texmf/
+%{_datadir}/texmf/
 %dir %{_libdir}/R
 %{_libdir}/R/bin
 %{_libdir}/R/etc
@@ -945,6 +960,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Aug  9 2011 Michel Salim <salimma@fedoraproject.org> - 2.13.1-3
+- Symlink LaTeX files, and rehash on package change when possible (# 630835)
+
 * Mon Aug  8 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-2
 - add BuildRequires: less
 
