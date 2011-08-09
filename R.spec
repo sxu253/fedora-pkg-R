@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.13.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -303,14 +303,6 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 ln -s ../../../R/texmf/tex/latex R
 popd
-
-%postun
-if [ $1 -eq 0 ] ; then
-    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
 
 %files
 # Metapackage
@@ -933,7 +925,14 @@ if [ $1 = 0 ]; then
    done
 fi
 
-%postun core -p /sbin/ldconfig
+%postun core
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+fi
+
+%posttrans core
+/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
 
 %post java
 R CMD javareconf \
@@ -960,6 +959,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Aug  9 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-4
+- fix salimma's scriptlets to be on -core instead of the metapackage
+
 * Tue Aug  9 2011 Michel Salim <salimma@fedoraproject.org> - 2.13.1-3
 - Symlink LaTeX files, and rehash on package change when possible (# 630835)
 
