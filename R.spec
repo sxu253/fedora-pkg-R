@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.13.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -959,6 +959,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Sep 12 2011 Michel Salim <salimma@fedoraproject.org> - 2.13.1-5
+- rebuild for libicu 4.8.x
+
 * Tue Aug  9 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-4
 - fix salimma's scriptlets to be on -core instead of the metapackage
 
