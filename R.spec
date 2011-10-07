@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.13.1
-Release: 5%{?dist}
+Version: 2.13.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -62,18 +62,18 @@ Provides: R-class = 7.3.3
 Provides: R-cluster = 1.14.0
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.44
+Provides: R-foreign = 0.8.46
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.6
-Provides: R-lattice = 0.19.30
-Provides: R-MASS = 7.3.13
-Provides: R-Matrix = 0.999375.50
+Provides: R-lattice = 0.19.33
+Provides: R-MASS = 7.3.14
+Provides: R-Matrix = 0.9996875.3
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.7.6
-Provides: R-nlme = 3.1.101
+Provides: R-nlme = 3.1.102
 Provides: R-nnet = 7.3.1
 Provides: R-rpart = 3.1.50
 Provides: R-spatial = 7.3.3
@@ -443,7 +443,6 @@ popd
 %{_libdir}/R/library/datasets/R/
 # foreign
 %dir %{_libdir}/R/library/foreign/
-%{_libdir}/R/library/foreign/COPYING
 %{_libdir}/R/library/foreign/DESCRIPTION
 %{_libdir}/R/library/foreign/files/
 %{_libdir}/R/library/foreign/help/
@@ -539,7 +538,6 @@ popd
 # lattice
 %dir %{_libdir}/R/library/lattice/
 %{_libdir}/R/library/lattice/CITATION
-%{_libdir}/R/library/lattice/COPYING
 %{_libdir}/R/library/lattice/data/
 %{_libdir}/R/library/lattice/demo/
 %{_libdir}/R/library/lattice/DESCRIPTION
@@ -547,6 +545,7 @@ popd
 %{_libdir}/R/library/lattice/html/
 %{_libdir}/R/library/lattice/INDEX
 %{_libdir}/R/library/lattice/libs/
+%{_libdir}/R/library/lattice/LICENSE
 %{_libdir}/R/library/lattice/Meta/
 %{_libdir}/R/library/lattice/NAMESPACE
 %{_libdir}/R/library/lattice/NEWS
@@ -628,7 +627,6 @@ popd
 # nlme
 %dir %{_libdir}/R/library/nlme/
 %{_libdir}/R/library/nlme/CITATION
-%{_libdir}/R/library/nlme/COPYING
 %{_libdir}/R/library/nlme/data/
 %{_libdir}/R/library/nlme/DESCRIPTION
 %{_libdir}/R/library/nlme/help/
@@ -959,6 +957,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Oct  7 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.2-1
+- update to 2.13.2
+
 * Mon Sep 12 2011 Michel Salim <salimma@fedoraproject.org> - 2.13.1-5
 - rebuild for libicu 4.8.x
 
