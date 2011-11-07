@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.13.1
-Release: 4%{?dist}
+Version: 2.14.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -57,30 +57,31 @@ Requires: perl, sed, gawk, tetex-latex, less, vim-minimal
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.2
+Provides: R-boot = 1.3.3
 Provides: R-class = 7.3.3
-Provides: R-cluster = 1.14.0
+Provides: R-cluster = 1.14.1
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.44
+Provides: R-foreign = 0.8.46
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.6
-Provides: R-lattice = 0.19.30
-Provides: R-MASS = 7.3.13
-Provides: R-Matrix = 0.999375.50
+Provides: R-lattice = 0.20.0
+Provides: R-MASS = 7.3.16
+Provides: R-Matrix = 1.0.1
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.6
-Provides: R-nlme = 3.1.101
+Provides: R-mgcv = 1.7.9
+Provides: R-nlme = 3.1.102
 Provides: R-nnet = 7.3.1
+Provides: R-parallel = %{version}
 Provides: R-rpart = 3.1.50
 Provides: R-spatial = 7.3.3
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.9
+Provides: R-survival = 2.36.10
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -107,7 +108,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 0.999375.50
+Provides: R-Matrix-devel = 1.0.1
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
@@ -372,6 +373,9 @@ popd
 %{_libdir}/R/library/cluster/Meta/
 %{_libdir}/R/library/cluster/NAMESPACE
 %{_libdir}/R/library/cluster/R/
+%dir %{_libdir}/R/library/cluster/po/
+%lang(de) %{_libdir}/R/library/cluster/po/de/
+%lang(en) %{_libdir}/R/library/cluster/po/en*/
 # codetools
 %dir %{_libdir}/R/library/codetools/
 %{_libdir}/R/library/codetools/DESCRIPTION
@@ -397,7 +401,6 @@ popd
 %lang(ja) %{_libdir}/R/library/compiler/po/ja/
 %lang(pt) %{_libdir}/R/library/compiler/po/pt*/
 %lang(ru) %{_libdir}/R/library/compiler/po/ru/
-%lang(zh) %{_libdir}/R/library/compiler/po/zh*/
 # datasets
 %dir %{_libdir}/R/library/datasets/
 %{_libdir}/R/library/datasets/data/
@@ -406,10 +409,9 @@ popd
 %{_libdir}/R/library/datasets/html/
 %{_libdir}/R/library/datasets/INDEX
 %{_libdir}/R/library/datasets/Meta/
-%{_libdir}/R/library/datasets/R/
+%{_libdir}/R/library/datasets/NAMESPACE
 # foreign
 %dir %{_libdir}/R/library/foreign/
-%{_libdir}/R/library/foreign/COPYING
 %{_libdir}/R/library/foreign/DESCRIPTION
 %{_libdir}/R/library/foreign/files/
 %{_libdir}/R/library/foreign/help/
@@ -505,7 +507,6 @@ popd
 # lattice
 %dir %{_libdir}/R/library/lattice/
 %{_libdir}/R/library/lattice/CITATION
-%{_libdir}/R/library/lattice/COPYING
 %{_libdir}/R/library/lattice/data/
 %{_libdir}/R/library/lattice/demo/
 %{_libdir}/R/library/lattice/DESCRIPTION
@@ -513,9 +514,10 @@ popd
 %{_libdir}/R/library/lattice/html/
 %{_libdir}/R/library/lattice/INDEX
 %{_libdir}/R/library/lattice/libs/
+%{_libdir}/R/library/lattice/LICENSE
 %{_libdir}/R/library/lattice/Meta/
 %{_libdir}/R/library/lattice/NAMESPACE
-%{_libdir}/R/library/lattice/NEWS*
+%{_libdir}/R/library/lattice/NEWS
 %dir %{_libdir}/R/library/lattice/po/
 %lang(de) %{_libdir}/R/library/lattice/po/de/
 %lang(en) %{_libdir}/R/library/lattice/po/en*/
@@ -560,6 +562,8 @@ popd
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
+%{_libdir}/R/library/Matrix/test-tools-1.R
+%{_libdir}/R/library/Matrix/test-tools-Matrix.R
 # methods
 %dir %{_libdir}/R/library/methods/
 %{_libdir}/R/library/methods/DESCRIPTION
@@ -594,7 +598,6 @@ popd
 # nlme
 %dir %{_libdir}/R/library/nlme/
 %{_libdir}/R/library/nlme/CITATION
-%{_libdir}/R/library/nlme/COPYING
 %{_libdir}/R/library/nlme/data/
 %{_libdir}/R/library/nlme/DESCRIPTION
 %{_libdir}/R/library/nlme/help/
@@ -628,6 +631,22 @@ popd
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
 %{_libdir}/R/library/nnet/R/
+# parallel
+%dir %{_libdir}/R/library/parallel/
+%{_libdir}/R/library/parallel/DESCRIPTION
+%{_libdir}/R/library/parallel/doc/
+%{_libdir}/R/library/parallel/help/
+%{_libdir}/R/library/parallel/html/
+%{_libdir}/R/library/parallel/INDEX
+%{_libdir}/R/library/parallel/libs/
+%{_libdir}/R/library/parallel/Meta/
+%{_libdir}/R/library/parallel/NAMESPACE
+%dir %{_libdir}/R/library/parallel/po
+%lang(de) %{_libdir}/R/library/parallel/po/de/
+%lang(en) %{_libdir}/R/library/parallel/po/en*/
+%lang(fr) %{_libdir}/R/library/parallel/po/fr/
+%lang(ru) %{_libdir}/R/library/parallel/po/ru/
+%{_libdir}/R/library/parallel/R/
 # rpart
 %dir %{_libdir}/R/library/rpart/
 %{_libdir}/R/library/rpart/data/
@@ -728,7 +747,6 @@ popd
 %{_libdir}/R/library/stats4/R/
 # survival
 %dir %{_libdir}/R/library/survival/
-%{_libdir}/R/library/survival/COPYING
 %{_libdir}/R/library/survival/data/
 %{_libdir}/R/library/survival/DESCRIPTION
 %{_libdir}/R/library/survival/doc/
@@ -899,6 +917,9 @@ fi
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Nov  2 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-1
+- update to 2.14.0
+
 * Tue Aug  9 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-4
 - fix salimma's scriptlets to be on -core instead of the metapackage
 
