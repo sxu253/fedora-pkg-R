@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.14.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -105,7 +105,7 @@ Summary: Files for development of R packages
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
-Requires: gcc-c++, gcc-gfortran, tetex-latex
+Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 Provides: R-Matrix-devel = 1.0.1
@@ -197,7 +197,11 @@ chmod +x %{__perl_requires}
 %build
 # Add PATHS to Renviron for R_LIBS_SITE
 echo 'R_LIBS_SITE=${R_LIBS_SITE-'"'/usr/local/lib/R/site-library:/usr/local/lib/R/library:%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
-
+# No inconsolata on RHEL tex
+%if 0%{?rhel}
+export R_RD4PDF="times,hyper"
+sed -i 's|inconsolata,||g' etc/Renviron.in
+%endif
 export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
@@ -977,6 +981,12 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Nov  8 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-3
+- No inconsolata for EL
+
+* Mon Nov  7 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-2
+- add texinfo-tex to Requires for -devel package
+
 * Wed Nov  2 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-1
 - update to 2.14.0
 
