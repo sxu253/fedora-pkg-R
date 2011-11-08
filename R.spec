@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.14.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -107,7 +107,7 @@ Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tetex-latex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
-Requires: tcl-devel, tk-devel, pkgconfig
+Requires: tcl-devel, tk-devel, pkgconfig, texinfo-tex
 Provides: R-Matrix-devel = 1.0.1
 Obsoletes: R-Matrix-devel < 0.999375-7
 
@@ -168,6 +168,11 @@ echo 'R_LIBS_SITE=${R_LIBS_SITE-'"'/usr/local/lib/R/site-library:/usr/local/lib/
 export R_PDFVIEWER="%{_bindir}/xdg-open"
 export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
+# No inconsolata on RHEL tex
+%if 0%{?rhel}
+export R_RD4PDF="times,hyper"
+sed -i 's|inconsolata,||g' etc/Renviron.in
+%endif
 
 case "%{_target_cpu}" in
       x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
@@ -917,6 +922,12 @@ fi
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Nov  8 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-3
+- No inconsolata for EL
+
+* Mon Nov  7 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-2
+- add texinfo-tex to Requires for -devel package
+
 * Wed Nov  2 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-1
 - update to 2.14.0
 
