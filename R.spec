@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.14.0
-Release: 3%{?dist}
+Version: 2.14.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -981,6 +981,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Jan  4 2012 Tom Callaway <spot@fedoraproject.org> - 2.14.1-1
+- update to 2.14.1
+
 * Tue Nov  8 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-3
 - No inconsolata for EL
 
