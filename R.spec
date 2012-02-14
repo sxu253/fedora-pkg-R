@@ -12,6 +12,8 @@ URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+# Submitted to upstream as bug #14813
+Patch0: R-2.14.1-Adapt-to-PCRE-8.30.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -175,6 +177,7 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .pcre830
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
