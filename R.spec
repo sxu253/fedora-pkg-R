@@ -5,15 +5,13 @@
 %endif
 
 Name: R
-Version: 2.14.1
-Release: 3%{?dist}
+Version: 2.15.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-# Submitted to upstream as bug #14813
-Patch0: R-2.14.1-Adapt-to-PCRE-8.30.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -177,7 +175,6 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .pcre830
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -325,6 +322,7 @@ popd
 %{_datadir}/R/library/
 %{_datadir}/R/licenses/
 %dir %{_datadir}/R/locale/
+%lang(da) %{_datadir}/R/locale/da/
 %lang(de) %{_datadir}/R/locale/de/
 %lang(en) %{_datadir}/R/locale/en*/
 %lang(es) %{_datadir}/R/locale/es*/
@@ -358,6 +356,7 @@ popd
 %{_libdir}/R/library/base/INDEX
 %{_libdir}/R/library/base/Meta/
 %dir %{_libdir}/R/library/base/po/
+%lang(da) %{_libdir}/R/library/base/po/da/
 %lang(de) %{_libdir}/R/library/base/po/de/
 %lang(en) %{_libdir}/R/library/base/po/en*/
 %lang(fr) %{_libdir}/R/library/base/po/fr/
@@ -436,12 +435,14 @@ popd
 %{_libdir}/R/library/compiler/NAMESPACE
 %{_libdir}/R/library/compiler/R/
 %dir %{_libdir}/R/library/compiler/po/
+%lang(da) %{_libdir}/R/library/compiler/po/da/
 %lang(de) %{_libdir}/R/library/compiler/po/de/
 %lang(en) %{_libdir}/R/library/compiler/po/en*/
 %lang(fr) %{_libdir}/R/library/compiler/po/fr/
 %lang(ja) %{_libdir}/R/library/compiler/po/ja/
 %lang(pt) %{_libdir}/R/library/compiler/po/pt*/
 %lang(ru) %{_libdir}/R/library/compiler/po/ru/
+%lang(zh) %{_libdir}/R/library/compiler/po/zh*/
 # datasets
 %dir %{_libdir}/R/library/datasets/
 %{_libdir}/R/library/datasets/data/
@@ -477,6 +478,7 @@ popd
 %{_libdir}/R/library/graphics/Meta/
 %{_libdir}/R/library/graphics/NAMESPACE
 %dir %{_libdir}/R/library/graphics/po/
+%lang(da) %{_libdir}/R/library/graphics/po/da/
 %lang(de) %{_libdir}/R/library/graphics/po/de/
 %lang(en) %{_libdir}/R/library/graphics/po/en*/
 %lang(fr) %{_libdir}/R/library/graphics/po/fr/
@@ -500,6 +502,7 @@ popd
 %{_libdir}/R/library/grDevices/Meta/
 %{_libdir}/R/library/grDevices/NAMESPACE
 %dir %{_libdir}/R/library/grDevices/po/
+%lang(da) %{_libdir}/R/library/grDevices/po/da/
 %lang(de) %{_libdir}/R/library/grDevices/po/de/
 %lang(en) %{_libdir}/R/library/grDevices/po/en*/
 %lang(fr) %{_libdir}/R/library/grDevices/po/fr/
@@ -521,6 +524,7 @@ popd
 %{_libdir}/R/library/grid/Meta/
 %{_libdir}/R/library/grid/NAMESPACE
 %dir %{_libdir}/R/library/grid/po/
+%lang(da) %{_libdir}/R/library/grid/po/da/
 %lang(de) %{_libdir}/R/library/grid/po/de/
 %lang(en) %{_libdir}/R/library/grid/po/en*/
 %lang(fr) %{_libdir}/R/library/grid/po/fr*/
@@ -615,6 +619,7 @@ popd
 %{_libdir}/R/library/methods/Meta/
 %{_libdir}/R/library/methods/NAMESPACE
 %dir %{_libdir}/R/library/methods/po/
+%lang(da) %{_libdir}/R/library/methods/po/da/
 %lang(de) %{_libdir}/R/library/methods/po/de/
 %lang(en) %{_libdir}/R/library/methods/po/en*/
 %lang(fr) %{_libdir}/R/library/methods/po/fr/
@@ -683,10 +688,12 @@ popd
 %{_libdir}/R/library/parallel/Meta/
 %{_libdir}/R/library/parallel/NAMESPACE
 %dir %{_libdir}/R/library/parallel/po
+%lang(da) %{_libdir}/R/library/parallel/po/da/
 %lang(de) %{_libdir}/R/library/parallel/po/de/
 %lang(en) %{_libdir}/R/library/parallel/po/en*/
 %lang(fr) %{_libdir}/R/library/parallel/po/fr/
 %lang(ru) %{_libdir}/R/library/parallel/po/ru/
+%lang(zh) %{_libdir}/R/library/parallel/po/zh*/
 %{_libdir}/R/library/parallel/R/
 # rpart
 %dir %{_libdir}/R/library/rpart/
@@ -733,6 +740,7 @@ popd
 %{_libdir}/R/library/splines/Meta/
 %{_libdir}/R/library/splines/NAMESPACE
 %dir %{_libdir}/R/library/splines/po
+%lang(da) %{_libdir}/R/library/splines/po/da/
 %lang(de) %{_libdir}/R/library/splines/po/de/
 %lang(en) %{_libdir}/R/library/splines/po/en*/
 %lang(fr) %{_libdir}/R/library/splines/po/fr/
@@ -754,6 +762,7 @@ popd
 %{_libdir}/R/library/stats/Meta/
 %{_libdir}/R/library/stats/NAMESPACE
 %dir %{_libdir}/R/library/stats/po
+%lang(da) %{_libdir}/R/library/stats/po/da/
 %lang(de) %{_libdir}/R/library/stats/po/de/
 %lang(en) %{_libdir}/R/library/stats/po/en*/
 %lang(fr) %{_libdir}/R/library/stats/po/fr/
@@ -775,6 +784,7 @@ popd
 %{_libdir}/R/library/stats4/Meta/
 %{_libdir}/R/library/stats4/NAMESPACE
 %dir %{_libdir}/R/library/stats4/po
+%lang(da) %{_libdir}/R/library/stats4/po/da/
 %lang(de) %{_libdir}/R/library/stats4/po/de/
 %lang(en) %{_libdir}/R/library/stats4/po/en*/
 %lang(fr) %{_libdir}/R/library/stats4/po/fr/
@@ -789,6 +799,7 @@ popd
 # survival
 %dir %{_libdir}/R/library/survival/
 %{_libdir}/R/library/survival/data/
+%{_libdir}/R/library/survival/CITATION
 %{_libdir}/R/library/survival/DESCRIPTION
 %{_libdir}/R/library/survival/doc/
 %{_libdir}/R/library/survival/help/
@@ -811,6 +822,7 @@ popd
 %{_libdir}/R/library/tcltk/Meta/
 %{_libdir}/R/library/tcltk/NAMESPACE
 %dir %{_libdir}/R/library/tcltk/po/
+%lang(da) %{_libdir}/R/library/tcltk/po/da/
 %lang(de) %{_libdir}/R/library/tcltk/po/de/
 %lang(en) %{_libdir}/R/library/tcltk/po/en*/
 %lang(fr) %{_libdir}/R/library/tcltk/po/fr/
@@ -831,6 +843,7 @@ popd
 %{_libdir}/R/library/tools/Meta/
 %{_libdir}/R/library/tools/NAMESPACE
 %dir %{_libdir}/R/library/tools/po
+%lang(da) %{_libdir}/R/library/tools/po/da/
 %lang(de) %{_libdir}/R/library/tools/po/de/
 %lang(en) %{_libdir}/R/library/tools/po/en*/
 %lang(fr) %{_libdir}/R/library/tools/po/fr/
@@ -854,6 +867,7 @@ popd
 %{_libdir}/R/library/utils/misc/
 %{_libdir}/R/library/utils/NAMESPACE
 %dir %{_libdir}/R/library/utils/po
+%lang(da) %{_libdir}/R/library/utils/po/da/
 %lang(de) %{_libdir}/R/library/utils/po/de/
 %lang(en) %{_libdir}/R/library/utils/po/en*/
 %lang(fr) %{_libdir}/R/library/utils/po/fr/
@@ -984,6 +998,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Mar 30 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-1
+- Update to 2.15.0
+
 * Fri Feb 10 2012 Petr Pisar <ppisar@redhat.com> - 2.14.1-3
 - Rebuild against PCRE 8.30
 
