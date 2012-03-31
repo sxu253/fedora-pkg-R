@@ -57,31 +57,31 @@ Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.3
+Provides: R-boot = 1.3.4
 Provides: R-class = 7.3.3
-Provides: R-cluster = 1.14.1
+Provides: R-cluster = 1.14.2
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.46
+Provides: R-foreign = 0.8.49
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.6
-Provides: R-lattice = 0.20.0
-Provides: R-MASS = 7.3.16
-Provides: R-Matrix = 1.0.1
+Provides: R-KernSmooth = 2.23.7
+Provides: R-lattice = 0.20.6
+Provides: R-MASS = 7.3.17
+Provides: R-Matrix = 1.0.6
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.9
-Provides: R-nlme = 3.1.102
+Provides: R-mgcv = 1.7.13
+Provides: R-nlme = 3.1.103
 Provides: R-nnet = 7.3.1
 Provides: R-parallel = %{version}
-Provides: R-rpart = 3.1.50
+Provides: R-rpart = 3.1.52
 Provides: R-spatial = 7.3.3
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.10
+Provides: R-survival = 2.36.12
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -108,7 +108,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 1.0.1
+Provides: R-Matrix-devel = 1.0.6
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
