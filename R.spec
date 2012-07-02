@@ -998,7 +998,7 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
-* Mon Jul  2 Jindrich Novy <jnovy@redhat.com> - 2.15.0-4
+* Mon Jul  2 2012 Jindrich Novy <jnovy@redhat.com> - 2.15.0-4
 - fix LaTeX and dvips dependencies (#836817)
 
 * Mon May  7 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-3
