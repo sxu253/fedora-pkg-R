@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.15.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -16,7 +16,7 @@ License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
-BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
+BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
@@ -51,7 +51,7 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
-Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
+Requires: perl, sed, gawk, tex(latex), tex(dvips), less, vi
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -105,7 +105,7 @@ Summary: Files for development of R packages
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
-Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo-tex
+Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 Provides: R-Matrix-devel = 1.0.6
@@ -998,6 +998,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Jul  2 Jindrich Novy <jnovy@redhat.com> - 2.15.0-4
+- fix LaTeX and dvips dependencies (#836817)
+
 * Mon May  7 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-3
 - rebuild for new libtiff
 
