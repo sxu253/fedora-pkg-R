@@ -5,7 +5,7 @@
 %endif
 
 Name: R
-Version: 2.15.0
+Version: 2.15.1
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -16,7 +16,7 @@ License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
-BuildRequires: gcc-c++, tetex-latex, texinfo-tex 
+BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
@@ -51,7 +51,7 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
-Requires: perl, sed, gawk, texlive-latex, texlive-dvips, less, vi
+Requires: perl, sed, gawk, tex(latex), tex(dvips), less, vi
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -62,26 +62,26 @@ Provides: R-class = 7.3.3
 Provides: R-cluster = 1.14.2
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.49
+Provides: R-foreign = 0.8.50
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.7
 Provides: R-lattice = 0.20.6
-Provides: R-MASS = 7.3.17
+Provides: R-MASS = 7.3.18
 Provides: R-Matrix = 1.0.6
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.13
-Provides: R-nlme = 3.1.103
+Provides: R-mgcv = 1.7.18
+Provides: R-nlme = 3.1.104
 Provides: R-nnet = 7.3.1
 Provides: R-parallel = %{version}
-Provides: R-rpart = 3.1.52
+Provides: R-rpart = 3.1.53
 Provides: R-spatial = 7.3.3
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.12
+Provides: R-survival = 2.36.14
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -105,7 +105,7 @@ Summary: Files for development of R packages
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
-Requires: gcc-c++, gcc-gfortran, tetex-latex, texinfo-tex
+Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 Provides: R-Matrix-devel = 1.0.6
@@ -331,6 +331,7 @@ popd
 %lang(ja) %{_datadir}/R/locale/ja/
 %lang(ko) %{_datadir}/R/locale/ko/
 %lang(nn) %{_datadir}/R/locale/nn/
+%lang(pl) %{_datadir}/R/locale/pl/
 %lang(pt) %{_datadir}/R/locale/pt*/
 %lang(ru) %{_datadir}/R/locale/ru/
 %lang(tr) %{_datadir}/R/locale/tr/
@@ -363,6 +364,7 @@ popd
 %lang(it) %{_libdir}/R/library/base/po/it/
 %lang(ja) %{_libdir}/R/library/base/po/ja/
 %lang(ko) %{_libdir}/R/library/base/po/ko/
+%lang(pl) %{_libdir}/R/library/base/po/pl/
 %lang(pt) %{_libdir}/R/library/base/po/pt*/
 %lang(ru) %{_libdir}/R/library/base/po/ru/
 %lang(tr) %{_libdir}/R/library/base/po/tr/
@@ -440,6 +442,7 @@ popd
 %lang(en) %{_libdir}/R/library/compiler/po/en*/
 %lang(fr) %{_libdir}/R/library/compiler/po/fr/
 %lang(ja) %{_libdir}/R/library/compiler/po/ja/
+%lang(pl) %{_libdir}/R/library/compiler/po/pl/
 %lang(pt) %{_libdir}/R/library/compiler/po/pt*/
 %lang(ru) %{_libdir}/R/library/compiler/po/ru/
 %lang(zh) %{_libdir}/R/library/compiler/po/zh*/
@@ -485,6 +488,7 @@ popd
 %lang(it) %{_libdir}/R/library/graphics/po/it/
 %lang(ja) %{_libdir}/R/library/graphics/po/ja/
 %lang(ko) %{_libdir}/R/library/graphics/po/ko/
+%lang(pl) %{_libdir}/R/library/graphics/po/pl/
 %lang(pt) %{_libdir}/R/library/graphics/po/pt*/
 %lang(ru) %{_libdir}/R/library/graphics/po/ru/
 %lang(zh) %{_libdir}/R/library/graphics/po/zh*/
@@ -509,6 +513,7 @@ popd
 %lang(it) %{_libdir}/R/library/grDevices/po/it/
 %lang(ja) %{_libdir}/R/library/grDevices/po/ja/
 %lang(ko) %{_libdir}/R/library/grDevices/po/ko/
+%lang(pl) %{_libdir}/R/library/grDevices/po/pl/
 %lang(pt) %{_libdir}/R/library/grDevices/po/pt*/
 %lang(ru) %{_libdir}/R/library/grDevices/po/ru/
 %lang(zh) %{_libdir}/R/library/grDevices/po/zh*/
@@ -531,6 +536,7 @@ popd
 %lang(it) %{_libdir}/R/library/grid/po/it/
 %lang(ja) %{_libdir}/R/library/grid/po/ja/
 %lang(ko) %{_libdir}/R/library/grid/po/ko/
+%lang(pl) %{_libdir}/R/library/grid/po/pl/
 %lang(pt) %{_libdir}/R/library/grid/po/pt*/
 %lang(ru) %{_libdir}/R/library/grid/po/ru/
 %lang(zh) %{_libdir}/R/library/grid/po/zh*/
@@ -625,6 +631,7 @@ popd
 %lang(fr) %{_libdir}/R/library/methods/po/fr/
 %lang(ja) %{_libdir}/R/library/methods/po/ja/
 %lang(ko) %{_libdir}/R/library/methods/po/ko/
+%lang(pl) %{_libdir}/R/library/methods/po/pl/
 %lang(pt) %{_libdir}/R/library/methods/po/pt*/
 %lang(ru) %{_libdir}/R/library/methods/po/ru/
 %lang(zh) %{_libdir}/R/library/methods/po/zh*/
@@ -692,6 +699,7 @@ popd
 %lang(de) %{_libdir}/R/library/parallel/po/de/
 %lang(en) %{_libdir}/R/library/parallel/po/en*/
 %lang(fr) %{_libdir}/R/library/parallel/po/fr/
+%lang(pl) %{_libdir}/R/library/parallel/po/pl/
 %lang(ru) %{_libdir}/R/library/parallel/po/ru/
 %lang(zh) %{_libdir}/R/library/parallel/po/zh*/
 %{_libdir}/R/library/parallel/R/
@@ -746,6 +754,7 @@ popd
 %lang(fr) %{_libdir}/R/library/splines/po/fr/
 %lang(ja) %{_libdir}/R/library/splines/po/ja/
 %lang(ko) %{_libdir}/R/library/splines/po/ko/
+%lang(pl) %{_libdir}/R/library/splines/po/pl/
 %lang(pt) %{_libdir}/R/library/splines/po/pt*/
 %lang(ru) %{_libdir}/R/library/splines/po/ru/
 %lang(zh) %{_libdir}/R/library/splines/po/zh*/
@@ -769,6 +778,7 @@ popd
 %lang(it) %{_libdir}/R/library/stats/po/it/
 %lang(ja) %{_libdir}/R/library/stats/po/ja/
 %lang(ko) %{_libdir}/R/library/stats/po/ko/
+%lang(pl) %{_libdir}/R/library/stats/po/pl/
 %lang(pt) %{_libdir}/R/library/stats/po/pt*/
 %lang(ru) %{_libdir}/R/library/stats/po/ru/
 %lang(tr) %{_libdir}/R/library/stats/po/tr/
@@ -791,6 +801,7 @@ popd
 %lang(it) %{_libdir}/R/library/stats4/po/it/
 %lang(ja) %{_libdir}/R/library/stats4/po/ja/
 %lang(ko) %{_libdir}/R/library/stats4/po/ko/
+%lang(pl) %{_libdir}/R/library/stats4/po/pl/
 %lang(pt) %{_libdir}/R/library/stats4/po/pt*/
 %lang(ru) %{_libdir}/R/library/stats4/po/ru/
 %lang(tr) %{_libdir}/R/library/stats4/po/tr/
@@ -829,6 +840,7 @@ popd
 %lang(it) %{_libdir}/R/library/tcltk/po/it/
 %lang(ja) %{_libdir}/R/library/tcltk/po/ja/
 %lang(ko) %{_libdir}/R/library/tcltk/po/ko/
+%lang(pl) %{_libdir}/R/library/tcltk/po/pl/
 %lang(pt) %{_libdir}/R/library/tcltk/po/pt*/
 %lang(ru) %{_libdir}/R/library/tcltk/po/ru/
 %lang(zh) %{_libdir}/R/library/tcltk/po/zh*/
@@ -850,6 +862,7 @@ popd
 %lang(it) %{_libdir}/R/library/tools/po/it/
 %lang(ja) %{_libdir}/R/library/tools/po/ja/
 %lang(ko) %{_libdir}/R/library/tools/po/ko/
+%lang(pl) %{_libdir}/R/library/tools/po/pl/
 %lang(pt) %{_libdir}/R/library/tools/po/pt*/
 %lang(ru) %{_libdir}/R/library/tools/po/ru/
 %lang(tr) %{_libdir}/R/library/tools/po/tr/
@@ -873,6 +886,7 @@ popd
 %lang(fr) %{_libdir}/R/library/utils/po/fr/
 %lang(ja) %{_libdir}/R/library/utils/po/ja/
 %lang(ko) %{_libdir}/R/library/utils/po/ko/
+%lang(pl) %{_libdir}/R/library/utils/po/pl/
 %lang(pt) %{_libdir}/R/library/utils/po/pt*/
 %lang(ru) %{_libdir}/R/library/utils/po/ru/
 %lang(tr) %{_libdir}/R/library/utils/po/tr/
@@ -998,6 +1012,18 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Jul  2 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.1-1
+- update to 2.15.1
+
+* Mon Jul  2 2012 Jindrich Novy <jnovy@redhat.com> - 2.15.0-4
+- fix LaTeX and dvips dependencies (#836817)
+
+* Mon May  7 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-3
+- rebuild for new libtiff
+
+* Tue Apr 24 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-2
+- rebuild for new icu
+
 * Fri Mar 30 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-1
 - Update to 2.15.0
 
