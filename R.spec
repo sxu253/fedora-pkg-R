@@ -5,8 +5,8 @@
 %endif
 
 Name: R
-Version: 2.15.1
-Release: 2%{?dist}
+Version: 2.15.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -29,6 +29,8 @@ BuildRequires: less
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
 Requires: libRmath-devel = %{version}-%{release}
+# Pull in Java bits (if you don't want this, use R-core)
+Requires: R-java = %{version}-%{release}
 
 %description
 This is a metapackage that provides both core R userspace and 
@@ -57,27 +59,27 @@ Requires: perl, sed, gawk, tex(latex), tex(dvips), less, vi
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.4
-Provides: R-class = 7.3.3
-Provides: R-cluster = 1.14.2
+Provides: R-boot = 1.3.7
+Provides: R-class = 7.3.5
+Provides: R-cluster = 1.14.3
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.50
+Provides: R-foreign = 0.8.51
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.7
-Provides: R-lattice = 0.20.6
-Provides: R-MASS = 7.3.18
-Provides: R-Matrix = 1.0.6
+Provides: R-KernSmooth = 2.23.8
+Provides: R-lattice = 0.20.10
+Provides: R-MASS = 7.3.22
+Provides: R-Matrix = 1.0.9
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.18
-Provides: R-nlme = 3.1.104
-Provides: R-nnet = 7.3.1
+Provides: R-mgcv = 1.7.22
+Provides: R-nlme = 3.1.105
+Provides: R-nnet = 7.3.5
 Provides: R-parallel = %{version}
-Provides: R-rpart = 3.1.53
-Provides: R-spatial = 7.3.3
+Provides: R-rpart = 3.1.55
+Provides: R-spatial = 7.3.5
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -108,7 +110,8 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Provides: R-Matrix-devel = 1.0.6
+Requires: R-java-devel = %{version}-%{release}
+Provides: R-Matrix-devel = 1.0.9
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %description devel
@@ -364,6 +367,7 @@ popd
 %lang(it) %{_libdir}/R/library/base/po/it/
 %lang(ja) %{_libdir}/R/library/base/po/ja/
 %lang(ko) %{_libdir}/R/library/base/po/ko/
+%lang(nn) %{_libdir}/R/library/base/po/nn/
 %lang(pl) %{_libdir}/R/library/base/po/pl/
 %lang(pt) %{_libdir}/R/library/base/po/pt*/
 %lang(ru) %{_libdir}/R/library/base/po/ru/
@@ -384,6 +388,7 @@ popd
 %lang(de) %{_libdir}/R/library/boot/po/de/
 %lang(en) %{_libdir}/R/library/boot/po/en*/
 %lang(fr) %{_libdir}/R/library/boot/po/fr/
+%lang(pl) %{_libdir}/R/library/boot/po/pl/
 %lang(ru) %{_libdir}/R/library/boot/po/ru/
 %{_libdir}/R/library/boot/R/
 # class
@@ -402,6 +407,7 @@ popd
 %lang(de) %{_libdir}/R/library/class/po/de/
 %lang(en) %{_libdir}/R/library/class/po/en*/
 %lang(fr) %{_libdir}/R/library/class/po/fr/
+%lang(pl) %{_libdir}/R/library/class/po/pl/
 %{_libdir}/R/library/class/R/
 # cluster
 %dir %{_libdir}/R/library/cluster/
@@ -418,6 +424,7 @@ popd
 %dir %{_libdir}/R/library/cluster/po/
 %lang(de) %{_libdir}/R/library/cluster/po/de/
 %lang(en) %{_libdir}/R/library/cluster/po/en*/
+%lang(pl) %{_libdir}/R/library/cluster/po/pl/
 # codetools
 %dir %{_libdir}/R/library/codetools/
 %{_libdir}/R/library/codetools/DESCRIPTION
@@ -442,6 +449,7 @@ popd
 %lang(en) %{_libdir}/R/library/compiler/po/en*/
 %lang(fr) %{_libdir}/R/library/compiler/po/fr/
 %lang(ja) %{_libdir}/R/library/compiler/po/ja/
+%lang(ko) %{_libdir}/R/library/compiler/po/ko/
 %lang(pl) %{_libdir}/R/library/compiler/po/pl/
 %lang(pt) %{_libdir}/R/library/compiler/po/pt*/
 %lang(ru) %{_libdir}/R/library/compiler/po/ru/
@@ -470,6 +478,7 @@ popd
 %lang(de) %{_libdir}/R/library/foreign/po/de/
 %lang(en) %{_libdir}/R/library/foreign/po/en*/
 %lang(fr) %{_libdir}/R/library/foreign/po/fr/
+%lang(pl) %{_libdir}/R/library/foreign/po/pl/
 %{_libdir}/R/library/foreign/R/
 # graphics
 %dir %{_libdir}/R/library/graphics/
@@ -554,6 +563,7 @@ popd
 %dir %{_libdir}/R/library/KernSmooth/po/
 %lang(de) %{_libdir}/R/library/KernSmooth/po/de/
 %lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
+%lang(pl) %{_libdir}/R/library/KernSmooth/po/pl/
 %{_libdir}/R/library/KernSmooth/R/
 # lattice
 %dir %{_libdir}/R/library/lattice/
@@ -591,6 +601,7 @@ popd
 %lang(de) %{_libdir}/R/library/MASS/po/de/
 %lang(en) %{_libdir}/R/library/MASS/po/en*/
 %lang(fr) %{_libdir}/R/library/MASS/po/fr/
+%lang(pl) %{_libdir}/R/library/MASS/po/pl/
 %{_libdir}/R/library/MASS/R/
 %{_libdir}/R/library/MASS/scripts/
 # Matrix
@@ -611,6 +622,7 @@ popd
 %dir %{_libdir}/R/library/Matrix/po/
 %lang(de) %{_libdir}/R/library/Matrix/po/de/
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
+%lang(pl) %{_libdir}/R/library/Matrix/po/pl/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
 %{_libdir}/R/library/Matrix/test-tools-1.R
@@ -665,6 +677,7 @@ popd
 %lang(de) %{_libdir}/R/library/nlme/po/de/
 %lang(en) %{_libdir}/R/library/nlme/po/en*/
 %lang(fr) %{_libdir}/R/library/nlme/po/fr/
+%lang(pl) %{_libdir}/R/library/nlme/po/pl/
 %{_libdir}/R/library/nlme/R/
 %{_libdir}/R/library/nlme/scripts/
 # nnet
@@ -683,6 +696,7 @@ popd
 %lang(de) %{_libdir}/R/library/nnet/po/de/
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
+%lang(pl) %{_libdir}/R/library/nnet/po/pl/
 %{_libdir}/R/library/nnet/R/
 # parallel
 %dir %{_libdir}/R/library/parallel/
@@ -699,6 +713,7 @@ popd
 %lang(de) %{_libdir}/R/library/parallel/po/de/
 %lang(en) %{_libdir}/R/library/parallel/po/en*/
 %lang(fr) %{_libdir}/R/library/parallel/po/fr/
+%lang(ko) %{_libdir}/R/library/parallel/po/ko/
 %lang(pl) %{_libdir}/R/library/parallel/po/pl/
 %lang(ru) %{_libdir}/R/library/parallel/po/ru/
 %lang(zh) %{_libdir}/R/library/parallel/po/zh*/
@@ -717,6 +732,7 @@ popd
 %lang(de) %{_libdir}/R/library/rpart/po/de/
 %lang(en) %{_libdir}/R/library/rpart/po/en*/
 %lang(fr) %{_libdir}/R/library/rpart/po/fr/
+%lang(pl) %{_libdir}/R/library/rpart/po/pl/
 %lang(ru) %{_libdir}/R/library/rpart/po/ru/
 %{_libdir}/R/library/rpart/R/
 # spatial
@@ -735,6 +751,7 @@ popd
 %lang(de) %{_libdir}/R/library/spatial/po/de/
 %lang(en) %{_libdir}/R/library/spatial/po/en*/
 %lang(fr) %{_libdir}/R/library/spatial/po/fr/
+%lang(pl) %{_libdir}/R/library/spatial/po/pl/
 %{_libdir}/R/library/spatial/ppdata/
 %{_libdir}/R/library/spatial/PP.files
 %{_libdir}/R/library/spatial/R/
@@ -1012,6 +1029,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Oct 29 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-1
+- update to 2.15.2
+- R now Requires: R-java (for a more complete base install)
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.15.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
