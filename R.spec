@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.15.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -111,6 +111,16 @@ Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
 Requires: R-java-devel = %{version}-%{release}
+# TeX TFM files needed
+%if 0%{?fedora} >= 18
+Requires: tex(ecrm1000.tfm)
+Requires: tex(ptmr8t.tfm)
+Requires: tex(ptmb8t.tfm)
+Requires: tex(pcrr8t.tfm)
+Requires: tex(phvr8t.tfm)
+Requires: tex(ptmri8t.tfm)
+Requires: tex(ptmro8t.tfm)
+%endif
 Provides: R-Matrix-devel = 1.0.9
 Obsoletes: R-Matrix-devel < 0.999375-7
 
@@ -1029,6 +1039,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Nov 27 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-2
+- add additional TeX font requirements to R-devel for Fedora 18+ (due to new texlive)
+
 * Mon Oct 29 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-1
 - update to 2.15.2
 - R now Requires: R-java (for a more complete base install)
