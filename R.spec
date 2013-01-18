@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.15.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -1040,6 +1040,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jan 18 2013 Adam Tkac <atkac redhat com> - 2.15.2-4
+- rebuild due to "jpeg8-ABI" feature drop
+
 * Tue Nov 27 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-3
 - add Requires: tex(cm-super-ts1.enc) for R-devel
 
