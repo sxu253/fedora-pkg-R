@@ -6,12 +6,13 @@
 
 Name: R
 Version: 2.15.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+Patch0: R-cairo-fix.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -189,6 +190,7 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .cairo-fix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -1040,6 +1042,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sun Jan 20 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-5
+- apply upstream fix for cairo issues (bz 891983)
+
 * Fri Jan 18 2013 Adam Tkac <atkac redhat com> - 2.15.2-4
 - rebuild due to "jpeg8-ABI" feature drop
 
