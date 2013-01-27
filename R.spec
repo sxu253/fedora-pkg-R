@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.15.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -1042,6 +1042,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> - 2.15.2-6
+- Rebuild for new icu
+
 * Sun Jan 20 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-5
 - apply upstream fix for cairo issues (bz 891983)
 
