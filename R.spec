@@ -6,7 +6,7 @@
 
 Name: R
 Version: 2.15.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
@@ -24,7 +24,7 @@ BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java-1.5.0-gcj, lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
-BuildRequires: gcc-objc, pango-devel, libicu-devel
+BuildRequires: gcc-objc, pango-devel, libicu-devel, xz-devel
 BuildRequires: less
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
@@ -1042,6 +1042,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Feb 27 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-7
+- add BuildRequires: xz-devel (for system xz/lzma support)
+
 * Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> - 2.15.2-6
 - Rebuild for new icu
 
