@@ -1,0 +1,24 @@
+diff -up R-2.15.2/configure.makeinfo-fix R-2.15.2/configure
+--- R-2.15.2/configure.makeinfo-fix	2012-10-18 18:05:56.000000000 -0400
++++ R-2.15.2/configure	2013-02-28 10:41:14.644967025 -0500
+@@ -5196,6 +5196,8 @@ makeinfo_version_min=`echo ${makeinfo_ve
+ if test -z "${makeinfo_version_maj}" \
+      || test -z "${makeinfo_version_min}"; then
+   r_cv_prog_makeinfo_v4=no
++elif test ${makeinfo_version_maj} -ge 5; then
++  r_cv_prog_makeinfo_v4=yes
+ elif test ${makeinfo_version_maj} -lt 4 \
+      || test ${makeinfo_version_min} -lt 7; then
+   r_cv_prog_makeinfo_v4=no
+diff -up R-2.15.2/m4/R.m4.makeinfo-fix R-2.15.2/m4/R.m4
+--- R-2.15.2/m4/R.m4.makeinfo-fix	2012-10-13 18:05:05.000000000 -0400
++++ R-2.15.2/m4/R.m4	2013-02-28 10:39:53.083965801 -0500
+@@ -210,6 +210,8 @@ makeinfo_version_min=`echo ${makeinfo_ve
+ if test -z "${makeinfo_version_maj}" \
+      || test -z "${makeinfo_version_min}"; then
+   r_cv_prog_makeinfo_v4=no
++elif test ${makeinfo_version_maj} -ge 5; then
++  r_cv_prog_makeinfo_v4=yes
+ elif test ${makeinfo_version_maj} -lt 4 \
+      || test ${makeinfo_version_min} -lt 7; then
+   r_cv_prog_makeinfo_v4=no

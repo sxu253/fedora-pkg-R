@@ -13,6 +13,7 @@ Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
 Patch0: R-cairo-fix.patch
+Patch1: R-2.15.2-makeinfov5.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -26,6 +27,9 @@ BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
 BuildRequires: gcc-objc, pango-devel, libicu-devel, xz-devel
 BuildRequires: less
+%if 0%{?fedora} >= 18
+BuildRequires: tex(inconsolata.sty)
+%endif
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -103,15 +107,14 @@ add additional functionality by defining new functions. For
 computationally intensive tasks, C, C++ and Fortran code can be linked
 and called at run time.
 
-%package devel
-Summary: Files for development of R packages
+%package core-devel
+Summary: Core files for development of R packages (no Java)
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig
-Requires: R-java-devel = %{version}-%{release}
 # TeX files needed
 %if 0%{?fedora} >= 18
 Requires: tex(ecrm1000.tfm)
@@ -126,8 +129,19 @@ Requires: tex(cm-super-ts1.enc)
 Provides: R-Matrix-devel = 1.0.9
 Obsoletes: R-Matrix-devel < 0.999375-7
 
+%description core-devel
+Install R-core-devel if you are going to develop or compile R packages.
+This package does not configure the R environment for Java, install
+R-java-devel if you want this.
+
+%package devel
+Summary:	Full R development environment metapackage
+Requires:	R-core-devel = %{version}-%{release}
+Requires:	R-java-devel = %{version}-%{release}
+
 %description devel
-Install R-devel if you are going to develop or compile R packages.
+This is a metapackage to install a complete (with Java) R development
+environment.
 
 %package java
 Summary: R with Fedora provided Java Runtime Environment
@@ -155,7 +169,7 @@ Fedora's openJDK.
 %package java-devel
 Summary: Development package for use with Java enabled R components
 Group: Applications/Engineering
-Requires(post): R-devel = %{version}-%{release}
+Requires(post): R-core-devel = %{version}-%{release}
 Requires(post): java-devel
 
 %description java-devel
@@ -191,6 +205,7 @@ from the R project.  This package provides the static libRmath library.
 %prep
 %setup -q
 %patch0 -p1 -b .cairo-fix
+%patch1 -p1 -b .makeinfo-fix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -935,18 +950,21 @@ popd
 %docdir %{_docdir}/R-%{version}
 /etc/ld.so.conf.d/*
 
-%files devel
+%files core-devel
 %defattr(-, root, root, -)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
 # Symlink to %{_includedir}/R/
 %{_libdir}/R/include
 
+%files devel
+# Nothing, all files provided by R-core-devel
+
 %files java
 # Nothing, all files provided by R-core
 
 %files java-devel
-# Nothing, all files provided by R-devel
+# Nothing, all files provided by R-core-devel
 
 %files -n libRmath
 %defattr(-, root, root, -)
@@ -1044,6 +1062,7 @@ R CMD javareconf \
 %changelog
 * Wed Feb 27 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-7
 - add BuildRequires: xz-devel (for system xz/lzma support)
+- create R-core-devel
 
 * Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> - 2.15.2-6
 - Rebuild for new icu
