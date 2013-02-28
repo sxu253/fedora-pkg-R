@@ -1137,7 +1137,7 @@ R CMD javareconf \
 * Mon Jul 11 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-1
 - update to 2.13.1
 
-* Thu Apr 12 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.0-1
+* Tue Apr 12 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.0-1
 - update to 2.13.0
 - add convenience symlink for include directory (bz 688295)
 
@@ -1360,7 +1360,7 @@ R CMD javareconf \
 * Sun Oct 15 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-1
 - bump for 2.4.0
 
-* Wed Sep 12 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-2
+* Tue Sep 12 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-2
 - bump for FC-6
 
 * Fri Jun  2 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-1
@@ -1468,7 +1468,7 @@ R CMD javareconf \
 - Modified BuildRequires so we can support older Red Hat versions without
   defining any macros.
 
-* Mon Jun 23 2004 Martyn Plummer <plummner@iarc.fr> 0:1.9.1-0.fdr.2
+* Wed Jun 23 2004 Martyn Plummer <plummner@iarc.fr> 0:1.9.1-0.fdr.2
 - Added libtermcap-devel as BuildRequires for RH 8.0 and 9. Without
   this we get no readline support.
 
@@ -1479,7 +1479,7 @@ R CMD javareconf \
 * Mon Jun 14 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.4
 - Added XFree86-devel as conditional BuildRequires for rh9, rh80
 
-* Wed Jun 08 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.3
+* Tue Jun 08 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.3
 - Corrected names for fc1/fc2/el3 when using conditional BuildRequires
 - Configure searches for C++ preprocessor and fails if we don't have
   gcc-c++ installed. Added to BuildRequires for FC2.
@@ -1489,7 +1489,7 @@ R CMD javareconf \
   from R 1.9.1; patch supplied by Graeme Ambler)
 - Changed permissions of source files to 644 to please rpmlint
 
-* Tue May 03 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.1
+* Mon May 03 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.1
 - R.spec file now has mode 644. Previously it was unreadable by other
   users and this was causing a crash building under mach.
 - Changed version number to conform to Fedora conventions. 
@@ -1512,7 +1512,7 @@ R CMD javareconf \
 - Folded info installation into %%makeinstall 
 - Check that RPM_BASE_ROOT is not set to "/" before cleaning up
 
-* Thu Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
+* Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
 - Removed tcl-devel from BuildRequires
 
 * Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
