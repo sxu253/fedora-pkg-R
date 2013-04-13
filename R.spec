@@ -17,7 +17,7 @@
 
 Name: R
 Version: 3.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -142,6 +142,7 @@ Requires: tcl-devel, tk-devel, pkgconfig
 # TeX files needed
 %if 0%{?fedora} >= 18
 Requires: tex(ecrm1000.tfm)
+Requires: tex(inconsolata.sty)
 Requires: tex(ptmr8t.tfm)
 Requires: tex(ptmb8t.tfm)
 Requires: tex(pcrr8t.tfm)
@@ -796,6 +797,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sat Apr 13 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.0-2
+- add Requires: tex(inconsolata.sty) to -core-devel to fix module PDF building
+
 * Fri Apr  5 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.0-1
 - update to 3.0.0
 
