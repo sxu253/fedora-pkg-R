@@ -4,12 +4,23 @@
 %define java_arch %{_arch}
 %endif
 
+# Assume not modern. Override if needed.
+%global	modern 0
+
+%if 0%{?fedora}
+%global modern 1
+%endif
+
+%if 0%{?rhel} >= 6
+%global	modern 1
+%endif
+
 Name: R
-Version: 2.15.2
-Release: 1%{?dist}
+Version: 3.0.0
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
-Source0: ftp://cran.r-project.org/pub/R/src/base/R-2/R-%{version}.tar.gz
+Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
 License: GPLv2+
@@ -20,15 +31,30 @@ BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas >= 3.0, pcre-devel, zlib-devel
-BuildRequires: java-1.4.2-gcj-compat, lapack-devel
+%if %{modern}
+BuildRequires: java-1.5.0-gcj
+%else
+BuildRequires: java-1.4.2-gcj-compat
+%endif
+BuildRequires: lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
-BuildRequires: gcc-objc, pango-devel
+BuildRequires: gcc-objc, pango-devel, xz-devel
+%if %{modern}
+BuildRequires: libicu-devel
+%endif
 BuildRequires: less
+%if 0%{?fedora} >= 18
+BuildRequires: tex(inconsolata.sty)
+%endif
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
 Requires: libRmath-devel = %{version}-%{release}
+%if %{modern}
+# Pull in Java bits (if you don't want this, use R-core)
+Requires: R-java = %{version}-%{release}
+%endif
 
 %description
 This is a metapackage that provides both core R userspace and 
@@ -51,37 +77,42 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
-Requires: perl, sed, gawk, tex(latex), less, vim-minimal
+%if %{modern}
+Requires: tex(dvips), vi
+%else
+Requires: vim-minimal
+%endif
+Requires: perl, sed, gawk, tex(latex), less
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.7
-Provides: R-class = 7.3.5
-Provides: R-cluster = 1.14.3
+Provides: R-boot = 1.3.9
+Provides: R-class = 7.3.7
+Provides: R-cluster = 1.14.4
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.51
+Provides: R-foreign = 0.8.53
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.8
-Provides: R-lattice = 0.20.10
-Provides: R-MASS = 7.3.22
-Provides: R-Matrix = 1.0.9
+Provides: R-KernSmooth = 2.23.10
+Provides: R-lattice = 0.20.15
+Provides: R-MASS = 7.3.26
+Provides: R-Matrix = 1.0.12
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.7.22
-Provides: R-nlme = 3.1.105
-Provides: R-nnet = 7.3.5
+Provides: R-nlme = 3.1.109
+Provides: R-nnet = 7.3.6
 Provides: R-parallel = %{version}
-Provides: R-rpart = 3.1.55
-Provides: R-spatial = 7.3.5
+Provides: R-rpart = 4.1.1
+Provides: R-spatial = 7.3.6
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.36.14
+Provides: R-survival = 2.37.4
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -100,19 +131,84 @@ add additional functionality by defining new functions. For
 computationally intensive tasks, C, C++ and Fortran code can be linked
 and called at run time.
 
-%package devel
-Summary: Files for development of R packages
+%package core-devel
+Summary: Core files for development of R packages (no Java)
 Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
-Requires: gcc-c++, gcc-gfortran, tex(latex)
+Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
-Requires: tcl-devel, tk-devel, pkgconfig, texinfo-tex
-Provides: R-Matrix-devel = 1.0.9
+Requires: tcl-devel, tk-devel, pkgconfig
+# TeX files needed
+%if 0%{?fedora} >= 18
+Requires: tex(ecrm1000.tfm)
+Requires: tex(inconsolata.sty)
+Requires: tex(ptmr8t.tfm)
+Requires: tex(ptmb8t.tfm)
+Requires: tex(pcrr8t.tfm)
+Requires: tex(phvr8t.tfm)
+Requires: tex(ptmri8t.tfm)
+Requires: tex(ptmro8t.tfm)
+Requires: tex(cm-super-ts1.enc)
+%endif
+Provides: R-Matrix-devel = 1.0.12
 Obsoletes: R-Matrix-devel < 0.999375-7
 
+%if %{modern}
+%description core-devel
+Install R-core-devel if you are going to develop or compile R packages.
+This package does not configure the R environment for Java, install
+R-java-devel if you want this.
+%else
+%description core-devel
+Install R-core-devel if you are going to develop or compile R packages.
+%endif
+
+%package devel
+Summary:	Full R development environment metapackage
+Requires:	R-core-devel = %{version}-%{release}
+%if %{modern}
+Requires:	R-java-devel = %{version}-%{release}
+%endif
+
 %description devel
-Install R-devel if you are going to develop or compile R packages.
+This is a metapackage to install a complete (with Java) R development
+environment.
+
+%if %{modern}
+%package java
+Summary: R with Fedora provided Java Runtime Environment
+Group: Applications/Engineering
+Requires(post): R-core = %{version}-%{release}
+Requires(post): java
+
+%description java
+A language and environment for statistical computing and graphics.
+R is similar to the award-winning S system, which was developed at
+Bell Laboratories by John Chambers et al. It provides a wide
+variety of statistical and graphical techniques (linear and
+nonlinear modelling, statistical tests, time series analysis,
+classification, clustering, ...).
+
+R is designed as a true computer language with control-flow
+constructions for iteration and alternation, and it allows users to
+add additional functionality by defining new functions. For
+computationally intensive tasks, C, C++ and Fortran code can be linked
+and called at run time.
+
+This package also has an additional dependency on java, as provided by
+Fedora's openJDK.
+
+%package java-devel
+Summary: Development package for use with Java enabled R components
+Group: Applications/Engineering
+Requires(post): R-core-devel = %{version}-%{release}
+Requires(post): java-devel
+
+%description java-devel
+Install R-java-devel if you are going to develop or compile R packages
+that assume java is present and configured on the system.
+%endif
 
 %package -n libRmath
 Summary: Standalone math library from the R project
@@ -164,15 +260,14 @@ chmod +x %{__perl_requires}
 %build
 # Add PATHS to Renviron for R_LIBS_SITE
 echo 'R_LIBS_SITE=${R_LIBS_SITE-'"'/usr/local/lib/R/site-library:/usr/local/lib/R/library:%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
-
-export R_PDFVIEWER="%{_bindir}/xdg-open"
-export R_PRINTCMD="lpr"
-export R_BROWSER="%{_bindir}/xdg-open"
 # No inconsolata on RHEL tex
 %if 0%{?rhel}
 export R_RD4PDF="times,hyper"
 sed -i 's|inconsolata,||g' etc/Renviron.in
 %endif
+export R_PDFVIEWER="%{_bindir}/xdg-open"
+export R_PRINTCMD="lpr"
+export R_BROWSER="%{_bindir}/xdg-open"
 
 case "%{_target_cpu}" in
       x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
@@ -226,7 +321,8 @@ for i in doc/manual/R-intro.info doc/manual/R-FAQ.info doc/FAQ doc/manual/R-admi
 done
 
 %install
-make DESTDIR=${RPM_BUILD_ROOT} install install-info install-pdf
+make DESTDIR=${RPM_BUILD_ROOT} install install-info
+make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
@@ -283,61 +379,33 @@ popd
 %defattr(-, root, root, -)
 %{_bindir}/R
 %{_bindir}/Rscript
-%dir %{_datadir}/R/
-%{_datadir}/R/encodings/
-%{_datadir}/R/java/
-%{_datadir}/R/library/
-%{_datadir}/R/licenses/
-%dir %{_datadir}/R/locale/
-%lang(da) %{_datadir}/R/locale/da/
-%lang(de) %{_datadir}/R/locale/de/
-%lang(en) %{_datadir}/R/locale/en*/
-%lang(es) %{_datadir}/R/locale/es*/
-%lang(fr) %{_datadir}/R/locale/fr/
-%lang(it) %{_datadir}/R/locale/it/
-%lang(ja) %{_datadir}/R/locale/ja/
-%lang(ko) %{_datadir}/R/locale/ko/
-%lang(nn) %{_datadir}/R/locale/nn/
-%lang(pl) %{_datadir}/R/locale/pl/
-%lang(pt) %{_datadir}/R/locale/pt*/
-%lang(ru) %{_datadir}/R/locale/ru/
-%lang(tr) %{_datadir}/R/locale/tr/
-%lang(zh) %{_datadir}/R/locale/zh*/
-%{_datadir}/R/make/
-%{_datadir}/R/R/
-%{_datadir}/R/sh/
-%{_datadir}/R/texmf/
+%{_datadir}/R/
 %{_datadir}/texmf/
-%dir %{_libdir}/R
-%{_libdir}/R/bin
-%{_libdir}/R/etc
-%{_libdir}/R/lib
 # Have to break this out for the translations
-%dir %{_libdir}/R/library
+%dir %{_libdir}/R/
+%{_libdir}/R/bin/
+%{_libdir}/R/etc/
+%{_libdir}/R/lib/
+%dir %{_libdir}/R/library/
+%dir %{_libdir}/R/library/translations/
+%{_libdir}/R/library/translations/DESCRIPTION
+%lang(da) %{_libdir}/R/library/translations/da/
+%lang(de) %{_libdir}/R/library/translations/de/
+%lang(en) %{_libdir}/R/library/translations/en*/
+%lang(es) %{_libdir}/R/library/translations/es/
+%lang(fa) %{_libdir}/R/library/translations/fa/
+%lang(fr) %{_libdir}/R/library/translations/fr/
+%lang(it) %{_libdir}/R/library/translations/it/
+%lang(ja) %{_libdir}/R/library/translations/ja/
+%lang(ko) %{_libdir}/R/library/translations/ko/
+%lang(nn) %{_libdir}/R/library/translations/nn/
+%lang(pl) %{_libdir}/R/library/translations/pl/
+%lang(pt) %{_libdir}/R/library/translations/pt*/
+%lang(ru) %{_libdir}/R/library/translations/ru/
+%lang(tr) %{_libdir}/R/library/translations/tr/
+%lang(zh) %{_libdir}/R/library/translations/zh*/
 # base
-%dir %{_libdir}/R/library/base/
-%{_libdir}/R/library/base/CITATION
-%{_libdir}/R/library/base/demo/
-%{_libdir}/R/library/base/DESCRIPTION
-%{_libdir}/R/library/base/help/
-%{_libdir}/R/library/base/html/
-%{_libdir}/R/library/base/INDEX
-%{_libdir}/R/library/base/Meta/
-%dir %{_libdir}/R/library/base/po/
-%lang(da) %{_libdir}/R/library/base/po/da/
-%lang(de) %{_libdir}/R/library/base/po/de/
-%lang(en) %{_libdir}/R/library/base/po/en*/
-%lang(fr) %{_libdir}/R/library/base/po/fr/
-%lang(it) %{_libdir}/R/library/base/po/it/
-%lang(ja) %{_libdir}/R/library/base/po/ja/
-%lang(ko) %{_libdir}/R/library/base/po/ko/
-%lang(nn) %{_libdir}/R/library/base/po/nn/
-%lang(pl) %{_libdir}/R/library/base/po/pl/
-%lang(pt) %{_libdir}/R/library/base/po/pt*/
-%lang(ru) %{_libdir}/R/library/base/po/ru/
-%lang(tr) %{_libdir}/R/library/base/po/tr/
-%lang(zh) %{_libdir}/R/library/base/po/zh*/
-%{_libdir}/R/library/base/R/
+%{_libdir}/R/library/base/
 # boot
 %dir %{_libdir}/R/library/boot/
 %{_libdir}/R/library/boot/CITATION
@@ -352,6 +420,7 @@ popd
 %lang(de) %{_libdir}/R/library/boot/po/de/
 %lang(en) %{_libdir}/R/library/boot/po/en*/
 %lang(fr) %{_libdir}/R/library/boot/po/fr/
+%lang(ko) %{_libdir}/R/library/boot/po/ko/
 %lang(pl) %{_libdir}/R/library/boot/po/pl/
 %lang(ru) %{_libdir}/R/library/boot/po/ru/
 %{_libdir}/R/library/boot/R/
@@ -371,6 +440,7 @@ popd
 %lang(de) %{_libdir}/R/library/class/po/de/
 %lang(en) %{_libdir}/R/library/class/po/en*/
 %lang(fr) %{_libdir}/R/library/class/po/fr/
+%lang(ko) %{_libdir}/R/library/class/po/ko/
 %lang(pl) %{_libdir}/R/library/class/po/pl/
 %{_libdir}/R/library/class/R/
 # cluster
@@ -399,43 +469,18 @@ popd
 %{_libdir}/R/library/codetools/NAMESPACE
 %{_libdir}/R/library/codetools/R/
 # compiler
-%dir %{_libdir}/R/library/compiler/
-%{_libdir}/R/library/compiler/DESCRIPTION
-%{_libdir}/R/library/compiler/help/
-%{_libdir}/R/library/compiler/html/
-%{_libdir}/R/library/compiler/INDEX
-%{_libdir}/R/library/compiler/Meta/
-%{_libdir}/R/library/compiler/NAMESPACE
-%{_libdir}/R/library/compiler/R/
-%dir %{_libdir}/R/library/compiler/po/
-%lang(da) %{_libdir}/R/library/compiler/po/da/
-%lang(de) %{_libdir}/R/library/compiler/po/de/
-%lang(en) %{_libdir}/R/library/compiler/po/en*/
-%lang(fr) %{_libdir}/R/library/compiler/po/fr/
-%lang(ja) %{_libdir}/R/library/compiler/po/ja/
-%lang(ko) %{_libdir}/R/library/compiler/po/ko/
-%lang(pl) %{_libdir}/R/library/compiler/po/pl/
-%lang(pt) %{_libdir}/R/library/compiler/po/pt*/
-%lang(ru) %{_libdir}/R/library/compiler/po/ru/
-%lang(zh) %{_libdir}/R/library/compiler/po/zh*/
+%{_libdir}/R/library/compiler/
 # datasets
-%dir %{_libdir}/R/library/datasets/
-%{_libdir}/R/library/datasets/data/
-%{_libdir}/R/library/datasets/DESCRIPTION
-%{_libdir}/R/library/datasets/help/
-%{_libdir}/R/library/datasets/html/
-%{_libdir}/R/library/datasets/INDEX
-%{_libdir}/R/library/datasets/Meta/
-%{_libdir}/R/library/datasets/NAMESPACE
+%{_libdir}/R/library/datasets/
 # foreign
 %dir %{_libdir}/R/library/foreign/
+%{_libdir}/R/library/foreign/COPYRIGHTS
 %{_libdir}/R/library/foreign/DESCRIPTION
 %{_libdir}/R/library/foreign/files/
 %{_libdir}/R/library/foreign/help/
 %{_libdir}/R/library/foreign/html/
 %{_libdir}/R/library/foreign/INDEX
 %{_libdir}/R/library/foreign/libs/
-%{_libdir}/R/library/foreign/LICENCE
 %{_libdir}/R/library/foreign/Meta/
 %{_libdir}/R/library/foreign/NAMESPACE
 %dir %{_libdir}/R/library/foreign/po/
@@ -445,75 +490,11 @@ popd
 %lang(pl) %{_libdir}/R/library/foreign/po/pl/
 %{_libdir}/R/library/foreign/R/
 # graphics
-%dir %{_libdir}/R/library/graphics/
-%{_libdir}/R/library/graphics/demo/
-%{_libdir}/R/library/graphics/DESCRIPTION
-%{_libdir}/R/library/graphics/help/
-%{_libdir}/R/library/graphics/html/
-%{_libdir}/R/library/graphics/INDEX
-%{_libdir}/R/library/graphics/Meta/
-%{_libdir}/R/library/graphics/NAMESPACE
-%dir %{_libdir}/R/library/graphics/po/
-%lang(da) %{_libdir}/R/library/graphics/po/da/
-%lang(de) %{_libdir}/R/library/graphics/po/de/
-%lang(en) %{_libdir}/R/library/graphics/po/en*/
-%lang(fr) %{_libdir}/R/library/graphics/po/fr/
-%lang(it) %{_libdir}/R/library/graphics/po/it/
-%lang(ja) %{_libdir}/R/library/graphics/po/ja/
-%lang(ko) %{_libdir}/R/library/graphics/po/ko/
-%lang(pl) %{_libdir}/R/library/graphics/po/pl/
-%lang(pt) %{_libdir}/R/library/graphics/po/pt*/
-%lang(ru) %{_libdir}/R/library/graphics/po/ru/
-%lang(zh) %{_libdir}/R/library/graphics/po/zh*/
-%{_libdir}/R/library/graphics/R/
+%{_libdir}/R/library/graphics/
 # grDevices
-%dir %{_libdir}/R/library/grDevices
-%{_libdir}/R/library/grDevices/afm/
-%{_libdir}/R/library/grDevices/DESCRIPTION
-%{_libdir}/R/library/grDevices/enc/
-%{_libdir}/R/library/grDevices/help/
-%{_libdir}/R/library/grDevices/html/
-%{_libdir}/R/library/grDevices/icc/
-%{_libdir}/R/library/grDevices/INDEX
-%{_libdir}/R/library/grDevices/libs/
-%{_libdir}/R/library/grDevices/Meta/
-%{_libdir}/R/library/grDevices/NAMESPACE
-%dir %{_libdir}/R/library/grDevices/po/
-%lang(da) %{_libdir}/R/library/grDevices/po/da/
-%lang(de) %{_libdir}/R/library/grDevices/po/de/
-%lang(en) %{_libdir}/R/library/grDevices/po/en*/
-%lang(fr) %{_libdir}/R/library/grDevices/po/fr/
-%lang(it) %{_libdir}/R/library/grDevices/po/it/
-%lang(ja) %{_libdir}/R/library/grDevices/po/ja/
-%lang(ko) %{_libdir}/R/library/grDevices/po/ko/
-%lang(pl) %{_libdir}/R/library/grDevices/po/pl/
-%lang(pt) %{_libdir}/R/library/grDevices/po/pt*/
-%lang(ru) %{_libdir}/R/library/grDevices/po/ru/
-%lang(zh) %{_libdir}/R/library/grDevices/po/zh*/
-%{_libdir}/R/library/grDevices/R/
+%{_libdir}/R/library/grDevices
 # grid
-%dir %{_libdir}/R/library/grid/
-%{_libdir}/R/library/grid/DESCRIPTION
-%{_libdir}/R/library/grid/doc/
-%{_libdir}/R/library/grid/help/
-%{_libdir}/R/library/grid/html/
-%{_libdir}/R/library/grid/INDEX
-%{_libdir}/R/library/grid/libs/
-%{_libdir}/R/library/grid/Meta/
-%{_libdir}/R/library/grid/NAMESPACE
-%dir %{_libdir}/R/library/grid/po/
-%lang(da) %{_libdir}/R/library/grid/po/da/
-%lang(de) %{_libdir}/R/library/grid/po/de/
-%lang(en) %{_libdir}/R/library/grid/po/en*/
-%lang(fr) %{_libdir}/R/library/grid/po/fr*/
-%lang(it) %{_libdir}/R/library/grid/po/it/
-%lang(ja) %{_libdir}/R/library/grid/po/ja/
-%lang(ko) %{_libdir}/R/library/grid/po/ko/
-%lang(pl) %{_libdir}/R/library/grid/po/pl/
-%lang(pt) %{_libdir}/R/library/grid/po/pt*/
-%lang(ru) %{_libdir}/R/library/grid/po/ru/
-%lang(zh) %{_libdir}/R/library/grid/po/zh*/
-%{_libdir}/R/library/grid/R/
+%{_libdir}/R/library/grid/
 # KernSmooth
 %dir %{_libdir}/R/library/KernSmooth/
 %{_libdir}/R/library/KernSmooth/DESCRIPTION
@@ -521,12 +502,12 @@ popd
 %{_libdir}/R/library/KernSmooth/html/
 %{_libdir}/R/library/KernSmooth/INDEX
 %{_libdir}/R/library/KernSmooth/libs/
-%{_libdir}/R/library/KernSmooth/LICENCE
 %{_libdir}/R/library/KernSmooth/Meta/
 %{_libdir}/R/library/KernSmooth/NAMESPACE
 %dir %{_libdir}/R/library/KernSmooth/po/
 %lang(de) %{_libdir}/R/library/KernSmooth/po/de/
 %lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
+%lang(ko) %{_libdir}/R/library/KernSmooth/po/ko/
 %lang(pl) %{_libdir}/R/library/KernSmooth/po/pl/
 %{_libdir}/R/library/KernSmooth/R/
 # lattice
@@ -539,7 +520,6 @@ popd
 %{_libdir}/R/library/lattice/html/
 %{_libdir}/R/library/lattice/INDEX
 %{_libdir}/R/library/lattice/libs/
-%{_libdir}/R/library/lattice/LICENSE
 %{_libdir}/R/library/lattice/Meta/
 %{_libdir}/R/library/lattice/NAMESPACE
 %{_libdir}/R/library/lattice/NEWS
@@ -565,6 +545,7 @@ popd
 %lang(de) %{_libdir}/R/library/MASS/po/de/
 %lang(en) %{_libdir}/R/library/MASS/po/en*/
 %lang(fr) %{_libdir}/R/library/MASS/po/fr/
+%lang(ko) %{_libdir}/R/library/MASS/po/ko/
 %lang(pl) %{_libdir}/R/library/MASS/po/pl/
 %{_libdir}/R/library/MASS/R/
 %{_libdir}/R/library/MASS/scripts/
@@ -592,38 +573,9 @@ popd
 %{_libdir}/R/library/Matrix/test-tools-1.R
 %{_libdir}/R/library/Matrix/test-tools-Matrix.R
 # methods
-%dir %{_libdir}/R/library/methods/
-%{_libdir}/R/library/methods/DESCRIPTION
-%{_libdir}/R/library/methods/help/
-%{_libdir}/R/library/methods/html/
-%{_libdir}/R/library/methods/INDEX
-%{_libdir}/R/library/methods/libs/
-%{_libdir}/R/library/methods/Meta/
-%{_libdir}/R/library/methods/NAMESPACE
-%dir %{_libdir}/R/library/methods/po/
-%lang(da) %{_libdir}/R/library/methods/po/da/
-%lang(de) %{_libdir}/R/library/methods/po/de/
-%lang(en) %{_libdir}/R/library/methods/po/en*/
-%lang(fr) %{_libdir}/R/library/methods/po/fr/
-%lang(ja) %{_libdir}/R/library/methods/po/ja/
-%lang(ko) %{_libdir}/R/library/methods/po/ko/
-%lang(pl) %{_libdir}/R/library/methods/po/pl/
-%lang(pt) %{_libdir}/R/library/methods/po/pt*/
-%lang(ru) %{_libdir}/R/library/methods/po/ru/
-%lang(zh) %{_libdir}/R/library/methods/po/zh*/
-%{_libdir}/R/library/methods/R/
+%{_libdir}/R/library/methods/
 # mgcv
-%dir %{_libdir}/R/library/mgcv/
-%{_libdir}/R/library/mgcv/CITATION
-%{_libdir}/R/library/mgcv/DESCRIPTION
-%{_libdir}/R/library/mgcv/data/
-%{_libdir}/R/library/mgcv/help/
-%{_libdir}/R/library/mgcv/html/
-%{_libdir}/R/library/mgcv/INDEX
-%{_libdir}/R/library/mgcv/libs/
-%{_libdir}/R/library/mgcv/Meta/
-%{_libdir}/R/library/mgcv/NAMESPACE
-%{_libdir}/R/library/mgcv/R/
+%{_libdir}/R/library/mgcv/
 # nlme
 %dir %{_libdir}/R/library/nlme/
 %{_libdir}/R/library/nlme/CITATION
@@ -660,42 +612,28 @@ popd
 %lang(de) %{_libdir}/R/library/nnet/po/de/
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
+%lang(ko) %{_libdir}/R/library/nnet/po/ko/
 %lang(pl) %{_libdir}/R/library/nnet/po/pl/
 %{_libdir}/R/library/nnet/R/
 # parallel
-%dir %{_libdir}/R/library/parallel/
-%{_libdir}/R/library/parallel/DESCRIPTION
-%{_libdir}/R/library/parallel/doc/
-%{_libdir}/R/library/parallel/help/
-%{_libdir}/R/library/parallel/html/
-%{_libdir}/R/library/parallel/INDEX
-%{_libdir}/R/library/parallel/libs/
-%{_libdir}/R/library/parallel/Meta/
-%{_libdir}/R/library/parallel/NAMESPACE
-%dir %{_libdir}/R/library/parallel/po
-%lang(da) %{_libdir}/R/library/parallel/po/da/
-%lang(de) %{_libdir}/R/library/parallel/po/de/
-%lang(en) %{_libdir}/R/library/parallel/po/en*/
-%lang(fr) %{_libdir}/R/library/parallel/po/fr/
-%lang(ko) %{_libdir}/R/library/parallel/po/ko/
-%lang(pl) %{_libdir}/R/library/parallel/po/pl/
-%lang(ru) %{_libdir}/R/library/parallel/po/ru/
-%lang(zh) %{_libdir}/R/library/parallel/po/zh*/
-%{_libdir}/R/library/parallel/R/
+%{_libdir}/R/library/parallel/
 # rpart
 %dir %{_libdir}/R/library/rpart/
 %{_libdir}/R/library/rpart/data/
 %{_libdir}/R/library/rpart/DESCRIPTION
+%{_libdir}/R/library/rpart/doc/
 %{_libdir}/R/library/rpart/help/
 %{_libdir}/R/library/rpart/html/
 %{_libdir}/R/library/rpart/INDEX
 %{_libdir}/R/library/rpart/libs/
 %{_libdir}/R/library/rpart/Meta/
 %{_libdir}/R/library/rpart/NAMESPACE
+%{_libdir}/R/library/rpart/NEWS.Rd
 %dir %{_libdir}/R/library/rpart/po
 %lang(de) %{_libdir}/R/library/rpart/po/de/
 %lang(en) %{_libdir}/R/library/rpart/po/en*/
 %lang(fr) %{_libdir}/R/library/rpart/po/fr/
+%lang(ko) %{_libdir}/R/library/rpart/po/ko/
 %lang(pl) %{_libdir}/R/library/rpart/po/pl/
 %lang(ru) %{_libdir}/R/library/rpart/po/ru/
 %{_libdir}/R/library/rpart/R/
@@ -720,160 +658,19 @@ popd
 %{_libdir}/R/library/spatial/PP.files
 %{_libdir}/R/library/spatial/R/
 # splines
-%dir %{_libdir}/R/library/splines/
-%{_libdir}/R/library/splines/DESCRIPTION
-%{_libdir}/R/library/splines/help/
-%{_libdir}/R/library/splines/html/
-%{_libdir}/R/library/splines/INDEX
-%{_libdir}/R/library/splines/libs/
-%{_libdir}/R/library/splines/Meta/
-%{_libdir}/R/library/splines/NAMESPACE
-%dir %{_libdir}/R/library/splines/po
-%lang(da) %{_libdir}/R/library/splines/po/da/
-%lang(de) %{_libdir}/R/library/splines/po/de/
-%lang(en) %{_libdir}/R/library/splines/po/en*/
-%lang(fr) %{_libdir}/R/library/splines/po/fr/
-%lang(ja) %{_libdir}/R/library/splines/po/ja/
-%lang(ko) %{_libdir}/R/library/splines/po/ko/
-%lang(pl) %{_libdir}/R/library/splines/po/pl/
-%lang(pt) %{_libdir}/R/library/splines/po/pt*/
-%lang(ru) %{_libdir}/R/library/splines/po/ru/
-%lang(zh) %{_libdir}/R/library/splines/po/zh*/
-%{_libdir}/R/library/splines/R/
+%{_libdir}/R/library/splines/
 # stats
-%dir %{_libdir}/R/library/stats/
-%{_libdir}/R/library/stats/COPYRIGHTS.modreg
-%{_libdir}/R/library/stats/demo/
-%{_libdir}/R/library/stats/DESCRIPTION
-%{_libdir}/R/library/stats/help/
-%{_libdir}/R/library/stats/html/
-%{_libdir}/R/library/stats/INDEX
-%{_libdir}/R/library/stats/libs/
-%{_libdir}/R/library/stats/Meta/
-%{_libdir}/R/library/stats/NAMESPACE
-%dir %{_libdir}/R/library/stats/po
-%lang(da) %{_libdir}/R/library/stats/po/da/
-%lang(de) %{_libdir}/R/library/stats/po/de/
-%lang(en) %{_libdir}/R/library/stats/po/en*/
-%lang(fr) %{_libdir}/R/library/stats/po/fr/
-%lang(it) %{_libdir}/R/library/stats/po/it/
-%lang(ja) %{_libdir}/R/library/stats/po/ja/
-%lang(ko) %{_libdir}/R/library/stats/po/ko/
-%lang(pl) %{_libdir}/R/library/stats/po/pl/
-%lang(pt) %{_libdir}/R/library/stats/po/pt*/
-%lang(ru) %{_libdir}/R/library/stats/po/ru/
-%lang(tr) %{_libdir}/R/library/stats/po/tr/
-%lang(zh) %{_libdir}/R/library/stats/po/zh*/
-%{_libdir}/R/library/stats/R/
-%{_libdir}/R/library/stats/SOURCES.ts
+%{_libdir}/R/library/stats/
 # stats4
-%dir %{_libdir}/R/library/stats4/
-%{_libdir}/R/library/stats4/DESCRIPTION
-%{_libdir}/R/library/stats4/help/
-%{_libdir}/R/library/stats4/html/
-%{_libdir}/R/library/stats4/INDEX
-%{_libdir}/R/library/stats4/Meta/
-%{_libdir}/R/library/stats4/NAMESPACE
-%dir %{_libdir}/R/library/stats4/po
-%lang(da) %{_libdir}/R/library/stats4/po/da/
-%lang(de) %{_libdir}/R/library/stats4/po/de/
-%lang(en) %{_libdir}/R/library/stats4/po/en*/
-%lang(fr) %{_libdir}/R/library/stats4/po/fr/
-%lang(it) %{_libdir}/R/library/stats4/po/it/
-%lang(ja) %{_libdir}/R/library/stats4/po/ja/
-%lang(ko) %{_libdir}/R/library/stats4/po/ko/
-%lang(pl) %{_libdir}/R/library/stats4/po/pl/
-%lang(pt) %{_libdir}/R/library/stats4/po/pt*/
-%lang(ru) %{_libdir}/R/library/stats4/po/ru/
-%lang(tr) %{_libdir}/R/library/stats4/po/tr/
-%lang(zh) %{_libdir}/R/library/stats4/po/zh*/
-%{_libdir}/R/library/stats4/R/
+%{_libdir}/R/library/stats4/
 # survival
-%dir %{_libdir}/R/library/survival/
-%{_libdir}/R/library/survival/data/
-%{_libdir}/R/library/survival/CITATION
-%{_libdir}/R/library/survival/DESCRIPTION
-%{_libdir}/R/library/survival/doc/
-%{_libdir}/R/library/survival/help/
-%{_libdir}/R/library/survival/html/
-%{_libdir}/R/library/survival/INDEX
-%{_libdir}/R/library/survival/libs/
-%{_libdir}/R/library/survival/Meta/
-%{_libdir}/R/library/survival/NAMESPACE
-%{_libdir}/R/library/survival/NEWS.Rd
-%{_libdir}/R/library/survival/R/
+%{_libdir}/R/library/survival/
 # tcltk
-%dir %{_libdir}/R/library/tcltk/
-%{_libdir}/R/library/tcltk/demo/
-%{_libdir}/R/library/tcltk/DESCRIPTION
-%{_libdir}/R/library/tcltk/exec/
-%{_libdir}/R/library/tcltk/help/
-%{_libdir}/R/library/tcltk/html/
-%{_libdir}/R/library/tcltk/INDEX
-%{_libdir}/R/library/tcltk/libs/
-%{_libdir}/R/library/tcltk/Meta/
-%{_libdir}/R/library/tcltk/NAMESPACE
-%dir %{_libdir}/R/library/tcltk/po/
-%lang(da) %{_libdir}/R/library/tcltk/po/da/
-%lang(de) %{_libdir}/R/library/tcltk/po/de/
-%lang(en) %{_libdir}/R/library/tcltk/po/en*/
-%lang(fr) %{_libdir}/R/library/tcltk/po/fr/
-%lang(it) %{_libdir}/R/library/tcltk/po/it/
-%lang(ja) %{_libdir}/R/library/tcltk/po/ja/
-%lang(ko) %{_libdir}/R/library/tcltk/po/ko/
-%lang(pl) %{_libdir}/R/library/tcltk/po/pl/
-%lang(pt) %{_libdir}/R/library/tcltk/po/pt*/
-%lang(ru) %{_libdir}/R/library/tcltk/po/ru/
-%lang(zh) %{_libdir}/R/library/tcltk/po/zh*/
-%{_libdir}/R/library/tcltk/R/
+%{_libdir}/R/library/tcltk/
 # tools
-%dir %{_libdir}/R/library/tools/
-%{_libdir}/R/library/tools/DESCRIPTION
-%{_libdir}/R/library/tools/help/
-%{_libdir}/R/library/tools/html/
-%{_libdir}/R/library/tools/INDEX
-%{_libdir}/R/library/tools/libs/
-%{_libdir}/R/library/tools/Meta/
-%{_libdir}/R/library/tools/NAMESPACE
-%dir %{_libdir}/R/library/tools/po
-%lang(da) %{_libdir}/R/library/tools/po/da/
-%lang(de) %{_libdir}/R/library/tools/po/de/
-%lang(en) %{_libdir}/R/library/tools/po/en*/
-%lang(fr) %{_libdir}/R/library/tools/po/fr/
-%lang(it) %{_libdir}/R/library/tools/po/it/
-%lang(ja) %{_libdir}/R/library/tools/po/ja/
-%lang(ko) %{_libdir}/R/library/tools/po/ko/
-%lang(pl) %{_libdir}/R/library/tools/po/pl/
-%lang(pt) %{_libdir}/R/library/tools/po/pt*/
-%lang(ru) %{_libdir}/R/library/tools/po/ru/
-%lang(tr) %{_libdir}/R/library/tools/po/tr/
-%lang(zh) %{_libdir}/R/library/tools/po/zh*/
-%{_libdir}/R/library/tools/R/
+%{_libdir}/R/library/tools/
 # utils
-%dir %{_libdir}/R/library/utils/
-%{_libdir}/R/library/utils/DESCRIPTION
-%{_libdir}/R/library/utils/doc/
-%{_libdir}/R/library/utils/help/
-%{_libdir}/R/library/utils/html/
-%{_libdir}/R/library/utils/iconvlist
-%{_libdir}/R/library/utils/INDEX
-%{_libdir}/R/library/utils/Meta/
-%{_libdir}/R/library/utils/misc/
-%{_libdir}/R/library/utils/NAMESPACE
-%dir %{_libdir}/R/library/utils/po
-%lang(da) %{_libdir}/R/library/utils/po/da/
-%lang(de) %{_libdir}/R/library/utils/po/de/
-%lang(en) %{_libdir}/R/library/utils/po/en*/
-%lang(fr) %{_libdir}/R/library/utils/po/fr/
-%lang(ja) %{_libdir}/R/library/utils/po/ja/
-%lang(ko) %{_libdir}/R/library/utils/po/ko/
-%lang(pl) %{_libdir}/R/library/utils/po/pl/
-%lang(pt) %{_libdir}/R/library/utils/po/pt*/
-%lang(ru) %{_libdir}/R/library/utils/po/ru/
-%lang(tr) %{_libdir}/R/library/utils/po/tr/
-%lang(zh) %{_libdir}/R/library/utils/po/zh*/
-%{_libdir}/R/library/utils/R/
-%{_libdir}/R/library/utils/Sweave/
+%{_libdir}/R/library/utils/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
 %{_libdir}/R/NEWS*
@@ -886,12 +683,23 @@ popd
 %docdir %{_docdir}/R-%{version}
 /etc/ld.so.conf.d/*
 
-%files devel
+%files core-devel
 %defattr(-, root, root, -)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
 # Symlink to %{_includedir}/R/
 %{_libdir}/R/include
+
+%files devel
+# Nothing, all files provided by R-core-devel
+
+%if %{modern}
+%files java
+# Nothing, all files provided by R-core
+
+%files java-devel
+# Nothing, all files provided by R-core-devel
+%endif
 
 %files -n libRmath
 %defattr(-, root, root, -)
@@ -962,13 +770,64 @@ fi
 %posttrans core
 /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
 
+%if %{modern}
+%post java
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+%post java-devel
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+%endif
+
 %post -n libRmath -p /sbin/ldconfig
 
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sat Apr 13 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.0-2
+- add Requires: tex(inconsolata.sty) to -core-devel to fix module PDF building
+
+* Fri Apr  5 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.0-1
+- update to 3.0.0
+
+* Wed Feb 27 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-7
+- add BuildRequires: xz-devel (for system xz/lzma support)
+- create R-core-devel
+
+* Sat Jan 26 2013 Kevin Fenzi <kevin@scrye.com> - 2.15.2-6
+- Rebuild for new icu
+
+* Sun Jan 20 2013 Tom Callaway <spot@fedoraproject.org> - 2.15.2-5
+- apply upstream fix for cairo issues (bz 891983)
+
+* Fri Jan 18 2013 Adam Tkac <atkac redhat com> - 2.15.2-4
+- rebuild due to "jpeg8-ABI" feature drop
+
+* Tue Nov 27 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-3
+- add Requires: tex(cm-super-ts1.enc) for R-devel
+
+* Tue Nov 27 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-2
+- add additional TeX font requirements to R-devel for Fedora 18+ (due to new texlive)
+
 * Mon Oct 29 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.2-1
 - update to 2.15.2
+- R now Requires: R-java (for a more complete base install)
+
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.15.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
 * Mon Jul  2 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.1-1
 - update to 2.15.1
@@ -976,8 +835,20 @@ fi
 * Mon Jul  2 2012 Jindrich Novy <jnovy@redhat.com> - 2.15.0-4
 - fix LaTeX and dvips dependencies (#836817)
 
+* Mon May  7 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-3
+- rebuild for new libtiff
+
+* Tue Apr 24 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-2
+- rebuild for new icu
+
 * Fri Mar 30 2012 Tom Callaway <spot@fedoraproject.org> - 2.15.0-1
 - Update to 2.15.0
+
+* Fri Feb 10 2012 Petr Pisar <ppisar@redhat.com> - 2.14.1-3
+- Rebuild against PCRE 8.30
+
+* Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.14.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
 * Wed Jan  4 2012 Tom Callaway <spot@fedoraproject.org> - 2.14.1-1
 - update to 2.14.1
@@ -991,6 +862,12 @@ fi
 * Wed Nov  2 2011 Tom Callaway <spot@fedoraproject.org> - 2.14.0-1
 - update to 2.14.0
 
+* Fri Oct  7 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.2-1
+- update to 2.13.2
+
+* Mon Sep 12 2011 Michel Salim <salimma@fedoraproject.org> - 2.13.1-5
+- rebuild for libicu 4.8.x
+
 * Tue Aug  9 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-4
 - fix salimma's scriptlets to be on -core instead of the metapackage
 
@@ -1003,14 +880,20 @@ fi
 * Mon Jul 11 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.1-1
 - update to 2.13.1
 
-* Thu Apr 12 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.0-1
+* Tue Apr 12 2011 Tom Callaway <spot@fedoraproject.org> - 2.13.0-1
 - update to 2.13.0
 - add convenience symlink for include directory (bz 688295)
+
+* Mon Mar 07 2011 Caolán McNamara <caolanm@redhat.com> - 2.12.2-2
+- rebuild for icu 4.6
 
 * Sun Feb 27 2011 Tom Callaway <spot@fedoraproject.org> - 2.12.2-1
 - update to 2.12.2
 
-* Mon Dec 20 2010 Tom Callaway <spot@fedoraproject.org> - 2.12.1-1
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.12.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Fri Dec 17 2010 Tom Callaway <spot@fedoraproject.org> - 2.12.1-1
 - update to 2.12.1
 
 * Wed Oct 20 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.12.0-1
@@ -1030,6 +913,9 @@ fi
 
 * Thu Apr 22 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 2.11.0-1
 - update to 2.11.0
+
+* Fri Apr 02 2010 Caolán McNamara <caolanm@redhat.com> - 2.10.1-2
+- rebuild for icu 4.4
 
 * Mon Dec 21 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.10.1-1
 - update to 2.10.1
@@ -1217,7 +1103,7 @@ fi
 * Sun Oct 15 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-1
 - bump for 2.4.0
 
-* Wed Sep 12 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-2
+* Tue Sep 12 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-2
 - bump for FC-6
 
 * Fri Jun  2 2006 Tom "spot" Callaway <tcallawa@redhat.com> 2.3.1-1
@@ -1325,7 +1211,7 @@ fi
 - Modified BuildRequires so we can support older Red Hat versions without
   defining any macros.
 
-* Mon Jun 23 2004 Martyn Plummer <plummner@iarc.fr> 0:1.9.1-0.fdr.2
+* Wed Jun 23 2004 Martyn Plummer <plummner@iarc.fr> 0:1.9.1-0.fdr.2
 - Added libtermcap-devel as BuildRequires for RH 8.0 and 9. Without
   this we get no readline support.
 
@@ -1336,7 +1222,7 @@ fi
 * Mon Jun 14 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.4
 - Added XFree86-devel as conditional BuildRequires for rh9, rh80
 
-* Wed Jun 08 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.3
+* Tue Jun 08 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.3
 - Corrected names for fc1/fc2/el3 when using conditional BuildRequires
 - Configure searches for C++ preprocessor and fails if we don't have
   gcc-c++ installed. Added to BuildRequires for FC2.
@@ -1346,7 +1232,7 @@ fi
   from R 1.9.1; patch supplied by Graeme Ambler)
 - Changed permissions of source files to 644 to please rpmlint
 
-* Tue May 03 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.1
+* Mon May 03 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.1
 - R.spec file now has mode 644. Previously it was unreadable by other
   users and this was causing a crash building under mach.
 - Changed version number to conform to Fedora conventions. 
@@ -1369,7 +1255,7 @@ fi
 - Folded info installation into %%makeinstall 
 - Check that RPM_BASE_ROOT is not set to "/" before cleaning up
 
-* Thu Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
+* Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
 - Removed tcl-devel from BuildRequires
 
 * Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
