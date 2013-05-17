@@ -16,8 +16,8 @@
 %endif
 
 Name: R
-Version: 3.0.0
-Release: 2%{?dist}
+Version: 3.0.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -312,6 +312,12 @@ make
 (cd src/nmath/standalone; make)
 #make check-all
 make pdf
+# What a hack.
+# Current texinfo doesn't like @eqn. Use @math instead where stuff breaks.
+cp doc/manual/R-exts.texi doc/manual/R-exts.texi.spot
+cp doc/manual/R-intro.texi doc/manual/R-intro.texi.spot
+sed -i 's|@eqn|@math|g' doc/manual/R-exts.texi
+sed -i 's|@eqn|@math|g'	doc/manual/R-intro.texi
 make info
 
 # Convert to UTF-8
@@ -322,6 +328,9 @@ done
 
 %install
 make DESTDIR=${RPM_BUILD_ROOT} install install-info
+# And now, undo the hack. :P
+mv doc/manual/R-exts.texi.spot doc/manual/R-exts.texi
+mv doc/manual/R-intro.texi.spot doc/manual/R-intro.texi
 make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
@@ -797,6 +806,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri May 17 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.1-1
+- update to 3.0.1
+
 * Sat Apr 13 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.0-2
 - add Requires: tex(inconsolata.sty) to -core-devel to fix module PDF building
 
