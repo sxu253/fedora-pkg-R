@@ -17,7 +17,7 @@
 
 Name: R
 Version: 3.0.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -304,7 +304,7 @@ export FCFLAGS="%{optflags}"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
-    rdocdir=%{_docdir}/R-%{version} \
+    rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
  | grep -A30 'R is now' - > CAPABILITIES
@@ -339,7 +339,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
-install -p CAPABILITIES ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}
+install -p CAPABILITIES ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 
 #Install libRmath files
 (cd src/nmath/standalone; make install DESTDIR=${RPM_BUILD_ROOT})
@@ -358,21 +358,21 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 # Fix multilib
-touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
+touch -r NEWS ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 touch -r NEWS doc/manual/*.pdf
 touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
 # Fix html/packages.html
 # We can safely use RHOME here, because all of these are system packages.
-sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/html/packages.html
 
 for i in $RPM_BUILD_ROOT%{_libdir}/R/library/*/html/*.html; do
-  sed -i 's|\..\/\..\/..\/doc|%{_docdir}/R-%{version}|g' $i
+  sed -i 's|\..\/\..\/..\/doc|%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}|g' $i
 done
 
 # Fix exec bits
 chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
-chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
+chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 
 # Symbolic link for convenience
 pushd $RPM_BUILD_ROOT%{_libdir}/R
@@ -692,8 +692,8 @@ popd
 %{_infodir}/R-*.info*
 %{_sysconfdir}/rpm/macros.R
 %{_mandir}/man1/*
-%{_docdir}/R-%{version}
-%docdir %{_docdir}/R-%{version}
+%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
+%docdir %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 /etc/ld.so.conf.d/*
 
 %files core-devel
@@ -810,6 +810,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Aug 12 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.1-4
+- add support for unversioned docdir in F20+
+
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
