@@ -23,6 +23,8 @@ URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679180
+Patch0: R-3.0.1-arm-compile-fix.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -238,6 +240,7 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .armfix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -812,6 +815,7 @@ R CMD javareconf \
 %changelog
 * Mon Aug 12 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.1-4
 - add support for unversioned docdir in F20+
+- fix compile on arm (thanks Debian, wish you'd upstreamed that patch)
 
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
