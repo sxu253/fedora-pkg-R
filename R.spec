@@ -16,13 +16,15 @@
 %endif
 
 Name: R
-Version: 3.0.1
-Release: 2%{?dist}
+Version: 3.0.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679180
+Patch0: R-3.0.1-arm-compile-fix.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -89,26 +91,26 @@ Requires: perl, sed, gawk, tex(latex), less
 # packager convenience.
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.9
-Provides: R-class = 7.3.7
+Provides: R-class = 7.3.9
 Provides: R-cluster = 1.14.4
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.53
+Provides: R-foreign = 0.8.55
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.10
-Provides: R-lattice = 0.20.15
-Provides: R-MASS = 7.3.26
-Provides: R-Matrix = 1.0.12
+Provides: R-lattice = 0.20.23
+Provides: R-MASS = 7.3.29
+Provides: R-Matrix = 1.0.14
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.22
-Provides: R-nlme = 3.1.109
-Provides: R-nnet = 7.3.6
+Provides: R-mgcv = 1.7.26
+Provides: R-nlme = 3.1.111
+Provides: R-nnet = 7.3.7
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.1
-Provides: R-spatial = 7.3.6
+Provides: R-rpart = 4.1.3
+Provides: R-spatial = 7.3.7
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -151,7 +153,7 @@ Requires: tex(ptmri8t.tfm)
 Requires: tex(ptmro8t.tfm)
 Requires: tex(cm-super-ts1.enc)
 %endif
-Provides: R-Matrix-devel = 1.0.12
+Provides: R-Matrix-devel = 1.0.14
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -238,6 +240,7 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .armfix
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -304,7 +307,7 @@ export FCFLAGS="%{optflags}"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
-    rdocdir=%{_docdir}/R-%{version} \
+    rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
  | grep -A30 'R is now' - > CAPABILITIES
@@ -339,7 +342,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
-install -p CAPABILITIES ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}
+install -p CAPABILITIES ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 
 #Install libRmath files
 (cd src/nmath/standalone; make install DESTDIR=${RPM_BUILD_ROOT})
@@ -358,21 +361,21 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 # Fix multilib
-touch -r NEWS ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
+touch -r NEWS ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 touch -r NEWS doc/manual/*.pdf
 touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
 
 # Fix html/packages.html
 # We can safely use RHOME here, because all of these are system packages.
-sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{_docdir}/R-%{version}/html/packages.html
+sed -i 's|\..\/\..|%{_libdir}/R|g' $RPM_BUILD_ROOT%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/html/packages.html
 
 for i in $RPM_BUILD_ROOT%{_libdir}/R/library/*/html/*.html; do
-  sed -i 's|\..\/\..\/..\/doc|%{_docdir}/R-%{version}|g' $i
+  sed -i 's|\..\/\..\/..\/doc|%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}|g' $i
 done
 
 # Fix exec bits
 chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
-chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{_docdir}/R-%{version}/CAPABILITIES
+chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 
 # Symbolic link for convenience
 pushd $RPM_BUILD_ROOT%{_libdir}/R
@@ -445,7 +448,6 @@ popd
 %{_libdir}/R/library/class/html/
 %{_libdir}/R/library/class/INDEX
 %{_libdir}/R/library/class/libs/
-%{_libdir}/R/library/class/LICENCE
 %{_libdir}/R/library/class/Meta/
 %{_libdir}/R/library/class/NAMESPACE
 %{_libdir}/R/library/class/NEWS
@@ -540,6 +542,8 @@ popd
 %lang(de) %{_libdir}/R/library/lattice/po/de/
 %lang(en) %{_libdir}/R/library/lattice/po/en*/
 %lang(fr) %{_libdir}/R/library/lattice/po/fr/
+%lang(ko) %{_libdir}/R/library/lattice/po/ko/
+%lang(pl) %{_libdir}/R/library/lattice/po/pl*/
 %{_libdir}/R/library/lattice/R/
 # MASS
 %dir %{_libdir}/R/library/MASS/
@@ -550,7 +554,6 @@ popd
 %{_libdir}/R/library/MASS/html/
 %{_libdir}/R/library/MASS/INDEX
 %{_libdir}/R/library/MASS/libs/
-%{_libdir}/R/library/MASS/LICENCE
 %{_libdir}/R/library/MASS/Meta/
 %{_libdir}/R/library/MASS/NAMESPACE
 %{_libdir}/R/library/MASS/NEWS
@@ -598,7 +601,6 @@ popd
 %{_libdir}/R/library/nlme/html/
 %{_libdir}/R/library/nlme/INDEX
 %{_libdir}/R/library/nlme/libs/
-%{_libdir}/R/library/nlme/LICENCE
 %{_libdir}/R/library/nlme/Meta/
 %{_libdir}/R/library/nlme/mlbook/
 %{_libdir}/R/library/nlme/NAMESPACE
@@ -606,6 +608,7 @@ popd
 %lang(de) %{_libdir}/R/library/nlme/po/de/
 %lang(en) %{_libdir}/R/library/nlme/po/en*/
 %lang(fr) %{_libdir}/R/library/nlme/po/fr/
+%lang(ko) %{_libdir}/R/library/nlme/po/ko/
 %lang(pl) %{_libdir}/R/library/nlme/po/pl/
 %{_libdir}/R/library/nlme/R/
 %{_libdir}/R/library/nlme/scripts/
@@ -617,7 +620,6 @@ popd
 %{_libdir}/R/library/nnet/html/
 %{_libdir}/R/library/nnet/INDEX
 %{_libdir}/R/library/nnet/libs/
-%{_libdir}/R/library/nnet/LICENCE
 %{_libdir}/R/library/nnet/Meta/
 %{_libdir}/R/library/nnet/NAMESPACE
 %{_libdir}/R/library/nnet/NEWS
@@ -658,7 +660,6 @@ popd
 %{_libdir}/R/library/spatial/html/
 %{_libdir}/R/library/spatial/INDEX
 %{_libdir}/R/library/spatial/libs/
-%{_libdir}/R/library/spatial/LICENCE
 %{_libdir}/R/library/spatial/Meta/
 %{_libdir}/R/library/spatial/NAMESPACE
 %{_libdir}/R/library/spatial/NEWS
@@ -692,8 +693,8 @@ popd
 %{_infodir}/R-*.info*
 %{_sysconfdir}/rpm/macros.R
 %{_mandir}/man1/*
-%{_docdir}/R-%{version}
-%docdir %{_docdir}/R-%{version}
+%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
+%docdir %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 /etc/ld.so.conf.d/*
 
 %files core-devel
@@ -810,6 +811,16 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Oct 15 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.2-1
+- update to 3.0.2
+
+* Mon Aug 12 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.1-4
+- add support for unversioned docdir in F20+
+- fix compile on arm (thanks Debian, wish you'd upstreamed that patch)
+
+* Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Sat May 18 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.1-2
 - conditionalize the ugly hack for fedora 19+
 
