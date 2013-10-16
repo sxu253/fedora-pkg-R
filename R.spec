@@ -171,6 +171,8 @@ Summary:	Full R development environment metapackage
 Requires:	R-core-devel = %{version}-%{release}
 %if %{modern}
 Requires:	R-java-devel = %{version}-%{release}
+%else
+Group:		Development/Libraries
 %endif
 
 %description devel
