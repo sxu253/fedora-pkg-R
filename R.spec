@@ -17,7 +17,7 @@
 
 Name: R
 Version: 3.0.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -310,7 +310,9 @@ export FCFLAGS="%{optflags}"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
+%ifnarch ppc ppc64
     --enable-lto \
+%endif
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
@@ -815,6 +817,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jan 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-3
+- disable lto on ppc/ppc64
+
 * Fri Dec 20 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.2-2
 - add --with-blas, --enable-lto to configure
 
