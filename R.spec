@@ -310,7 +310,7 @@ export FCFLAGS="%{optflags}"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
-%ifnarch ppc ppc64
+%if %{modern}
     --enable-lto \
 %endif
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
@@ -817,6 +817,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jan 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-4
+- disable lto on non-modern targets (not just ppc)
+
 * Fri Jan 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-3
 - disable lto on ppc/ppc64
 
