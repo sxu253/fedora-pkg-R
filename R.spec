@@ -17,7 +17,7 @@
 
 Name: R
 Version: 3.0.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -34,7 +34,7 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
 %if %{modern}
-BuildRequires: java-1.5.0-gcj
+BuildRequires: java
 %else
 BuildRequires: java-1.4.2-gcj-compat
 %endif
@@ -819,11 +819,11 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
-* Fri Jan 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-4
-- disable lto on non-modern targets (not just ppc)
+* Fri Feb  7 2014 Orion Poplawski <orion@cora.nwra.com> - 3.0.2-4
+- Use BR java
 
 * Fri Jan 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-3
-- disable lto on ppc/ppc64
+- disable lto on non-modern targets (not just ppc)
 
 * Fri Dec 20 2013 Tom Callaway <spot@fedoraproject.org> - 3.0.2-2
 - add --with-blas, --enable-lto to configure
