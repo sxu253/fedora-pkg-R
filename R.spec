@@ -7,6 +7,16 @@
 # Assume not modern. Override if needed.
 %global	modern 0
 
+%global system_tre 0
+# We need to use system tre on F21+/RHEL7
+%if 0%{?fedora} >= 21
+%global system_tre 1
+%endif
+
+%if 0%{?rhel} >= 7
+%global system_tre 1
+%endif
+
 %if 0%{?fedora}
 %global modern 1
 %endif
@@ -17,7 +27,7 @@
 
 Name: R
 Version: 3.0.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -25,6 +35,7 @@ Source1: macros.R
 Source2: R-make-search-index.sh
 # http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679180
 Patch0: R-3.0.1-arm-compile-fix.patch
+Patch1: R-3.0.2-system-tre.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -37,6 +48,10 @@ BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
 BuildRequires: java
 %else
 BuildRequires: java-1.4.2-gcj-compat
+%endif
+%if %{system_tre}
+BuildRequires: tre-devel
+BuildRequires: autoconf, automake, libtool
 %endif
 BuildRequires: lapack-devel
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
@@ -243,6 +258,9 @@ from the R project.  This package provides the static libRmath library.
 %prep
 %setup -q
 %patch0 -p1 -b .armfix
+%if %{system_tre}
+%patch1 -p1 -b .system-tre
+%endif
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -261,6 +279,10 @@ cat << \EOF > %{name}-req
 EOF
 %define __perl_requires %{_builddir}/R-%{version}/%{name}-req
 chmod +x %{__perl_requires}
+
+%if %{system_tre}
+autoreconf -ifv -I m4
+%endif
 
 %build
 # Add PATHS to Renviron for R_LIBS_SITE
@@ -303,6 +325,9 @@ esac
 
 export FCFLAGS="%{optflags}"
 ( %configure \
+%if %{system_tre}
+    --with-system-tre \
+%endif
     --with-system-zlib --with-system-bzlib --with-system-pcre \
     --with-lapack \
     --with-blas \
@@ -819,6 +844,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Feb  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-5
+- add support for system tre (f21+, rhel 7+)
+
 * Fri Feb  7 2014 Orion Poplawski <orion@cora.nwra.com> - 3.0.2-4
 - Use BR java
 
