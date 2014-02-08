@@ -5,7 +5,7 @@
 %endif
 
 # Assume not modern. Override if needed.
-%global	modern 0
+%global modern 0
 
 %global system_tre 0
 # We need to use system tre on F21+/RHEL7
@@ -22,12 +22,14 @@
 %endif
 
 %if 0%{?rhel} >= 6
-%global	modern 1
+%global modern 1
 %endif
+
+%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
 Version: 3.0.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -182,12 +184,12 @@ Install R-core-devel if you are going to develop or compile R packages.
 %endif
 
 %package devel
-Summary:	Full R development environment metapackage
-Requires:	R-core-devel = %{version}-%{release}
+Summary: Full R development environment metapackage
+Requires: R-core-devel = %{version}-%{release}
 %if %{modern}
-Requires:	R-java-devel = %{version}-%{release}
+Requires: R-java-devel = %{version}-%{release}
 %else
-Group:		Development/Libraries
+Group: Development/Libraries
 %endif
 
 %description devel
@@ -354,7 +356,7 @@ make pdf
 cp doc/manual/R-exts.texi doc/manual/R-exts.texi.spot
 cp doc/manual/R-intro.texi doc/manual/R-intro.texi.spot
 sed -i 's|@eqn|@math|g' doc/manual/R-exts.texi
-sed -i 's|@eqn|@math|g'	doc/manual/R-intro.texi
+sed -i 's|@eqn|@math|g' doc/manual/R-intro.texi
 %endif
 make info
 
@@ -386,8 +388,8 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/R/library
 
 # Install rpm helper macros
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
-install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/
+mkdir -p $RPM_BUILD_ROOT%{macrosdir}/
+install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{macrosdir}/
 
 # Install rpm helper script
 mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
@@ -724,7 +726,7 @@ popd
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
-%{_sysconfdir}/rpm/macros.R
+%{macrosdir}/macros.R
 %{_mandir}/man1/*
 %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 %docdir %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
@@ -844,6 +846,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sat Feb  8 2014 Ville Skyttä <ville.skytta@iki.fi> - 3.0.2-6
+- Install macros to %%{_rpmconfigdir}/macros.d where available.
+- Fix rpmlint spaces vs tabs warnings.
+
 * Fri Feb  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.2-5
 - add support for system tre (f21+, rhel 7+)
 
