@@ -29,7 +29,7 @@
 
 Name: R
 Version: 3.0.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -846,6 +846,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Feb 14 2014 David Tardon <dtardon@redhat.com> - 3.0.2-7
+- rebuild for new ICU
+
 * Sat Feb  8 2014 Ville Skyttä <ville.skytta@iki.fi> - 3.0.2-6
 - Install macros to %%{_rpmconfigdir}/macros.d where available.
 - Fix rpmlint spaces vs tabs warnings.
