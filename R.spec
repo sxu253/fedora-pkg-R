@@ -28,15 +28,13 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.0.2
-Release: 7%{?dist}
+Version: 3.0.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=679180
-Patch0: R-3.0.1-arm-compile-fix.patch
 Patch1: R-3.0.2-system-tre.patch
 License: GPLv2+
 Group: Applications/Engineering
@@ -47,7 +45,7 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
 %if %{modern}
-BuildRequires: java
+BuildRequires: java-headless
 %else
 BuildRequires: java-1.4.2-gcj-compat
 %endif
@@ -112,26 +110,26 @@ Provides: R-class = 7.3.9
 Provides: R-cluster = 1.14.4
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.55
+Provides: R-foreign = 0.8.59
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.10
-Provides: R-lattice = 0.20.23
+Provides: R-lattice = 0.20.27
 Provides: R-MASS = 7.3.29
-Provides: R-Matrix = 1.0.14
+Provides: R-Matrix = 1.1.2
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.26
-Provides: R-nlme = 3.1.111
+Provides: R-mgcv = 1.7.28
+Provides: R-nlme = 3.1.113
 Provides: R-nnet = 7.3.7
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.3
+Provides: R-rpart = 4.1.5
 Provides: R-spatial = 7.3.7
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.37.4
+Provides: R-survival = 2.37.7
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -170,7 +168,7 @@ Requires: tex(ptmri8t.tfm)
 Requires: tex(ptmro8t.tfm)
 Requires: tex(cm-super-ts1.enc)
 %endif
-Provides: R-Matrix-devel = 1.0.14
+Provides: R-Matrix-devel = 1.1.2
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -201,7 +199,7 @@ environment.
 Summary: R with Fedora provided Java Runtime Environment
 Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
-Requires(post): java
+Requires(post): java-headless
 
 %description java
 A language and environment for statistical computing and graphics.
@@ -259,7 +257,6 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
-%patch0 -p1 -b .armfix
 %if %{system_tre}
 %patch1 -p1 -b .system-tre
 %endif
@@ -846,6 +843,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Mar 20 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.3-1
+- update to 3.0.3
+- switch to java-headless
+
 * Fri Feb 14 2014 David Tardon <dtardon@redhat.com> - 3.0.2-7
 - rebuild for new ICU
 
