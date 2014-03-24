@@ -29,7 +29,7 @@
 
 Name: R
 Version: 3.0.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -296,7 +296,7 @@ export R_PRINTCMD="lpr"
 export R_BROWSER="%{_bindir}/xdg-open"
 
 case "%{_target_cpu}" in
-      x86_64|mips64|ppc64|powerpc64|sparc64|s390x)
+      x86_64|mips64|ppc64|powerpc64|sparc64|s390x|powerpc64le|ppc64le)
           export CC="gcc -m64"
           export CXX="g++ -m64"
           export F77="gfortran -m64"
@@ -843,6 +843,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Mar 24 2014 Brent Baude <baude@us.ibm.com> - 3.0.3-2
+- add ppc64le support
+- rhbz #1077819
+
 * Thu Mar 20 2014 Tom Callaway <spot@fedoraproject.org> - 3.0.3-1
 - update to 3.0.3
 - switch to java-headless
