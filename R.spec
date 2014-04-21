@@ -28,14 +28,13 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.0.3
-Release: 2%{?dist}
+Version: 3.1.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
-Patch1: R-3.0.2-system-tre.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -105,27 +104,27 @@ Requires: perl, sed, gawk, tex(latex), less
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.9
-Provides: R-class = 7.3.9
-Provides: R-cluster = 1.14.4
+Provides: R-boot = 1.3.11
+Provides: R-class = 7.3.10
+Provides: R-cluster = 1.15.2
 Provides: R-codetools = 0.2.8
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.59
+Provides: R-foreign = 0.8.61
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.10
-Provides: R-lattice = 0.20.27
-Provides: R-MASS = 7.3.29
-Provides: R-Matrix = 1.1.2
+Provides: R-KernSmooth = 2.23.12
+Provides: R-lattice = 0.20.29
+Provides: R-MASS = 7.3.31
+Provides: R-Matrix = 1.1.3
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.28
-Provides: R-nlme = 3.1.113
-Provides: R-nnet = 7.3.7
+Provides: R-mgcv = 1.7.29
+Provides: R-nlme = 3.1.117
+Provides: R-nnet = 7.3.8
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.5
-Provides: R-spatial = 7.3.7
+Provides: R-rpart = 4.1.8
+Provides: R-spatial = 7.3.8
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -168,7 +167,7 @@ Requires: tex(ptmri8t.tfm)
 Requires: tex(ptmro8t.tfm)
 Requires: tex(cm-super-ts1.enc)
 %endif
-Provides: R-Matrix-devel = 1.1.2
+Provides: R-Matrix-devel = 1.1.3
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -257,9 +256,6 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
-%if %{system_tre}
-%patch1 -p1 -b .system-tre
-%endif
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -278,10 +274,6 @@ cat << \EOF > %{name}-req
 EOF
 %define __perl_requires %{_builddir}/R-%{version}/%{name}-req
 chmod +x %{__perl_requires}
-
-%if %{system_tre}
-autoreconf -ifv -I m4
-%endif
 
 %build
 # Add PATHS to Renviron for R_LIBS_SITE
@@ -843,6 +835,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Apr 21 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-1
+- update to 3.1.0
+
 * Mon Mar 24 2014 Brent Baude <baude@us.ibm.com> - 3.0.3-2
 - add ppc64le support
 - rhbz #1077819
