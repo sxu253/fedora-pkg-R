@@ -63,6 +63,7 @@ BuildRequires: less
 %if 0%{?fedora} >= 18
 BuildRequires: tex(inconsolata.sty)
 %endif
+BuildRequires: tex(upquote.sty)
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -385,9 +386,9 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 # Fix multilib
-touch -r NEWS ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
-touch -r NEWS doc/manual/*.pdf
-touch -r NEWS $RPM_BUILD_ROOT%{_bindir}/R
+touch -r README ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
+touch -r README doc/manual/*.pdf
+touch -r README $RPM_BUILD_ROOT%{_bindir}/R
 
 # Fix html/packages.html
 # We can safely use RHOME here, because all of these are system packages.
@@ -448,6 +449,7 @@ popd
 %{_libdir}/R/library/base/
 # boot
 %dir %{_libdir}/R/library/boot/
+%{_libdir}/R/library/boot/bd.q
 %{_libdir}/R/library/boot/CITATION
 %{_libdir}/R/library/boot/data/
 %{_libdir}/R/library/boot/DESCRIPTION
@@ -497,6 +499,7 @@ popd
 %dir %{_libdir}/R/library/cluster/po/
 %lang(de) %{_libdir}/R/library/cluster/po/de/
 %lang(en) %{_libdir}/R/library/cluster/po/en*/
+%lang(fr) %{_libdir}/R/library/cluster/po/fr/
 %lang(pl) %{_libdir}/R/library/cluster/po/pl/
 # codetools
 %dir %{_libdir}/R/library/codetools/
@@ -546,6 +549,7 @@ popd
 %dir %{_libdir}/R/library/KernSmooth/po/
 %lang(de) %{_libdir}/R/library/KernSmooth/po/de/
 %lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
+%lang(fr) %{_libdir}/R/library/KernSmooth/po/fr/
 %lang(ko) %{_libdir}/R/library/KernSmooth/po/ko/
 %lang(pl) %{_libdir}/R/library/KernSmooth/po/pl/
 %{_libdir}/R/library/KernSmooth/R/
@@ -607,6 +611,7 @@ popd
 %dir %{_libdir}/R/library/Matrix/po/
 %lang(de) %{_libdir}/R/library/Matrix/po/de/
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
+%lang(fr) %{_libdir}/R/library/Matrix/po/fr/
 %lang(pl) %{_libdir}/R/library/Matrix/po/pl/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
@@ -711,7 +716,7 @@ popd
 %{_libdir}/R/library/utils/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
-%{_libdir}/R/NEWS*
+# %{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
