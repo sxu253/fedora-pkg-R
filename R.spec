@@ -315,7 +315,11 @@ case "%{_target_cpu}" in
       ;;    
 esac
 
-export FCFLAGS="%{optflags}"
+# With gcc 4.9, if we don't pass -ffat-lto-objects along with -flto, Matrix builds without the needed object code
+# ... and doesn't work at all as a result.
+export CFLAGS="%{optflags} -ffat-lto-objects"
+export CXXFLAGS="%{optflags} -ffat-lto-objects"
+export FCFLAGS="%{optflags} -ffat-lto-objects"
 ( %configure \
 %if %{system_tre}
     --with-system-tre \
