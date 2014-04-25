@@ -29,7 +29,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -155,7 +155,13 @@ Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
-Requires: tcl-devel, tk-devel, pkgconfig
+Requires: tcl-devel, tk-devel, pkgconfig, xz-devel
+%if %{modern}
+Requires: libicu-devel
+%endif
+%if %{system_tre}
+Requires: tre-devel
+%endif
 # TeX files needed
 %if 0%{?fedora} >= 18
 Requires: tex(ecrm1000.tfm)
@@ -844,6 +850,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Apr 25 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-2
+- fix core-devel Requires
+
 * Mon Apr 21 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-1
 - update to 3.1.0
 
