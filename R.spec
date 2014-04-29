@@ -29,7 +29,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -44,7 +44,11 @@ BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
 %if %{modern}
+%if 0%{?fedora} >= 21
 BuildRequires: java-headless
+%else
+BuildRequires: java-1.5.0-gcj
+%endif
 %else
 BuildRequires: java-1.4.2-gcj-compat
 %endif
@@ -205,7 +209,11 @@ environment.
 Summary: R with Fedora provided Java Runtime Environment
 Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
+%if 0%{?fedora} >= 21
 Requires(post): java-headless
+%else
+Requires(post): java-1.5.0-gcj
+%endif
 
 %description java
 A language and environment for statistical computing and graphics.
@@ -850,6 +858,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-3
+- epel fixes
+
 * Fri Apr 25 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-2
 - fix core-devel Requires
 
