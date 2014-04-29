@@ -7,14 +7,21 @@
 # Assume not modern. Override if needed.
 %global modern 0
 
+%global with_lto 0
+
 %global system_tre 0
 # We need to use system tre on F21+/RHEL7
 %if 0%{?fedora} >= 21
 %global system_tre 1
 %endif
 
+%if 0%{?fedora} >= 19
+%global with_lto 1
+%endif
+
 %if 0%{?rhel} >= 7
 %global system_tre 1
+%global with_lto 1
 %endif
 
 %if 0%{?fedora}
@@ -349,11 +356,12 @@ export FCFLAGS="%{optflags}"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
-%if %{modern}
+%if %{with_lto}
 %ifnarch %{arm}
     --enable-lto \
 %endif
 %endif
+
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
