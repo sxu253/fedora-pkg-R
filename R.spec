@@ -361,7 +361,6 @@ export FCFLAGS="%{optflags}"
     --enable-lto \
 %endif
 %endif
-
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
