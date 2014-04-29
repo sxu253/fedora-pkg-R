@@ -397,6 +397,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
+mkdir -p ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 install -p CAPABILITIES ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 
 #Install libRmath files
