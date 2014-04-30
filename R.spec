@@ -873,6 +873,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-4
+- unified spec file for all targets
+
 * Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-3
 - epel fixes
 
