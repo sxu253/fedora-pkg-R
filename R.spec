@@ -8,11 +8,13 @@
 %global modern 0
 
 %global with_lto 0
+%global with_java_headless 0
 
 %global system_tre 0
 # We need to use system tre on F21+/RHEL7
 %if 0%{?fedora} >= 21
 %global system_tre 1
+%global with_java_headless 1
 %endif
 
 %if 0%{?fedora} >= 19
@@ -22,6 +24,7 @@
 %if 0%{?rhel} >= 7
 %global system_tre 1
 %global with_lto 1
+%global with_java_headless 1
 %endif
 
 %if 0%{?fedora}
@@ -36,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -50,14 +53,14 @@ BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
-%if %{modern}
-%if 0%{?fedora} >= 21
+%if %{with_java_headless}
 BuildRequires: java-headless
 %else
+%if %{modern}
 BuildRequires: java-1.5.0-gcj
-%endif
 %else
 BuildRequires: java-1.4.2-gcj-compat
+%endif
 %endif
 %if %{system_tre}
 BuildRequires: tre-devel
@@ -216,7 +219,7 @@ environment.
 Summary: R with Fedora provided Java Runtime Environment
 Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
-%if 0%{?fedora} >= 21
+%if %{with_java_headless}
 Requires(post): java-headless
 %else
 Requires(post): java-1.5.0-gcj
@@ -361,7 +364,6 @@ export FCFLAGS="%{optflags}"
     --enable-lto \
 %endif
 %endif
-
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
