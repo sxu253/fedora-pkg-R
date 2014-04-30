@@ -7,14 +7,24 @@
 # Assume not modern. Override if needed.
 %global modern 0
 
+%global with_lto 0
+%global with_java_headless 0
+
 %global system_tre 0
 # We need to use system tre on F21+/RHEL7
 %if 0%{?fedora} >= 21
 %global system_tre 1
+%global with_java_headless 1
+%endif
+
+%if 0%{?fedora} >= 19
+%global with_lto 1
 %endif
 
 %if 0%{?rhel} >= 7
 %global system_tre 1
+%global with_lto 1
+%global with_java_headless 1
 %endif
 
 %if 0%{?fedora}
@@ -29,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 2%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -43,10 +53,14 @@ BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
-%if %{modern}
+%if %{with_java_headless}
 BuildRequires: java-headless
 %else
+%if %{modern}
+BuildRequires: java-1.5.0-gcj
+%else
 BuildRequires: java-1.4.2-gcj-compat
+%endif
 %endif
 %if %{system_tre}
 BuildRequires: tre-devel
@@ -62,8 +76,8 @@ BuildRequires: libicu-devel
 BuildRequires: less
 %if 0%{?fedora} >= 18
 BuildRequires: tex(inconsolata.sty)
-%endif
 BuildRequires: tex(upquote.sty)
+%endif
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -205,7 +219,11 @@ environment.
 Summary: R with Fedora provided Java Runtime Environment
 Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
+%if %{with_java_headless}
 Requires(post): java-headless
+%else
+Requires(post): java-1.5.0-gcj
+%endif
 
 %description java
 A language and environment for statistical computing and graphics.
@@ -321,11 +339,15 @@ case "%{_target_cpu}" in
       ;;    
 esac
 
+%if 0%{?fedora} >= 21
 # With gcc 4.9, if we don't pass -ffat-lto-objects along with -flto, Matrix builds without the needed object code
 # ... and doesn't work at all as a result.
 export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
 export FCFLAGS="%{optflags} -ffat-lto-objects"
+%else
+export FCFLAGS="%{optflags}"
+%endif
 ( %configure \
 %if %{system_tre}
     --with-system-tre \
@@ -337,7 +359,7 @@ export FCFLAGS="%{optflags} -ffat-lto-objects"
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
     --enable-prebuilt-html \
-%if %{modern}
+%if %{with_lto}
 %ifnarch %{arm}
     --enable-lto \
 %endif
@@ -377,6 +399,7 @@ make DESTDIR=${RPM_BUILD_ROOT} install-pdf
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
+mkdir -p ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 install -p CAPABILITIES ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 
 #Install libRmath files
@@ -850,6 +873,12 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-4
+- unified spec file for all targets
+
+* Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-3
+- epel fixes
+
 * Fri Apr 25 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-2
 - fix core-devel Requires
 
