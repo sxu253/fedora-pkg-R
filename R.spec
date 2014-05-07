@@ -39,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -170,6 +170,7 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig, xz-devel
+Requires: blas-devel >= 3.0, lapack-devel
 %if %{modern}
 Requires: libicu-devel
 %endif
@@ -367,7 +368,8 @@ export FCFLAGS="%{optflags}"
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
     rsharedir=%{_datadir}/R) \
- | grep -A30 'R is now' - > CAPABILITIES
+ > CONFIGURE.log
+cat CONFIGURE.log | grep -A30 'R is now' - > CAPABILITIES
 make 
 (cd src/nmath/standalone; make)
 #make check-all
@@ -873,6 +875,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed May  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-5
+- add blas-devel and lapack-devel as Requires for R-devel/R-core-devel
+  to ease rebuild pain
+
 * Tue Apr 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-4
 - unified spec file for all targets
 
