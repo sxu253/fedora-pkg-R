@@ -39,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -320,7 +320,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|arm*|sh*)
+      ia64|alpha|arm*|aarch64|sh*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -875,6 +875,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu May 15 2014 Peter Robinson <pbrobinson@fedoraproject.org> 3.1.0-6
+- Add aarch64 to target CPU specs
+
 * Wed May  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-5
 - add blas-devel and lapack-devel as Requires for R-devel/R-core-devel
   to ease rebuild pain
