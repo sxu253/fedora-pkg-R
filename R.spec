@@ -39,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -875,6 +875,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 3.1.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
 * Thu May 15 2014 Peter Robinson <pbrobinson@fedoraproject.org> 3.1.0-6
 - Add aarch64 to target CPU specs
 
