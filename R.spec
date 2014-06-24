@@ -39,7 +39,7 @@
 
 Name: R
 Version: 3.1.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
