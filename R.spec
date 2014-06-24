@@ -460,7 +460,12 @@ popd
 # Have to break this out for the translations
 %dir %{_libdir}/R/
 %{_libdir}/R/bin/
-%{_libdir}/R/etc/
+%dir %{_libdir}/R/etc
+%config(noreplace) %{_libdir}/R/etc/Makeconf
+%config(noreplace) %{_libdir}/R/etc/Renviron
+%config(noreplace) %{_libdir}/R/etc/javaconf
+%config(noreplace) %{_libdir}/R/etc/ldpaths
+%config(noreplace) %{_libdir}/R/etc/repositories
 %{_libdir}/R/lib/
 %dir %{_libdir}/R/library/
 %dir %{_libdir}/R/library/translations/
@@ -875,6 +880,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Jun 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-9
+- mark files in %%{_libdir}/R/etc as config(noreplace), resolves 1098663
+
 * Fri Jun 06 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
