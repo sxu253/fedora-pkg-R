@@ -17,13 +17,14 @@
 %global with_java_headless 1
 %endif
 
-%if 0%{?fedora} >= 19
-%global with_lto 1
-%endif
+# Using lto breaks debuginfo.
+# %%if 0%{?fedora} >= 19
+# %%global with_lto 1
+# %%endif
 
 %if 0%{?rhel} >= 7
 %global system_tre 1
-%global with_lto 1
+# %%global with_lto 1
 %global with_java_headless 1
 %endif
 
@@ -38,8 +39,8 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.1.0
-Release: 5%{?dist}
+Version: 3.1.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -52,7 +53,7 @@ BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
-BuildRequires: blas-devel >= 3.0, pcre-devel, zlib-devel
+BuildRequires: pcre-devel, zlib-devel
 %if %{with_java_headless}
 BuildRequires: java-headless
 %else
@@ -66,7 +67,20 @@ BuildRequires: java-1.4.2-gcj-compat
 BuildRequires: tre-devel
 BuildRequires: autoconf, automake, libtool
 %endif
+
+%if 0%{?fedora} >= 21
+BuildRequires: lapack-devel >= 3.5.0-7
+BuildRequires: blas-devel >= 3.5.0-7
+%else
+%if 0%{?fedora} >= 19
+BuildRequires: lapack-devel >= 3.4.2-7
+BuildRequires: blas-devel >= 3.4.2-7
+%else
 BuildRequires: lapack-devel
+BuildRequires: blas-devel >= 3.0
+%endif
+%endif
+
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
 BuildRequires: gcc-objc, pango-devel, xz-devel
@@ -130,11 +144,11 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.12
 Provides: R-lattice = 0.20.29
-Provides: R-MASS = 7.3.31
-Provides: R-Matrix = 1.1.3
+Provides: R-MASS = 7.3.33
+Provides: R-Matrix = 1.1.4
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.7.29
+Provides: R-mgcv = 1.8.0
 Provides: R-nlme = 3.1.117
 Provides: R-nnet = 7.3.8
 Provides: R-parallel = %{version}
@@ -189,7 +203,7 @@ Requires: tex(ptmri8t.tfm)
 Requires: tex(ptmro8t.tfm)
 Requires: tex(cm-super-ts1.enc)
 %endif
-Provides: R-Matrix-devel = 1.1.3
+Provides: R-Matrix-devel = 1.1.4
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -320,7 +334,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|arm*|sh*)
+      ia64|alpha|arm*|aarch64|sh*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -341,21 +355,35 @@ case "%{_target_cpu}" in
 esac
 
 %if 0%{?fedora} >= 21
+%if %{with_lto}
 # With gcc 4.9, if we don't pass -ffat-lto-objects along with -flto, Matrix builds without the needed object code
 # ... and doesn't work at all as a result.
 export CFLAGS="%{optflags} -ffat-lto-objects"
 export CXXFLAGS="%{optflags} -ffat-lto-objects"
 export FCFLAGS="%{optflags} -ffat-lto-objects"
+%endif
 %else
 export FCFLAGS="%{optflags}"
 %endif
+# RHEL 5 & 6 & 7 have a broken BLAS, so we need to use the bundled bits in R until
+# they are fixed... and it doesn't look like it will ever be fixed in RHEL 5.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1117491
+# https://bugzilla.redhat.com/show_bug.cgi?id=1117496
+# https://bugzilla.redhat.com/show_bug.cgi?id=1117497
+#
+# Also, --enable-BLAS-shlib would be nice to enable
+# as a shim to the system blas but it unfortunately 
+# enables the bundled Rlapack (not a shim to the system lapack).
+
 ( %configure \
 %if %{system_tre}
     --with-system-tre \
 %endif
     --with-system-zlib --with-system-bzlib --with-system-pcre \
+%if 0%{?fedora}
     --with-lapack \
     --with-blas \
+%endif
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
     --enable-R-shlib \
@@ -448,6 +476,9 @@ pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 ln -s ../../../R/texmf/tex/latex R
 popd
 
+%check
+make check
+
 %files
 # Metapackage
 
@@ -460,7 +491,12 @@ popd
 # Have to break this out for the translations
 %dir %{_libdir}/R/
 %{_libdir}/R/bin/
-%{_libdir}/R/etc/
+%dir %{_libdir}/R/etc
+%config(noreplace) %{_libdir}/R/etc/Makeconf
+%config(noreplace) %{_libdir}/R/etc/Renviron
+%config(noreplace) %{_libdir}/R/etc/javaconf
+%config(noreplace) %{_libdir}/R/etc/ldpaths
+%config(noreplace) %{_libdir}/R/etc/repositories
 %{_libdir}/R/lib/
 %dir %{_libdir}/R/library/
 %dir %{_libdir}/R/library/translations/
@@ -875,6 +911,29 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Jul 10 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.1-1
+- update to 3.1.1
+
+* Mon Jul  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-10
+- disable lto everywhere (breaks debuginfo) (bz 1113404)
+- apply fix for ppc64 (bz 1114240 and upstream bug 15856)
+- add make check (bz 1059461)
+- use bundled blas/lapack for RHEL due to bugs in their BLAS
+- enable Rblas shared lib (whether using bundled BLAS or not)
+- add explicit requires for new lapack
+
+* Tue Jun 24 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-9
+- mark files in %%{_libdir}/R/etc as config(noreplace), resolves 1098663
+
+* Fri Jun 06 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 3.1.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
+* Thu May 15 2014 Peter Robinson <pbrobinson@fedoraproject.org> 3.1.0-6
+- Add aarch64 to target CPU specs
+
 * Wed May  7 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.0-5
 - add blas-devel and lapack-devel as Requires for R-devel/R-core-devel
   to ease rebuild pain
