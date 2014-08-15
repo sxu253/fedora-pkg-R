@@ -40,7 +40,7 @@
 
 Name: R
 Version: 3.1.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -911,6 +911,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Fri Aug  8 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.1-3
 - add "unzip" to Requirements list for R-core
 
