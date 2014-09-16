@@ -40,7 +40,7 @@
 
 Name: R
 Version: 3.1.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -477,6 +477,8 @@ ln -s ../../../R/texmf/tex/latex R
 popd
 
 %check
+# Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
+ulimit -s 16384
 make check
 
 %files
@@ -911,6 +913,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Sep 16 2014 David Sommerseth <davids@redhat.com> - 3.1.1-6
+- Setting ulimit when running make check, to avoid segfault due to too small stack (needed on PPC64)
+
 * Tue Aug 26 2014 David Tardon <dtardon@redhat.com> - 3.1.1-5
 - rebuild for ICU 53.1
 
