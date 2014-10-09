@@ -40,7 +40,7 @@
 
 Name: R
 Version: 3.1.1
-Release: 3%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -57,11 +57,7 @@ BuildRequires: pcre-devel, zlib-devel
 %if %{with_java_headless}
 BuildRequires: java-headless
 %else
-%if %{modern}
-BuildRequires: java-1.5.0-gcj
-%else
-BuildRequires: java-1.4.2-gcj-compat
-%endif
+BuildRequires: java
 %endif
 %if %{system_tre}
 BuildRequires: tre-devel
@@ -237,7 +233,7 @@ Requires(post): R-core = %{version}-%{release}
 %if %{with_java_headless}
 Requires(post): java-headless
 %else
-Requires(post): java-1.5.0-gcj
+Requires(post): java
 %endif
 
 %description java
@@ -477,6 +473,8 @@ ln -s ../../../R/texmf/tex/latex R
 popd
 
 %check
+# Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
+ulimit -s 16384
 make check
 
 %files
@@ -911,6 +909,18 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon Sep 29 2014 Orion Poplawski <orion@cora.nwra.com> - 3.1.1-7
+- Just BR/R java instead of java-1.5.0-gcj (bug #1110684)
+
+* Tue Sep 16 2014 David Sommerseth <davids@redhat.com> - 3.1.1-6
+- Setting ulimit when running make check, to avoid segfault due to too small stack (needed on PPC64)
+
+* Tue Aug 26 2014 David Tardon <dtardon@redhat.com> - 3.1.1-5
+- rebuild for ICU 53.1
+
+* Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Fri Aug  8 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.1-3
 - add "unzip" to Requirements list for R-core
 
