@@ -40,7 +40,7 @@
 
 Name: R
 Version: 3.1.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -490,7 +490,7 @@ make check
 %dir %{_libdir}/R/
 %{_libdir}/R/bin/
 %dir %{_libdir}/R/etc
-%config(noreplace) %{_libdir}/R/etc/Makeconf
+%config %{_libdir}/R/etc/Makeconf
 %config(noreplace) %{_libdir}/R/etc/Renviron
 %config(noreplace) %{_libdir}/R/etc/javaconf
 %config(noreplace) %{_libdir}/R/etc/ldpaths
@@ -909,6 +909,10 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Oct 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.1-8
+- rebuild for new tcl/tk
+- mark Makeconf as config (not config(noreplace) so that we get proper updated tcl/tk libs)
+
 * Mon Sep 29 2014 Orion Poplawski <orion@cora.nwra.com> - 3.1.1-7
 - Just BR/R java instead of java-1.5.0-gcj (bug #1110684)
 
