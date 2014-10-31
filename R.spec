@@ -39,8 +39,8 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.1.1
-Release: 7%{?dist}
+Version: 3.1.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -129,23 +129,23 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.11
-Provides: R-class = 7.3.10
-Provides: R-cluster = 1.15.2
-Provides: R-codetools = 0.2.8
+Provides: R-boot = 1.3.13
+Provides: R-class = 7.3.11
+Provides: R-cluster = 1.15.3
+Provides: R-codetools = 0.2.9
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8.61
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.12
+Provides: R-KernSmooth = 2.23.13
 Provides: R-lattice = 0.20.29
-Provides: R-MASS = 7.3.33
+Provides: R-MASS = 7.3.35
 Provides: R-Matrix = 1.1.4
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.0
-Provides: R-nlme = 3.1.117
+Provides: R-mgcv = 1.8.3
+Provides: R-nlme = 3.1.118
 Provides: R-nnet = 7.3.8
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.8
@@ -490,7 +490,7 @@ make check
 %dir %{_libdir}/R/
 %{_libdir}/R/bin/
 %dir %{_libdir}/R/etc
-%config(noreplace) %{_libdir}/R/etc/Makeconf
+%config %{_libdir}/R/etc/Makeconf
 %config(noreplace) %{_libdir}/R/etc/Renviron
 %config(noreplace) %{_libdir}/R/etc/javaconf
 %config(noreplace) %{_libdir}/R/etc/ldpaths
@@ -909,6 +909,13 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Oct 31 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.2-1
+- update to 3.1.2
+
+* Wed Oct 29 2014 Tom Callaway <spot@fedoraproject.org> - 3.1.1-8
+- rebuild for new tcl/tk
+- mark Makeconf as config (not config(noreplace) so that we get proper updated tcl/tk libs)
+
 * Mon Sep 29 2014 Orion Poplawski <orion@cora.nwra.com> - 3.1.1-7
 - Just BR/R java instead of java-1.5.0-gcj (bug #1110684)
 
