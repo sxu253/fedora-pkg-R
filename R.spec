@@ -199,6 +199,9 @@ Requires: tex(ptmri8t.tfm)
 Requires: tex(ptmro8t.tfm)
 Requires: tex(cm-super-ts1.enc)
 %endif
+# "‘qpdf’ is needed for checks on size reduction of PDFs"
+Requires: qpdf
+
 Provides: R-Matrix-devel = 1.1.4
 Obsoletes: R-Matrix-devel < 0.999375-7
 
