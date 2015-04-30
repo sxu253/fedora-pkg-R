@@ -429,7 +429,11 @@ cp doc/manual/R-intro.texi doc/manual/R-intro.texi.spot
 sed -i 's|@eqn|@math|g' doc/manual/R-exts.texi
 sed -i 's|@eqn|@math|g' doc/manual/R-intro.texi
 %endif
-make info
+%if %{texi2any}
+    make MAKEINFO=texi2any info
+%else
+    make MAKEINFO=makeinfo info
+%endif
 
 # Convert to UTF-8
 for i in doc/manual/R-intro.info doc/manual/R-FAQ.info doc/FAQ doc/manual/R-admin.info doc/manual/R-exts.info-1; do
