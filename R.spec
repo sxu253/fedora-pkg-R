@@ -36,11 +36,22 @@
 %global modern 1
 %endif
 
+# default to 0.
+%global texi2any 0
+
+%if 0%{?fedora} >= 20
+%global texi2any 1
+%endif
+
+%if 0%{?rhel} >= 7
+%global texi2any 1
+%endif
+
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
 Version: 3.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -395,6 +406,11 @@ export FCFLAGS="%{optflags}"
 %ifnarch %{arm}
     --enable-lto \
 %endif
+%endif
+%if %{texi2any}
+    MAKEINFO=texi2any \
+%else
+    MAKEINFO=makeinfo \
 %endif
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
@@ -919,6 +935,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Thu Apr 30 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-2
+- conditionalize MAKEINFO for ancient things (rhel 6 or older)
+
 * Sun Apr 26 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-1
 - update to 3.2.0
 
