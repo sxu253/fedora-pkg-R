@@ -39,7 +39,7 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.1.3
+Version: 3.2.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -53,7 +53,7 @@ BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
-BuildRequires: pcre-devel, zlib-devel
+BuildRequires: pcre-devel, zlib-devel, valgrind-devel
 %if %{with_java_headless}
 BuildRequires: java-headless
 %else
@@ -129,22 +129,22 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.15
+Provides: R-boot = 1.3.16
 Provides: R-class = 7.3.12
 Provides: R-cluster = 2.0.1
-Provides: R-codetools = 0.2.10
+Provides: R-codetools = 0.2.11
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8.63
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.14
-Provides: R-lattice = 0.20.30
-Provides: R-MASS = 7.3.39
-Provides: R-Matrix = 1.1.5
+Provides: R-lattice = 0.20.31
+Provides: R-MASS = 7.3.40
+Provides: R-Matrix = 1.2.0
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.4
+Provides: R-mgcv = 1.8.6
 Provides: R-nlme = 3.1.120
 Provides: R-nnet = 7.3.9
 Provides: R-parallel = %{version}
@@ -205,7 +205,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.1.5
+Provides: R-Matrix-devel = 1.2.0
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -382,6 +382,7 @@ export FCFLAGS="%{optflags}"
     --with-system-tre \
 %endif
     --with-system-zlib --with-system-bzlib --with-system-pcre \
+    --with-system-valgrind-headers \
 %if 0%{?fedora}
     --with-lapack \
     --with-blas \
@@ -683,10 +684,12 @@ make check
 %{_libdir}/R/library/Matrix/libs/
 %{_libdir}/R/library/Matrix/Meta/
 %{_libdir}/R/library/Matrix/NAMESPACE
+%{_libdir}/R/library/Matrix/NEWS.Rd
 %dir %{_libdir}/R/library/Matrix/po/
 %lang(de) %{_libdir}/R/library/Matrix/po/de/
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
 %lang(fr) %{_libdir}/R/library/Matrix/po/fr/
+%lang(ko) %{_libdir}/R/library/Matrix/po/ko/
 %lang(pl) %{_libdir}/R/library/Matrix/po/pl/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
@@ -916,6 +919,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Sun Apr 26 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-1
+- update to 3.2.0
+
 * Mon Mar  9 2015 Tom Callaway <spot@fedoraproject.org> - 3.1.3-1
 - update to 3.1.3
 
