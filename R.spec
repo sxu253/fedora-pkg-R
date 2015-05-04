@@ -40,7 +40,7 @@
 
 Name: R
 Version: 3.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -53,7 +53,11 @@ BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
-BuildRequires: pcre-devel, zlib-devel, valgrind-devel
+BuildRequires: pcre-devel, zlib-devel
+# valgrind is available only on selected arches
+%ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
+BuildRequires: valgrind-devel
+%endif
 %if %{with_java_headless}
 BuildRequires: java-headless
 %else
@@ -919,6 +923,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Mon May 04 2015 Jakub Čajka <jcajka@redhat.com> - 3.2.0-2
+- valgrind is available only on selected arches, fixes build on s390
+
 * Sun Apr 26 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-1
 - update to 3.2.0
 
