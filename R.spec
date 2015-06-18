@@ -50,8 +50,8 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.2.0
-Release: 2%{?dist}
+Version: 3.2.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -64,7 +64,11 @@ BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex 
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
-BuildRequires: pcre-devel, zlib-devel, valgrind-devel
+BuildRequires: pcre-devel, zlib-devel
+# valgrind is available only on selected arches
+%ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
+BuildRequires: valgrind-devel
+%endif
 %if %{with_java_headless}
 BuildRequires: java-headless
 %else
@@ -152,7 +156,7 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.14
 Provides: R-lattice = 0.20.31
 Provides: R-MASS = 7.3.40
-Provides: R-Matrix = 1.2.0
+Provides: R-Matrix = 1.2.1
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.8.6
@@ -216,7 +220,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.0
+Provides: R-Matrix-devel = 1.2.1
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -939,7 +943,16 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
-* Thu Apr 30 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-2
+* Thu Jun 18 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-1
+- update to 3.2.1
+
+* Tue Jun 16 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.2.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Mon May 04 2015 Jakub Čajka <jcajka@redhat.com> - 3.2.0-2
+- valgrind is available only on selected arches, fixes build on s390
+
+* Thu Apr 30 2015 Tom Callaway <spot@fedoraproject.org>
 - conditionalize MAKEINFO for ancient things (rhel 6 or older)
 
 * Sun Apr 26 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.0-1
