@@ -955,7 +955,7 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
-* Fru Jul 10 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-2
+* Fri Jul 10 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-2
 - BR: libcurl-devel
 
 * Thu Jun 18 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-1
