@@ -51,7 +51,7 @@
 
 Name: R
 Version: 3.2.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -65,6 +65,18 @@ BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: pcre-devel, zlib-devel
+%if 0%{?rhel}
+ # RHEL older than 6 
+ %if 0%{?rhel} < 6
+ BuildRequires: curl-devel
+ # RHEL newer than 6
+ %else
+ BuildRequires: libcurl-devel
+ %endif
+# Fedora (assuming modern)
+%else
+BuildRequires: libcurl-devel
+%endif
 # valgrind is available only on selected arches
 %ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
 BuildRequires: valgrind-devel
@@ -943,6 +955,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jul 10 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-2
+- BR: libcurl-devel
+
 * Thu Jun 18 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.1-1
 - update to 3.2.1
 
