@@ -68,10 +68,10 @@ BuildRequires: pcre-devel, zlib-devel
 %if 0%{?rhel}
  # RHEL older than 6 
  %if 0%{?rhel} < 6
- BuildRequires: curl-devel
+BuildRequires: curl-devel
  # RHEL newer than 6
  %else
- BuildRequires: libcurl-devel
+BuildRequires: libcurl-devel
  %endif
 # Fedora (assuming modern)
 %else
