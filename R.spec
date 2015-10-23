@@ -51,12 +51,14 @@
 
 Name: R
 Version: 3.2.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+Patch0: 0001-Disable-backing-store-in-X11-window.patch
+Patch1: 0001-Wait-for-MapNotify-event-while-intializing-window.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -325,6 +327,8 @@ from the R project.  This package provides the static libRmath library.
 
 %prep
 %setup -q
+%patch0 -p1 -b .disable-backing-store
+%patch1 -p1 -b .wait-for-map-notify
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -957,6 +961,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
+- apply patches from upstream bug 16497 to fix X11 hangs
+
 * Fri Aug 14 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-1
 - update to 3.2.2
 
