@@ -1,0 +1,29 @@
+From 1d2f8f70375b5d34ec7485833e20f5b78ed135ed Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <svashisht@redhat.com>
+Date: Thu, 17 Sep 2015 08:55:55 -0400
+Subject: [PATCH] Wait for MapNotify event while intializing window
+
+---
+ src/modules/X11/devX11.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/modules/X11/devX11.c b/src/modules/X11/devX11.c
+index c2eab80..b714f1a 100644
+--- a/src/modules/X11/devX11.c
++++ b/src/modules/X11/devX11.c
+@@ -1698,10 +1698,10 @@ X11_Open(pDevDesc dd, pX11Desc xd, const char *dsp,
+ 	    XMapWindow(display, xd->window);
+ 	    XSync(display, 0);
+ 
+-	    /* Gobble expose events */
++	    /* Gobble MapNotify events */
+ 
+ 	    while ( XPeekEvent(display, &event),
+-		    !XCheckTypedEvent(display, Expose, &event))
++		    !XCheckTypedEvent(display, MapNotify, &event))
+ 		;
+ 	    /* XNextEvent(display, &event);
+ 	       if (event.xany.type == Expose) {
+-- 
+1.7.1
+
