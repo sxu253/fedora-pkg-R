@@ -51,7 +51,7 @@
 
 Name: R
 Version: 3.2.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -961,6 +961,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 3.2.2-3
+- rebuild for ICU 56.1
+
 * Fri Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
 - apply patches from upstream bug 16497 to fix X11 hangs
 
