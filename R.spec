@@ -50,8 +50,8 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.2.2
-Release: 2%{?dist}
+Version: 3.2.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -159,23 +159,23 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # packager convenience.
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.17
-Provides: R-class = 7.3.13
+Provides: R-class = 7.3.14
 Provides: R-cluster = 2.0.3
 Provides: R-codetools = 0.2.14
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.65
+Provides: R-foreign = 0.8.66
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.33
-Provides: R-MASS = 7.3.43
-Provides: R-Matrix = 1.2.2
+Provides: R-MASS = 7.3.45
+Provides: R-Matrix = 1.2.3
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.7
-Provides: R-nlme = 3.1.121
-Provides: R-nnet = 7.3.10
+Provides: R-mgcv = 1.8.9
+Provides: R-nlme = 3.1.122
+Provides: R-nnet = 7.3.11
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.10
 Provides: R-spatial = 7.3.10
@@ -234,7 +234,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.2
+Provides: R-Matrix-devel = 1.2.3
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -961,6 +961,12 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Dec 11 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.3-1
+- update to 3.2.3
+
+* Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 3.2.2-3
+- rebuild for ICU 56.1
+
 * Fri Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
 - apply patches from upstream bug 16497 to fix X11 hangs
 
