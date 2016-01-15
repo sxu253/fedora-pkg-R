@@ -21,7 +21,7 @@
 %endif
 
 # Using lto breaks debuginfo.
-# %%if 0%{?fedora} >= 19
+# %%if 0%%{?fedora} >= 19
 # %%global with_lto 1
 # %%endif
 
@@ -846,7 +846,7 @@ make check
 %{_libdir}/R/library/utils/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
-# %{_libdir}/R/NEWS*
+# %%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
@@ -860,7 +860,7 @@ make check
 %defattr(-, root, root, -)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
-# Symlink to %{_includedir}/R/
+# Symlink to %%{_includedir}/R/
 %{_libdir}/R/include
 
 %files devel
@@ -979,7 +979,7 @@ R CMD javareconf \
 * Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 3.2.2-3
 - rebuild for ICU 56.1
 
-* Fri Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
+* Tue Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
 - apply patches from upstream bug 16497 to fix X11 hangs
 
 * Fri Aug 14 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-1
