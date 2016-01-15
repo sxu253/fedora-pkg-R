@@ -7,6 +7,9 @@
 # Assume not modern. Override if needed.
 %global modern 0
 
+# Track if we're hardening (all current fedora and RHEL 7+)
+%global hardening 0
+
 %global with_lto 0
 %global with_java_headless 0
 
@@ -26,10 +29,12 @@
 %global system_tre 1
 # %%global with_lto 1
 %global with_java_headless 1
+%global hardening 1
 %endif
 
 %if 0%{?fedora}
 %global modern 1
+%global hardening 1
 %endif
 
 %if 0%{?rhel} >= 6
@@ -51,7 +56,7 @@
 
 Name: R
 Version: 3.2.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -147,6 +152,10 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
+# R inherits the compiler flags it was built with, hence we need this on hardened systems
+%if 0%{hardening}
+Requires: redhat-rpm-config
+%endif
 %if %{modern}
 Requires: tex(dvips), vi
 %else
@@ -961,6 +970,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Jan 15 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-2
+- Requires: redhat-rpm-config on hardened systems (all Fedora and RHEL 7+)
+
 * Fri Dec 11 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.3-1
 - update to 3.2.3
 
