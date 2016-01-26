@@ -56,12 +56,26 @@
 
 Name: R
 Version: 3.2.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+%if %{texi2any}
+# If we have texi2any 5.1+, we can generate the docs on the fly.
+# If not, we're building for a very old target (RHEL 6 or older)
+%else
+# In this case, we need to use pre-built manuals.
+# NOTE: These need to be updated for every new version.
+Source100: https://cran.r-project.org/doc/manuals/r-release/R-intro.html
+Source101: https://cran.r-project.org/doc/manuals/r-release/R-data.html
+Source102: https://cran.r-project.org/doc/manuals/r-release/R-admin.html
+Source103: https://cran.r-project.org/doc/manuals/r-release/R-exts.html
+Source104: https://cran.r-project.org/doc/manuals/r-release/R-lang.html
+Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
+Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
+%endif
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
 Patch1: 0001-Wait-for-MapNotify-event-while-intializing-window.patch
 License: GPLv2+
@@ -528,6 +542,13 @@ pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 ln -s ../../../R/texmf/tex/latex R
 popd
 
+%if %{texi2any}
+# Do not need to copy files...
+%else
+# COPY THAT FLOPPY
+cp -a %{SOURCE100} %{SOURCE101} %{SOURCE102} %{SOURCE103} %{SOURCE104} %{SOURCE105} %{SOURCE106} %{buildroot}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/manual/
+%endif
+
 %check
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
@@ -970,6 +991,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-4
+- if texi2any is set to 0, then copy in prebuilt html manuals (RHEL 5 & 6 only)
+
 * Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-3
 - use global instead of define
 
