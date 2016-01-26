@@ -1,7 +1,7 @@
 %ifarch x86_64
-%define java_arch amd64
+%global java_arch amd64
 %else
-%define java_arch %{_arch}
+%global java_arch %{_arch}
 %endif
 
 # Assume not modern. Override if needed.
@@ -56,7 +56,7 @@
 
 Name: R
 Version: 3.2.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -345,7 +345,7 @@ cat <<EOF > %{name}-prov
 %{__perl_provides} \
 | grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
 EOF
-%define __perl_provides %{_builddir}/R-%{version}/%{name}-prov
+%global __perl_provides %{_builddir}/R-%{version}/%{name}-prov
 chmod +x %{__perl_provides}
 
 # Filter unwanted Requires:
@@ -354,7 +354,7 @@ cat << \EOF > %{name}-req
 %{__perl_requires} \
 | grep -v 'perl(Text::DelimMatch)'
 EOF
-%define __perl_requires %{_builddir}/R-%{version}/%{name}-req
+%global __perl_requires %{_builddir}/R-%{version}/%{name}-req
 chmod +x %{__perl_requires}
 
 %build
@@ -970,6 +970,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-3
+- use global instead of define
+
 * Fri Jan 15 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-2
 - Requires: redhat-rpm-config on hardened systems (all Fedora and RHEL 7+)
 
