@@ -1,11 +1,14 @@
 %ifarch x86_64
-%define java_arch amd64
+%global java_arch amd64
 %else
-%define java_arch %{_arch}
+%global java_arch %{_arch}
 %endif
 
 # Assume not modern. Override if needed.
 %global modern 0
+
+# Track if we're hardening (all current fedora and RHEL 7+)
+%global hardening 0
 
 %global with_lto 0
 %global with_java_headless 0
@@ -18,7 +21,7 @@
 %endif
 
 # Using lto breaks debuginfo.
-# %%if 0%{?fedora} >= 19
+# %%if 0%%{?fedora} >= 19
 # %%global with_lto 1
 # %%endif
 
@@ -26,10 +29,12 @@
 %global system_tre 1
 # %%global with_lto 1
 %global with_java_headless 1
+%global hardening 1
 %endif
 
 %if 0%{?fedora}
 %global modern 1
+%global hardening 1
 %endif
 
 %if 0%{?rhel} >= 6
@@ -51,12 +56,26 @@
 
 Name: R
 Version: 3.2.3
-Release: 1%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
+%if %{texi2any}
+# If we have texi2any 5.1+, we can generate the docs on the fly.
+# If not, we're building for a very old target (RHEL 6 or older)
+%else
+# In this case, we need to use pre-built manuals.
+# NOTE: These need to be updated for every new version.
+Source100: https://cran.r-project.org/doc/manuals/r-release/R-intro.html
+Source101: https://cran.r-project.org/doc/manuals/r-release/R-data.html
+Source102: https://cran.r-project.org/doc/manuals/r-release/R-admin.html
+Source103: https://cran.r-project.org/doc/manuals/r-release/R-exts.html
+Source104: https://cran.r-project.org/doc/manuals/r-release/R-lang.html
+Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
+Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
+%endif
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
 Patch1: 0001-Wait-for-MapNotify-event-while-intializing-window.patch
 License: GPLv2+
@@ -147,6 +166,10 @@ and called at run time.
 Summary: The minimal R components necessary for a functional runtime
 Group: Applications/Engineering
 Requires: xdg-utils, cups
+# R inherits the compiler flags it was built with, hence we need this on hardened systems
+%if 0%{hardening}
+Requires: redhat-rpm-config
+%endif
 %if %{modern}
 Requires: tex(dvips), vi
 %else
@@ -336,7 +359,7 @@ cat <<EOF > %{name}-prov
 %{__perl_provides} \
 | grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
 EOF
-%define __perl_provides %{_builddir}/R-%{version}/%{name}-prov
+%global __perl_provides %{_builddir}/R-%{version}/%{name}-prov
 chmod +x %{__perl_provides}
 
 # Filter unwanted Requires:
@@ -345,7 +368,7 @@ cat << \EOF > %{name}-req
 %{__perl_requires} \
 | grep -v 'perl(Text::DelimMatch)'
 EOF
-%define __perl_requires %{_builddir}/R-%{version}/%{name}-req
+%global __perl_requires %{_builddir}/R-%{version}/%{name}-req
 chmod +x %{__perl_requires}
 
 %build
@@ -518,6 +541,13 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
 ln -s ../../../R/texmf/tex/latex R
 popd
+
+%if %{texi2any}
+# Do not need to copy files...
+%else
+# COPY THAT FLOPPY
+cp -a %{SOURCE100} %{SOURCE101} %{SOURCE102} %{SOURCE103} %{SOURCE104} %{SOURCE105} %{SOURCE106} %{buildroot}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/manual/
+%endif
 
 %check
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
@@ -837,7 +867,7 @@ make check
 %{_libdir}/R/library/utils/
 %{_libdir}/R/modules
 %{_libdir}/R/COPYING
-# %{_libdir}/R/NEWS*
+# %%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
 %{_infodir}/R-*.info*
@@ -851,7 +881,7 @@ make check
 %defattr(-, root, root, -)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
-# Symlink to %{_includedir}/R/
+# Symlink to %%{_includedir}/R/
 %{_libdir}/R/include
 
 %files devel
@@ -961,13 +991,22 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-4
+- if texi2any is set to 0, then copy in prebuilt html manuals (RHEL 5 & 6 only)
+
+* Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-3
+- use global instead of define
+
+* Fri Jan 15 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-2
+- Requires: redhat-rpm-config on hardened systems (all Fedora and RHEL 7+)
+
 * Fri Dec 11 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.3-1
 - update to 3.2.3
 
 * Wed Oct 28 2015 David Tardon <dtardon@redhat.com> - 3.2.2-3
 - rebuild for ICU 56.1
 
-* Fri Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
+* Tue Oct 13 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-2
 - apply patches from upstream bug 16497 to fix X11 hangs
 
 * Fri Aug 14 2015 Tom Callaway <spot@fedoraproject.org> - 3.2.2-1
