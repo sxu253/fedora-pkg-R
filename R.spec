@@ -56,7 +56,7 @@
 
 Name: R
 Version: 3.2.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -991,6 +991,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.3-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-4
 - if texi2any is set to 0, then copy in prebuilt html manuals (RHEL 5 & 6 only)
 
