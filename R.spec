@@ -55,11 +55,11 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.2.3
-Release: 5%{?dist}
+Version: 3.2.4
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
-Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
+Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}-revised.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
 %if %{texi2any}
@@ -77,7 +77,6 @@ Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
 Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
-Patch1: 0001-Wait-for-MapNotify-event-while-intializing-window.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -181,7 +180,7 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.17
+Provides: R-boot = 1.3.18
 Provides: R-class = 7.3.14
 Provides: R-cluster = 2.0.3
 Provides: R-codetools = 0.2.14
@@ -193,15 +192,15 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.33
 Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.3
+Provides: R-Matrix = 1.2.4
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.9
-Provides: R-nlme = 3.1.122
-Provides: R-nnet = 7.3.11
+Provides: R-mgcv = 1.8.12
+Provides: R-nlme = 3.1.125
+Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.10
-Provides: R-spatial = 7.3.10
+Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
@@ -257,7 +256,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.3
+Provides: R-Matrix-devel = 1.2.4
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -349,9 +348,8 @@ A standalone library of mathematical and statistical functions derived
 from the R project.  This package provides the static libRmath library.
 
 %prep
-%setup -q
+%setup -q -n %{name}-revised
 %patch0 -p1 -b .disable-backing-store
-%patch1 -p1 -b .wait-for-map-notify
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -359,7 +357,9 @@ cat <<EOF > %{name}-prov
 %{__perl_provides} \
 | grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
 EOF
-%global __perl_provides %{_builddir}/R-%{version}/%{name}-prov
+
+# %%global __perl_provides %%{_builddir}/R-%%{version}/%%{name}-prov
+%global __perl_provides %{_builddir}/R-revised/%{name}-prov
 chmod +x %{__perl_provides}
 
 # Filter unwanted Requires:
@@ -368,7 +368,8 @@ cat << \EOF > %{name}-req
 %{__perl_requires} \
 | grep -v 'perl(Text::DelimMatch)'
 EOF
-%global __perl_requires %{_builddir}/R-%{version}/%{name}-req
+# %%global __perl_requires %%{_builddir}/R-%%{version}/%%{name}-req
+%global __perl_requires %{_builddir}/R-revised/%{name}-req
 chmod +x %{__perl_requires}
 
 %build
@@ -991,6 +992,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Mar 18 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.4-1
+- move to 3.2.4-revised
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.3-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
