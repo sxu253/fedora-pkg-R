@@ -755,6 +755,7 @@ make check
 %{_libdir}/R/library/Matrix/include/
 %{_libdir}/R/library/Matrix/INDEX
 %{_libdir}/R/library/Matrix/libs/
+%{_libdir}/R/library/Matrix/LICENCE
 %{_libdir}/R/library/Matrix/Meta/
 %{_libdir}/R/library/Matrix/NAMESPACE
 %{_libdir}/R/library/Matrix/NEWS.Rd
