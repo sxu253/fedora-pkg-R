@@ -56,7 +56,7 @@
 
 Name: R
 Version: 3.2.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}-revised.tar.gz
@@ -993,6 +993,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Fri Apr 15 2016 David Tardon <dtardon@redhat.com> - 3.2.4-2
+- rebuild for ICU 57.1
+
 * Fri Mar 18 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.4-1
 - move to 3.2.4-revised
 
