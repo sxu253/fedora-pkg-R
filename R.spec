@@ -49,7 +49,7 @@
 %global libicu 0
 %endif
 
-%if 0%{?rhel} = 6
+%if 0%{?rhel} == 6
 %ifarch ppc64
 %global libicu 0
 %endif
