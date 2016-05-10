@@ -41,6 +41,20 @@
 %global modern 1
 %endif
 
+# RHEL 6 ppc64 doesn't have icu. Everyone else modern does.
+
+%if %{modern}
+%global libicu 1
+%else
+%global libicu 0
+%endif
+
+%if 0%{?rhel} == 6
+%ifarch ppc64
+%global libicu 0
+%endif
+%endif
+
 # default to 0.
 %global texi2any 0
 
@@ -56,7 +70,7 @@
 
 Name: R
 Version: 3.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -132,7 +146,7 @@ BuildRequires: blas-devel >= 3.0
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
 BuildRequires: gcc-objc, pango-devel, xz-devel
-%if %{modern}
+%if %{libicu}
 BuildRequires: libicu-devel
 %endif
 BuildRequires: less
@@ -996,6 +1010,9 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue May 10 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-2
+- RHEL 6 ppc64 doesn't have libicu-devel. :P
+
 * Tue May 10 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-1
 - update to 3.3.0
 - fix R-java Requires (bz1324145)
