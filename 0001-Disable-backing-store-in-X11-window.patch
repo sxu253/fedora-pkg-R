@@ -8,19 +8,15 @@ Xorg server will not generate Expose events if backing store is enabled. Since i
  src/modules/X11/devX11.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/src/modules/X11/devX11.c b/src/modules/X11/devX11.c
-index b714f1a..143441f 100644
---- a/src/modules/X11/devX11.c
-+++ b/src/modules/X11/devX11.c
-@@ -1477,7 +1477,7 @@ X11_Open(pDevDesc dd, pX11Desc xd, const char *dsp,
+diff -up R-3.3.0/src/modules/X11/devX11.c.disable-backing-store R-3.3.0/src/modules/X11/devX11.c
+--- R-3.3.0/src/modules/X11/devX11.c.disable-backing-store	2016-05-10 09:54:12.440997353 -0400
++++ R-3.3.0/src/modules/X11/devX11.c	2016-05-10 09:54:48.560701316 -0400
+@@ -1479,7 +1479,7 @@ X11_Open(pDevDesc dd, pX11Desc xd, const
      memset(&attributes, 0, sizeof(attributes));
      attributes.background_pixel = whitepixel;
      attributes.border_pixel = blackpixel;
 -    attributes.backing_store = Always;
 +    attributes.backing_store = NotUseful;
      attributes.event_mask = ButtonPressMask 
-       | ButtonMotionMask 
+       | PointerMotionMask 
        | PointerMotionHintMask
--- 
-1.7.1
-

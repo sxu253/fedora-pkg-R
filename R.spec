@@ -55,8 +55,8 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 Name: R
-Version: 3.2.3
-Release: 4%{?dist}
+Version: 3.3.0
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -77,7 +77,8 @@ Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
 Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
-Patch1: 0001-Wait-for-MapNotify-event-while-intializing-window.patch
+# see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
+Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -112,6 +113,8 @@ BuildRequires: tre-devel
 BuildRequires: autoconf, automake, libtool
 %endif
 
+# We use the bundled lapack and shim for BLAS now.
+%if 0
 %if 0%{?fedora} >= 21
 BuildRequires: lapack-devel >= 3.5.0-7
 BuildRequires: blas-devel >= 3.5.0-7
@@ -122,6 +125,7 @@ BuildRequires: blas-devel >= 3.4.2-7
 %else
 BuildRequires: lapack-devel
 BuildRequires: blas-devel >= 3.0
+%endif
 %endif
 %endif
 
@@ -181,9 +185,9 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # depend on one of these submodules rather than just R. These are provided for 
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.17
+Provides: R-boot = 1.3.18
 Provides: R-class = 7.3.14
-Provides: R-cluster = 2.0.3
+Provides: R-cluster = 2.0.4
 Provides: R-codetools = 0.2.14
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8.66
@@ -193,19 +197,19 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.33
 Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.3
+Provides: R-Matrix = 1.2.6
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.9
-Provides: R-nlme = 3.1.122
-Provides: R-nnet = 7.3.11
+Provides: R-mgcv = 1.8.12
+Provides: R-nlme = 3.1.127
+Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.10
-Provides: R-spatial = 7.3.10
+Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.38.3
+Provides: R-survival = 2.39.2
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -257,7 +261,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.3
+Provides: R-Matrix-devel = 1.2.6
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -289,9 +293,9 @@ Summary: R with Fedora provided Java Runtime Environment
 Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
 %if %{with_java_headless}
-Requires(post): java-headless
+Requires: java-headless
 %else
-Requires(post): java
+Requires: java
 %endif
 
 %description java
@@ -349,9 +353,9 @@ A standalone library of mathematical and statistical functions derived
 from the R project.  This package provides the static libRmath library.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 %patch0 -p1 -b .disable-backing-store
-%patch1 -p1 -b .wait-for-map-notify
+%patch1 -p1 -b .fixpath
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -359,6 +363,7 @@ cat <<EOF > %{name}-prov
 %{__perl_provides} \
 | grep -v 'File::Copy::Recursive' | grep -v 'Text::DelimMatch'
 EOF
+
 %global __perl_provides %{_builddir}/R-%{version}/%{name}-prov
 chmod +x %{__perl_provides}
 
@@ -427,19 +432,18 @@ export FCFLAGS="%{optflags}"
 # https://bugzilla.redhat.com/show_bug.cgi?id=1117496
 # https://bugzilla.redhat.com/show_bug.cgi?id=1117497
 #
-# Also, --enable-BLAS-shlib would be nice to enable
-# as a shim to the system blas but it unfortunately 
-# enables the bundled Rlapack (not a shim to the system lapack).
+# We use --enable-BLAS-shlib here. It generates a shared library
+# of the R bundled blas, that can be replaced by an optimized version.
+# It also results in R using the bundled lapack copy.
 
 ( %configure \
 %if %{system_tre}
     --with-system-tre \
 %endif
-    --with-system-zlib --with-system-bzlib --with-system-pcre \
     --with-system-valgrind-headers \
 %if 0%{?fedora}
     --with-lapack \
-    --with-blas \
+    --enable-BLAS-shlib \
 %endif
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
@@ -754,6 +758,7 @@ make check
 %{_libdir}/R/library/Matrix/include/
 %{_libdir}/R/library/Matrix/INDEX
 %{_libdir}/R/library/Matrix/libs/
+%{_libdir}/R/library/Matrix/LICENCE
 %{_libdir}/R/library/Matrix/Meta/
 %{_libdir}/R/library/Matrix/NAMESPACE
 %{_libdir}/R/library/Matrix/NEWS.Rd
@@ -991,6 +996,21 @@ R CMD javareconf \
 %postun -n libRmath -p /sbin/ldconfig
 
 %changelog
+* Tue May 10 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-1
+- update to 3.3.0
+- fix R-java Requires (bz1324145)
+- fix JAVA_PATH definition in javareconf (bz1324145)
+- use bundled BLAS and LAPACK, create shared library for Rblas
+
+* Fri Apr 15 2016 David Tardon <dtardon@redhat.com> - 3.2.4-2
+- rebuild for ICU 57.1
+
+* Fri Mar 18 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.4-1
+- move to 3.2.4-revised
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.3-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Tue Jan 26 2016 Tom Callaway <spot@fedoraproject.org> - 3.2.3-4
 - if texi2any is set to 0, then copy in prebuilt html manuals (RHEL 5 & 6 only)
 
