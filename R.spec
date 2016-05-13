@@ -41,6 +41,18 @@
 %global modern 1
 %endif
 
+# R really wants zlib 1.2.5, bzip2 1.0.6, xz 5.0.3, curl 7.28, and pcre 8.10+ 
+# These are too new for RHEL 5/6. HACKITY HACK TIME.
+%global zlibhack 0
+
+%if 0%{?rhel} == 5 
+%global zlibhack 1
+%endif
+
+%if 0%{?rhel} == 6
+%global zlibhack 1
+%endif
+
 # RHEL 6 ppc64 doesn't have icu. Everyone else modern does.
 
 %if %{modern}
@@ -70,7 +82,7 @@
 
 Name: R
 Version: 3.3.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -90,6 +102,34 @@ Source104: https://cran.r-project.org/doc/manuals/r-release/R-lang.html
 Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
 Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
+%if %{zlibhack}
+%global zlibv 1.2.8
+%global bzipv 1.0.6
+%global xzv 5.2.2
+%global pcrev 8.38
+%global curlv 7.48.0
+Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
+Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
+Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
+Source1003: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcrev}.tar.bz2
+Source1004: https://curl.haxx.se/download/curl-%{curlv}.tar.bz2
+BuildRequires: glibc-devel
+BuildRequires: groff
+BuildRequires: krb5-libs
+BuildRequires: krb5-devel
+BuildRequires: libgssapi-devel
+BuildRequires: libidn-devel
+BuildRequires: libmetalink-devel
+BuildRequires: libssh2-devel
+BuildRequires: openldap
+BuildRequires: openldap-devel
+BuildRequires: openssl-devel
+BuildRequires: openssh-clients
+BuildRequires: openssh-server
+BuildRequires: pkgconfig
+BuildRequires: python
+BuildRequires: stunnel
+%endif
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
@@ -103,8 +143,9 @@ BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: pcre-devel, zlib-devel
 %if 0%{?rhel}
  # RHEL older than 6 
- %if 0%{?rhel} < 6
-BuildRequires: curl-devel
+ %if 0%{?rhel} < 7
+ # RHEL 5 used to use curl-devel, but it is now too old.
+ #BuildRequires: curl-devel
  # RHEL newer than 6
  %else
 BuildRequires: libcurl-devel
@@ -250,7 +291,8 @@ Requires: R-core = %{version}-%{release}
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
 Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig, xz-devel
-Requires: blas-devel >= 3.0, lapack-devel
+# No longer true.
+# Requires: blas-devel >= 3.0, lapack-devel
 %if %{modern}
 Requires: libicu-devel
 %endif
@@ -367,7 +409,11 @@ A standalone library of mathematical and statistical functions derived
 from the R project.  This package provides the static libRmath library.
 
 %prep
+%if %{zlibhack}
+%setup -q -n %{name}-%{version} -a 1000 -a 1001 -a 1002 -a 1003 -a 1004
+%else
 %setup -q -n %{name}-%{version}
+%endif
 %patch0 -p1 -b .disable-backing-store
 %patch1 -p1 -b .fixpath
 
@@ -391,6 +437,43 @@ EOF
 chmod +x %{__perl_requires}
 
 %build
+# If you're seeing this, I'm sorry. This is ugly. 
+# But short of updating RHEL 5/6 (which isn't happening), this is the best worst way to keep R working.
+%if %{zlibhack}
+pushd zlib-%{zlibv}
+./configure --libdir=%{_libdir} --includedir=%{_includedir} --prefix=%{_prefix} --static
+make %{?_smp_mflags} CFLAGS='%{optflags} -fpic -fPIC'
+mkdir -p target
+make DESTDIR=./target install
+popd
+pushd bzip2-%{bzipv}
+make %{?_smp_mflags} libbz2.a CC="%{__cc}" AR="%{__ar}" RANLIB="%{__ranlib}" CFLAGS="$RPM_OPT_FLAGS -D_FILE_OFFSET_BITS=64 -fpic -fPIC" LDFLAGS="%{__global_ldflags}"
+mkdir -p target%{_libdir}
+mkdir -p target%{_includedir}
+cp -p bzlib.h target%{_includedir}
+install -m 644 libbz2.a target%{_libdir}
+popd
+pushd xz-%{xzv}
+CFLAGS="%{optflags} -fpic -fPIC" %configure --enable-static=yes --enable-shared=no
+make %{?_smp_mflags}
+mkdir -p target
+make DESTDIR=%{_builddir}/%{name}-%{version}/xz-%{xzv}/target install
+popd
+pushd pcre-%{pcrev}
+CFLAGS="%{optflags} -fpic -fPIC" %configure --enable-static=yes --enable-shared=no --enable-utf --enable-unicode-properties --enable-pcre8 --enable-pcre16 --enable-pcre32
+make %{?_smp_mflags}
+mkdir -p target
+make DESTDIR=%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target install
+popd
+pushd curl-%{curlv}
+CFLAGS="%{optflags} -fpic -fPIC" %configure --enable-static=yes --enable-shared=no --with-ssl --enable-ipv6 --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt --with-gssapi --with-libidn --enable-ldaps --with-libssh2 --enable-threaded-resolver --with-libmetalink
+make %{?_smp_mflags} V=1
+mkdir -p target
+make DESTDIR=%{_builddir}/%{name}-%{version}/curl-%{curlv}/target INSTALL="install -p" install
+popd
+%endif
+
+
 # Add PATHS to Renviron for R_LIBS_SITE
 echo 'R_LIBS_SITE=${R_LIBS_SITE-'"'/usr/local/lib/R/site-library:/usr/local/lib/R/library:%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
 # No inconsolata on RHEL tex
@@ -428,6 +511,14 @@ case "%{_target_cpu}" in
           export FC="gfortran -m32"
       ;;    
 esac
+
+%if 0%{?zlibhack}
+export CFLAGS="%{optflags} -fpic -fPIC -I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}"
+# export LDFLAGS="-L%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/"
+export CURL_CFLAGS='-DCURL_STATICLIB -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}'
+export CURL_LIBS=`%{_builddir}/%{name}-%{version}/curl-%{curlv}/target/usr/bin/curl-config --libs`
+export LDFLAGS="-ldl -lpthread -lc -lrt -Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/libz.a %{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/libbz2.a %{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/liblzma.a %{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/libpcre.a %{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/libcurl.a -Wl,--no-whole-archive -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/ $CURL_LIBS"
+%endif
 
 %if 0%{?fedora} >= 21
 %if %{with_lto}
@@ -478,7 +569,11 @@ export FCFLAGS="%{optflags}"
     rsharedir=%{_datadir}/R) \
  > CONFIGURE.log
 cat CONFIGURE.log | grep -A30 'R is now' - > CAPABILITIES
-make 
+%if 0%{?zlibhack}
+make V=1 CURL_CPPFLAGS='-DCURL_STATICLIB -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}' CURL_LIBS=`%{_builddir}/%{name}-%{version}/curl-%{curlv}/target/usr/bin/curl-config --libs`
+%else
+make V=1
+%endif
 (cd src/nmath/standalone; make)
 #make check-all
 make pdf
@@ -509,7 +604,11 @@ make DESTDIR=${RPM_BUILD_ROOT} install install-info
 mv doc/manual/R-exts.texi.spot doc/manual/R-exts.texi
 mv doc/manual/R-intro.texi.spot doc/manual/R-intro.texi
 %endif
+%if 0%{?zlibhack}
+# Ugh. Old ancient broken. Barf barf barf.
+%else
 make DESTDIR=${RPM_BUILD_ROOT} install-pdf
+%endif
 
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir
 rm -f ${RPM_BUILD_ROOT}%{_infodir}/dir.old
@@ -549,16 +648,21 @@ done
 chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
 chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 
+
 # Symbolic link for convenience
-pushd $RPM_BUILD_ROOT%{_libdir}/R
-ln -s ../../include/R include
-popd
+if [ ! -d "$RPM_BUILD_ROOT%{_libdir}/R/include" ]; then
+	pushd $RPM_BUILD_ROOT%{_libdir}/R
+	ln -s ../../include/R include
+	popd
+fi
 
 # Symbolic link for LaTeX
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
-pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
-ln -s ../../../R/texmf/tex/latex R
-popd
+if [ ! -d "$RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex/R" ]; then
+	mkdir -p $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
+	pushd $RPM_BUILD_ROOT%{_datadir}/texmf/tex/latex
+	ln -s ../../../R/texmf/tex/latex R
+	popd
+fi
 
 %if %{texi2any}
 # Do not need to copy files...
@@ -567,10 +671,102 @@ popd
 cp -a %{SOURCE100} %{SOURCE101} %{SOURCE102} %{SOURCE103} %{SOURCE104} %{SOURCE105} %{SOURCE106} %{buildroot}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/manual/
 %endif
 
+%if 0%{?zlibhack}
+# Clean our shameful shame out of the files.
+sed -i 's|-Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/libz.a %{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/libbz2.a %{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/liblzma.a %{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/libpcre.a %{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/libcurl.a -Wl,--no-whole-archive -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/||g' %{buildroot}%{_libdir}/R/etc/Makeconf
+sed -i 's|-Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/libz.a %{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/libbz2.a %{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/liblzma.a %{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/libpcre.a %{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/libcurl.a -Wl,--no-whole-archive -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/||g' %{buildroot}%{_libdir}/pkgconfig/libR.pc
+sed -i 's|-I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}||g' %{buildroot}%{_libdir}/R/etc/Makeconf
+%endif
+
 %check
+%if 0%{?zlibhack}
+# Most of these tests pass. Some don't. All pieces belong to you.
+%else
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
 make check
+%endif
+
+%clean
+rm -rf ${RPM_BUILD_ROOT}
+
+%post core
+# Create directory entries for info files
+# (optional doc files, so we must check that they are installed)
+for doc in admin exts FAQ intro lang; do
+   file=%{_infodir}/R-${doc}.info.gz
+   if [ -e $file ]; then
+      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
+   fi
+done
+/sbin/ldconfig
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+# With 2.10.0, we no longer need to do any of this.
+
+# Update package indices
+# %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+# Don't use .. based paths, substitute RHOME
+# sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
+# This could fail if there are no noarch R libraries on the system.
+# %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
+# Don't use .. based paths, substitute /usr/share/R
+# sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
+
+%preun core
+if [ $1 = 0 ]; then
+   # Delete directory entries for info files (if they were installed)
+   for doc in admin exts FAQ intro lang; do
+      file=%{_infodir}/R-${doc}.info.gz
+      if [ -e ${file} ]; then
+         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
+      fi
+   done
+fi
+
+%postun core
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+fi
+
+%posttrans core
+/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+
+%if %{modern}
+%post java
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+%post java-devel
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+%endif
+
+%post -n libRmath -p /sbin/ldconfig
+
+%postun -n libRmath -p /sbin/ldconfig
 
 %files
 # Metapackage
@@ -928,88 +1124,13 @@ make check
 %defattr(-, root, root, -)
 %{_libdir}/libRmath.a
 
-%clean
-rm -rf ${RPM_BUILD_ROOT};
-
-%post core
-# Create directory entries for info files
-# (optional doc files, so we must check that they are installed)
-for doc in admin exts FAQ intro lang; do
-   file=%{_infodir}/R-${doc}.info.gz
-   if [ -e $file ]; then
-      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
-   fi
-done
-/sbin/ldconfig
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-
-# With 2.10.0, we no longer need to do any of this.
-
-# Update package indices
-# %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
-# Don't use .. based paths, substitute RHOME
-# sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
-
-# This could fail if there are no noarch R libraries on the system.
-# %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
-# Don't use .. based paths, substitute /usr/share/R
-# sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
-
-
-%preun core
-if [ $1 = 0 ]; then
-   # Delete directory entries for info files (if they were installed)
-   for doc in admin exts FAQ intro lang; do
-      file=%{_infodir}/R-${doc}.info.gz
-      if [ -e ${file} ]; then
-         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
-      fi
-   done
-fi
-
-%postun core
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
-fi
-
-%posttrans core
-/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
-
-%if %{modern}
-%post java
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-
-%post java-devel
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-%endif
-
-%post -n libRmath -p /sbin/ldconfig
-
-%postun -n libRmath -p /sbin/ldconfig
-
 %changelog
+* Fri May 13 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-3
+- we no longer need Requires: blas-devel, lapack-devel for R-core-devel
+
+* Wed May 11 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-2.1
+- implement "zlibhack" to build R against bundled bits too old in RHEL 5 & 6
+
 * Tue May 10 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-2
 - RHEL 6 ppc64 doesn't have libicu-devel. :P
 
