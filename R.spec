@@ -115,10 +115,13 @@ Source1003: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcrev}.
 Source1004: https://curl.haxx.se/download/curl-%{curlv}.tar.bz2
 BuildRequires: glibc-devel
 BuildRequires: groff
+BuildRequires: krb5-libs
 BuildRequires: krb5-devel
+BuildRequires: libgssapi-devel
 BuildRequires: libidn-devel
 BuildRequires: libmetalink-devel
 BuildRequires: libssh2-devel
+BuildRequires: openldap
 BuildRequires: openldap-devel
 BuildRequires: openssl-devel
 BuildRequires: openssh-clients
