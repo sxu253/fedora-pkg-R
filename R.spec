@@ -687,6 +687,87 @@ ulimit -s 16384
 make check
 %endif
 
+%clean
+rm -rf ${RPM_BUILD_ROOT}
+
+%post core
+# Create directory entries for info files
+# (optional doc files, so we must check that they are installed)
+for doc in admin exts FAQ intro lang; do
+   file=%{_infodir}/R-${doc}.info.gz
+   if [ -e $file ]; then
+      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
+   fi
+done
+/sbin/ldconfig
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+# With 2.10.0, we no longer need to do any of this.
+
+# Update package indices
+# %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
+# Don't use .. based paths, substitute RHOME
+# sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
+# This could fail if there are no noarch R libraries on the system.
+# %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
+# Don't use .. based paths, substitute /usr/share/R
+# sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
+
+
+%preun core
+if [ $1 = 0 ]; then
+   # Delete directory entries for info files (if they were installed)
+   for doc in admin exts FAQ intro lang; do
+      file=%{_infodir}/R-${doc}.info.gz
+      if [ -e ${file} ]; then
+         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
+      fi
+   done
+fi
+
+%postun core
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+fi
+
+%posttrans core
+/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
+
+%if %{modern}
+%post java
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+
+%post java-devel
+R CMD javareconf \
+    JAVA_HOME=%{_jvmdir}/jre \
+    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
+    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
+    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
+    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
+    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
+    > /dev/null 2>&1 || exit 0
+%endif
+
+%post -n libRmath -p /sbin/ldconfig
+
+%postun -n libRmath -p /sbin/ldconfig
+
 %files
 # Metapackage
 
@@ -1042,87 +1123,6 @@ make check
 %files -n libRmath-static
 %defattr(-, root, root, -)
 %{_libdir}/libRmath.a
-
-%clean
-rm -rf ${RPM_BUILD_ROOT};
-
-%post core
-# Create directory entries for info files
-# (optional doc files, so we must check that they are installed)
-for doc in admin exts FAQ intro lang; do
-   file=%{_infodir}/R-${doc}.info.gz
-   if [ -e $file ]; then
-      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
-   fi
-done
-/sbin/ldconfig
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-
-# With 2.10.0, we no longer need to do any of this.
-
-# Update package indices
-# %__cat %{_libdir}/R/library/*/CONTENTS > %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null
-# Don't use .. based paths, substitute RHOME
-# sed -i "s!../../..!%{_libdir}/R!g" %{_docdir}/R-%{version}/html/search/index.txt
-
-# This could fail if there are no noarch R libraries on the system.
-# %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
-# Don't use .. based paths, substitute /usr/share/R
-# sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
-
-
-%preun core
-if [ $1 = 0 ]; then
-   # Delete directory entries for info files (if they were installed)
-   for doc in admin exts FAQ intro lang; do
-      file=%{_infodir}/R-${doc}.info.gz
-      if [ -e ${file} ]; then
-         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
-      fi
-   done
-fi
-
-%postun core
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    /usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
-fi
-
-%posttrans core
-/usr/bin/mktexlsr %{_datadir}/texmf &>/dev/null || :
-
-%if %{modern}
-%post java
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-
-%post java-devel
-R CMD javareconf \
-    JAVA_HOME=%{_jvmdir}/jre \
-    JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
-    JAVA_LIBS='-L%{_jvmdir}/jre/lib/%{java_arch}/server \
-    -L%{_jvmdir}/jre/lib/%{java_arch}\ -L%{_jvmdir}/java/lib/%{java_arch} \
-    -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
-    JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
-    > /dev/null 2>&1 || exit 0
-%endif
-
-%post -n libRmath -p /sbin/ldconfig
-
-%postun -n libRmath -p /sbin/ldconfig
 
 %changelog
 * Fri May 13 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-3
