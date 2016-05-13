@@ -119,7 +119,6 @@ BuildRequires: krb5-devel
 BuildRequires: libidn-devel
 BuildRequires: libmetalink-devel
 BuildRequires: libssh2-devel
-BuildRequires: nss-devel
 BuildRequires: openldap-devel
 BuildRequires: openssl-devel
 BuildRequires: openssh-clients
@@ -464,7 +463,7 @@ mkdir -p target
 make DESTDIR=%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target install
 popd
 pushd curl-%{curlv}
-CFLAGS="%{optflags} -fpic -fPIC" %configure --enable-static=yes --enable-shared=no --without-ssl --with-nss --enable-ipv6 --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt --with-gssapi --with-libidn --enable-ldaps --with-libssh2 --enable-threaded-resolver --with-libmetalink
+CFLAGS="%{optflags} -fpic -fPIC" %configure --enable-static=yes --enable-shared=no --with-ssl --enable-ipv6 --with-ca-bundle=%{_sysconfdir}/pki/tls/certs/ca-bundle.crt --with-gssapi --with-libidn --enable-ldaps --with-libssh2 --enable-threaded-resolver --with-libmetalink
 make %{?_smp_mflags} V=1
 mkdir -p target
 make DESTDIR=%{_builddir}/%{name}-%{version}/curl-%{curlv}/target INSTALL="install -p" install
