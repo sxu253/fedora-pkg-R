@@ -82,7 +82,7 @@
 
 Name: R
 Version: 3.3.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -678,6 +678,7 @@ sed -i 's|-Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/targ
 sed -i 's|-ldl -lpthread .* -lldap -lz -lrt||g' %{buildroot}%{_libdir}/R/etc/Makeconf
 sed -i 's|-ldl -lpthread .* -lldap -lz -lrt||g' %{buildroot}%{_libdir}/pkgconfig/libR.pc
 sed -i 's|-I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}||g' %{buildroot}%{_libdir}/R/etc/Makeconf
+sed -i 's|-ldl -lpthread .* -lldap -lz||g' %{buildroot}%{_libdir}/R/etc/Makeconf
 %endif
 
 %check
@@ -1127,6 +1128,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Jun  9 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-7
+- clean up zlibhack from FLIBS
+
 * Tue Jun  7 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-6
 - fix sed invocations to cover both el5 and el6 (thanks again to Mattias Ellert)
 
