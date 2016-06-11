@@ -82,7 +82,7 @@
 
 Name: R
 Version: 3.3.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1136,6 +1136,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sat Jun 11 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-10
+- fix CAPABILITIES pathing
+
 * Sat Jun 11 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-9
 - fix ldpaths for zlibhack
 - clean libtool
