@@ -678,6 +678,8 @@ sed -i 's|-Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/targ
 sed -i 's|-ldl -lpthread .* -lldap -lz -lrt||g' %{buildroot}%{_libdir}/R/etc/Makeconf
 sed -i 's|-ldl -lpthread .* -lldap -lz -lrt||g' %{buildroot}%{_libdir}/pkgconfig/libR.pc
 sed -i 's|-I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}||g' %{buildroot}%{_libdir}/R/etc/Makeconf
+sed -i 's|-I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}||g' %{buildroot}%{_libdir}/R/bin/libtool
+sed -i 's|-I%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_includedir} -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}||g' %{builddir}%{_datadir}/doc/R-%{version}/CAPABILITIES
 #el6 FLIBS
 sed -i 's|-ldl -lpthread .* -lldap -lz||g' %{buildroot}%{_libdir}/R/etc/Makeconf
 #el5 FLIBS
@@ -1136,6 +1138,8 @@ R CMD javareconf \
 %changelog
 * Sat Jun 11 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-9
 - fix ldpaths for zlibhack
+- clean libtool
+- clean CAPABILITIES
 
 * Thu Jun  9 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.0-8
 - fix FLIBS cleanup for el5
