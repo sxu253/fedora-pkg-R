@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- This manual is for R, version 3.2.3 (2015-12-10).
+<!-- This manual is for R, version 3.3.1 (2016-06-21).
 
-Copyright (C) 1999-2015 R Core Team
+Copyright (C) 1999-2016 R Core Team
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -17,7 +17,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation
 approved by the R Core Team. -->
-<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.1, http://www.gnu.org/software/texinfo/ -->
 <head>
 <title>R Internals</title>
 
@@ -51,9 +51,8 @@ pre.smalldisplay {font-family: inherit; font-size: smaller}
 pre.smallexample {font-size: smaller}
 pre.smallformat {font-family: inherit; font-size: smaller}
 pre.smalllisp {font-size: smaller}
-span.nocodebreak {white-space: nowrap}
 span.nolinebreak {white-space: nowrap}
-span.roman {font-family: serif; font-weight: normal}
+span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
 ul.no-bullet {list-style: none}
 body {
@@ -288,9 +287,9 @@ Next: <a href="#R-Internal-Structures" accesskey="n" rel="next">R Internal Struc
 <p>This is a guide to the internal structures of R and coding standards for
 the core team working on R itself.
 </p>
-<p>This manual is for R, version 3.2.3 (2015-12-10).
+<p>This manual is for R, version 3.3.1 (2016-06-21).
 </p>
-<p>Copyright &copy; 1999&ndash;2015 R Core Team
+<p>Copyright &copy; 1999&ndash;2016 R Core Team
 </p>
 <blockquote>
 <p>Permission is granted to make and distribute verbatim copies of this
@@ -877,7 +876,7 @@ enclosure.
 <p>There are additional places that &lsquo;variables&rsquo; can be looked up, called
 &lsquo;user databases&rsquo; in comments in the code.  These seem undocumented in
 the R sources, but apparently refer to the <strong>RObjectTable</strong> package
-at <a href="http://www.omegahat.org/RObjectTables/">http://www.omegahat.org/RObjectTables/</a>.
+at <a href="http://www.omegahat.net/RObjectTables/">http://www.omegahat.net/RObjectTables/</a>.
 </p>
 <a name="index-base-environment"></a>
 <a name="index-environment_002c-base"></a>
@@ -961,7 +960,7 @@ Next: <a href="#Hash-table" accesskey="n" rel="next">Hash table</a>, Previous: <
 <a name="index-namespace"></a>
 <p>Namespaces are environments associated with packages (and once again
 the base package is special and will be considered separately).  A
-package <code><var>pkg</var></code> with a namespace defines two environments
+package <code><var>pkg</var></code> defines two environments
 <code>namespace:<var>pkg</var></code> and <code>package:<var>pkg</var></code>: it is
 <code>package:<var>pkg</var></code> that can be <code>attach</code>ed and form part of
 the search path.
@@ -1867,21 +1866,21 @@ Next: <a href="#Mechanics-of-S4-dispatch" accesskey="n" rel="next">Mechanics of 
 <a name="S4-methods-1"></a>
 <h4 class="subsection">1.12.3 S4 methods</h4>
 
-<p>Details of methods are stored in S4 objects of class
-<code>&quot;MethodsList&quot;</code>.  They have a non-syntactic name of the form
-<code>.__M__<var>generic</var>:<var>package</var></code> for all methods defined in the
-current environment for the named generic derived from a specific
-package (which might be <code>.GlobalEnv</code>).
+<p>Details of the methods are stored in environments (typically hidden in the
+respective namespace) with a non-syntactic name of the form
+<code>.__T__<var>generic</var>:<var>package</var></code> containing objects of class
+<code>MethodDefinition</code> for all methods defined in the current environment
+for the named generic derived from a specific package (which might be <code>.GlobalEnv</code>).
+This is sometimes referred to as a &lsquo;methods table&rsquo;.
 </p>
-<p>There is also environment <code>.__T__<var>generic</var>:<var>package</var></code> which
-has names the signatures of the methods defined, and values the
-corresponding method functions.  This is often referred to as a &lsquo;methods
-table&rsquo;.
-</p>
-<p>When a package without a namespace is attached these objects become
-visible on the search path.  <code>library</code> calls
-<code>methods:::cacheMetaData</code> to update the internal tables.
-</p>
+<p>For example,
+</p><div class="example">
+<pre class="example"> length(nM &lt;- asNamespace(&quot;Matrix&quot;) )                    # 941 for Matrix 1.2-6
+ length(meth &lt;- grep(&quot;^[.]__T__&quot;, names(nM), value=TRUE))# 107 generics with methods
+ length(meth.Ops &lt;- nM$`.__T__Ops:base‘) # 71 methods for the ’Ops' (group)generic
+ head(sort(names(meth.Ops))) ## &quot;abIndex#abIndex&quot; ... &quot;ANY#ddiMatrix&quot; &quot;ANY#ldiMatrix&quot; &quot;ANY#Matrix&quot;
+</pre></div>
+
 <p>During an R session there is an environment associated with each
 non-primitive generic containing objects <code>.AllMTable</code>,
 <code>.Generic</code>, <code>.Methods</code>, <code>.MTable</code>, <code>.SigArgs</code> and
@@ -1895,8 +1894,8 @@ directive <code>exportMethods</code> will export all the methods defined in
 the namespace for a specified generic: the code also adds to the list
 of generics any that are exported directly.  For generics which are
 listed via <code>exportMethods</code> or exported themselves, the
-corresponding <code>&quot;MethodsList&quot;</code> and environment are exported and so
-will appear (as hidden objects) in the package environment.
+corresponding environment is exported and so
+will appear (as hidden object) in the package environment.
 </p>
 <p>Methods for primitives which are internally S4 generic (see below) are
 always exported, whether mentioned in the <samp>NAMESPACE</samp> file or not.
@@ -1910,7 +1909,7 @@ methods defined on generics in other packages.  Since methods for a
 generic could be imported from several different packages, the methods
 tables are merged.
 </p>
-<p>When a package with a namespace is attached
+<p>When a package is attached
 <code>methods:::cacheMetaData</code> is called to update the internal tables:
 only the visible methods will be cached.
 </p>
@@ -1939,7 +1938,7 @@ space there will be two functions called <code>myfn</code> on the search
 paths, and which will be called depends on which search path is in use.
 This is starkest for functions in the base namespace, where the
 original will be found ahead of the newly created function from any
-other package with a namespace.
+other package.
 </p>
 <p>Primitive functions are treated quite differently, for efficiency
 reasons: this results in different semantics.  <code>setGeneric</code> is
@@ -2527,6 +2526,7 @@ following groups of functions:
 <pre class="example">abs     sign    sqrt
 floor   ceiling
 </pre><pre class="example">
+
 </pre><pre class="example">exp     expm1
 log2    log10   log1p
 cos     sin     tan
@@ -2535,10 +2535,13 @@ cosh    sinh    tanh
 acosh   asinh   atanh
 cospi   sinpi   tanpi
 </pre><pre class="example">
+
 </pre><pre class="example">gamma   lgamma  digamma trigamma
 </pre><pre class="example">
+
 </pre><pre class="example">cumsum  cumprod cummax  cummin
 </pre><pre class="example">
+
 </pre><pre class="example">Im  Re  Arg  Conj  Mod
 </pre></div>
 
@@ -4510,8 +4513,8 @@ Default: -1.
 <a name="index-_005fR_005fCHECK_005fXREFS_005fREPOSITORIES_005f"></a>
 </dt>
 <dd><p>If set to a non-empty value, a space-separated list of repositories to
-use to determine known packages.  Default: empty, when the CRAN,
-Omegahat and Bioconductor repositories known to R is used.
+use to determine known packages.  Default: empty, when the CRAN
+and Bioconductor repositories known to R is used.
 </p></dd>
 <dt><code>_R_CHECK_SRC_MINUS_W_IMPLICIT_</code>
 <a name="index-_005fR_005fCHECK_005fSRC_005fMINUS_005fW_005fIMPLICIT_005f"></a>
@@ -4617,13 +4620,15 @@ Default: false (but true for CRAN submission checks).
 <a name="index-_005fR_005fCHECK_005fALWAYS_005fLOG_005fVIGNETTE_005fOUTPUT_005f"></a>
 </dt>
 <dd><p>By default the output from running the R code in the vignettes is
-kept only if there is an error.
+kept only if there is an error.  As from R 3.2.4 this also applies to
+the <samp>build_vignettes.log</samp> log from the re-building of vignettes.
 Default: false.
 </p></dd>
 <dt><code>_R_CHECK_CLEAN_VIGN_TEST_</code>
 <a name="index-_005fR_005fCHECK_005fCLEAN_005fVIGN_005fTEST_005f"></a>
 </dt>
-<dd><p>Should the <samp>vign_test</samp> directory be removed if the test is successful?
+<dd><p>Should the <samp>vign_test</samp> directory be removed if the test is
+successful?
 Default: true.
 </p></dd>
 <dt><code>_R_CHECK_REPLACING_IMPORTS_</code>
@@ -4633,7 +4638,7 @@ Default: true.
 from auto-generated <samp>NAMESPACE</samp> files in other packages, but most
 often from importing the whole of a namespace rather than using
 <code>importFrom</code>.
-Default: false (but true for CRAN submission checks).
+Default: true.
 </p></dd>
 <dt><code>_R_CHECK_UNSAFE_CALLS_</code>
 <a name="index-_005fR_005fCHECK_005fUNSAFE_005fCALLS_005f"></a>
@@ -4833,6 +4838,14 @@ Default: unset (but &lsquo;<samp>TRUE</samp>&rsquo; for CRAN submission checks).
 package namespace without loading and attaching the package and its
 suggests and enhances.
 Default: true (and true for CRAN submission checks).
+</p>
+</dd>
+<dt><code>_R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED_</code>
+<a name="index-_005fR_005fCHECK_005fCODE_005fUSAGE_005fWITH_005fONLY_005fBASE_005fATTACHED_005f"></a>
+</dt>
+<dd><p>If set, check code usage (via <a href="https://CRAN.R-project.org/package=codetools"><strong>codetools</strong></a>) with only the base
+package attached.
+Default: true.
 </p>
 </dd>
 <dt><code>_R_CHECK_EXIT_ON_FIRST_ERROR_</code>
@@ -5346,6 +5359,7 @@ Next: <a href="#Concept-index" accesskey="n" rel="next">Concept index</a>, Previ
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCODE_005fATTACH_005f"><code>_R_CHECK_CODE_ATTACH_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCODE_005fDATA_005fINTO_005fGLOBALENV_005f"><code>_R_CHECK_CODE_DATA_INTO_GLOBALENV_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCODE_005fUSAGE_005fVIA_005fNAMESPACES_005f"><code>_R_CHECK_CODE_USAGE_VIA_NAMESPACES_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCODE_005fUSAGE_005fWITH_005fONLY_005fBASE_005fATTACHED_005f"><code>_R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCODOC_005fS4_005fMETHODS_005f"><code>_R_CHECK_CODOC_S4_METHODS_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCOMPACT_005fDATA_005f"><code>_R_CHECK_COMPACT_DATA_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-_005fR_005fCHECK_005fCRAN_005fINCOMING_005f"><code>_R_CHECK_CRAN_INCOMING_</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Tools">Tools</a></td></tr>

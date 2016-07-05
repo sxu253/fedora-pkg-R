@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- This manual is for R, version 3.2.3 (2015-12-10).
+<!-- This manual is for R, version 3.3.1 (2016-06-21).
 
 Copyright (C) 1990 W. N. Venables
 
@@ -10,7 +10,7 @@ Copyright (C) 1997 R. Gentleman & R. Ihaka
 
 Copyright (C) 1997, 1998 M. Maechler
 
-Copyright (C) 1999-2015 R Core Team
+Copyright (C) 1999-2016 R Core Team
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -25,7 +25,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation
 approved by the R Core Team. -->
-<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.1, http://www.gnu.org/software/texinfo/ -->
 <head>
 <title>An Introduction to R</title>
 
@@ -59,9 +59,8 @@ pre.smalldisplay {font-family: inherit; font-size: smaller}
 pre.smallexample {font-size: smaller}
 pre.smallformat {font-family: inherit; font-size: smaller}
 pre.smalllisp {font-size: smaller}
-span.nocodebreak {white-space: nowrap}
 span.nolinebreak {white-space: nowrap}
-span.roman {font-family: serif; font-weight: normal}
+span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
 ul.no-bullet {list-style: none}
 body {
@@ -404,13 +403,13 @@ analysis, classification, clustering, ...).
 <p>This manual provides information on data types, programming elements,
 statistical modelling and graphics.
 </p>
-<p>This manual is for R, version 3.2.3 (2015-12-10).
+<p>This manual is for R, version 3.3.1 (2016-06-21).
 </p>
 <p>Copyright &copy; 1990 W. N. Venables<br>
 Copyright &copy; 1992 W. N. Venables &amp; D. M. Smith<br>
 Copyright &copy; 1997 R. Gentleman &amp; R. Ihaka<br>
 Copyright &copy; 1997, 1998 M. Maechler<br>
-Copyright &copy; 1999&ndash;2015 R Core Team
+Copyright &copy; 1999&ndash;2016 R Core Team
 </p>
 <blockquote>
 <p>Permission is granted to make and distribute verbatim copies of this
@@ -7425,8 +7424,8 @@ are designed to complement textbooks.  Some (the <em>recommended</em>
 packages) are distributed with every binary distribution of R.  Most
 are available for download from <acronym>CRAN</acronym>
 (<a href="https://CRAN.R-project.org/">https://CRAN.R-project.org/</a> and its mirrors) and other
-repositories such as Bioconductor (<a href="https://www.bioconductor.org/">https://www.bioconductor.org/</a>)
-and Omegahat (<a href="http://www.omegahat.org/">http://www.omegahat.org/</a>).  The <em>R FAQ</em>
+repositories such as Bioconductor (<a href="https://www.bioconductor.org/">https://www.bioconductor.org/</a>).
+and Omegahat (<a href="http://www.omegahat.net/">http://www.omegahat.net/</a>).  The <em>R FAQ</em>
 contains a list of CRAN packages current at the time of release, but the
 collection of available packages changes very frequently.
 </p>
@@ -8604,21 +8603,24 @@ used by the inbuilt command line editor: this used to happen on OS X.
 file <samp>README.Rterm</samp> for command-line editing under
 <code>Rterm.exe</code>.
 </p>
-<p>When using R with <strong>readline</strong> capabilities, the functions
-described below are available, as well as others (probably) documented
-in <code>man readline</code> or <code>info readline</code> on your system.
+<p>When using R with GNU<a name="DOCF28" href="#FOOT28"><sup>28</sup></a> <strong>readline</strong> capabilities, the functions described
+below are available, as well as others (probably) documented in
+<code>man readline</code> or <code>info readline</code> on your system.
 </p>
 <p>Many of these use either Control or Meta characters.  Control
 characters, such as <kbd>Control-m</kbd>, are obtained by holding the
 <tt class="key">CTRL</tt> down while you press the <tt class="key">m</tt> key, and are written as
 <kbd>C-m</kbd> below.  Meta characters, such as <kbd>Meta-b</kbd>, are typed by
-holding down <tt class="key">META</tt><a name="DOCF28" href="#FOOT28"><sup>28</sup></a> and pressing <tt class="key">b</tt>, and written as <kbd>M-b</kbd>
+holding down <tt class="key">META</tt><a name="DOCF29" href="#FOOT29"><sup>29</sup></a> and pressing <tt class="key">b</tt>, and written as <kbd>M-b</kbd>
 in the following.  If your terminal does not have a <tt class="key">META</tt> key
 enabled, you can still type Meta characters using two-character
 sequences starting with <kbd>ESC</kbd>.  Thus, to enter <kbd>M-b</kbd>, you could
 type <tt class="key">ESC</tt><tt class="key">b</tt>.  The <kbd>ESC</kbd> character sequences are also
 allowed on terminals with real Meta keys.  Note that case is significant
 for Meta characters.
+</p>
+<p>Some but not all versions<a name="DOCF30" href="#FOOT30"><sup>30</sup></a> of <strong>readline</strong>
+will recognize resizing of the terminal window so this is best avoided.
 </p>
 <a name="Editing-actions"></a>
 <h3 class="appendixsection">C.2 Editing actions</h3>
@@ -8654,7 +8656,8 @@ re-submitted.
 <dd><p>Go to the next command (forwards in the history).
 </p></dd>
 <dt><kbd>C-r <var>text</var></kbd></dt>
-<dd><p>Find the last command with the <var>text</var> string in it.
+<dd><p>Find the last command with the <var>text</var> string in it.  This can be
+cancelled by <code>C-g</code> (and on some versions of R by <code>C-c</code>).
 </p></dd>
 </dl>
 
@@ -9589,9 +9592,17 @@ on most 64-bit versions of Windows.</p>
 &lsquo;Emacs Speaks Statistics&rsquo; package; see the <acronym>URL</acronym>
 <a href="http://ESS.R-project.org">http://ESS.R-project.org</a></p>
 <h3><a name="FOOT28" href="#DOCF28">(28)</a></h3>
+<p>It is possible to build R using an
+emulation of GNU <strong>readline</strong>, such as one based on NetBSD&rsquo;s
+<strong>editline</strong>, it which case only a subset of the capabilities may
+be provided.</p>
+<h3><a name="FOOT29" href="#DOCF29">(29)</a></h3>
 <p>On a PC keyboard this is usually the
 Alt key, occasionally the &lsquo;Windows&rsquo; key.  On a Mac keyboard normally no
 meta key is available.</p>
+<h3><a name="FOOT30" href="#DOCF30">(30)</a></h3>
+<p>In particular, not versions 6.3 or
+later: this is worked around as from R 3.4.0.</p>
 </div>
 <hr>
 

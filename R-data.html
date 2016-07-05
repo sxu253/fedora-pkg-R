@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- This manual is for R, version 3.2.3 (2015-12-10).
+<!-- This manual is for R, version 3.3.1 (2016-06-21).
 
-Copyright (C) 2000-2015 R Core Team
+Copyright (C) 2000-2016 R Core Team
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -17,7 +17,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation
 approved by the R Core Team. -->
-<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.1, http://www.gnu.org/software/texinfo/ -->
 <head>
 <title>R Data Import/Export</title>
 
@@ -51,9 +51,8 @@ pre.smalldisplay {font-family: inherit; font-size: smaller}
 pre.smallexample {font-size: smaller}
 pre.smallformat {font-family: inherit; font-size: smaller}
 pre.smalllisp {font-size: smaller}
-span.nocodebreak {white-space: nowrap}
 span.nolinebreak {white-space: nowrap}
-span.roman {font-family: serif; font-weight: normal}
+span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
 ul.no-bullet {list-style: none}
 body {
@@ -241,9 +240,9 @@ Next: <a href="#Acknowledgements" accesskey="n" rel="next">Acknowledgements</a> 
 
 <p>This is a guide to importing and exporting data to and from R.
 </p>
-<p>This manual is for R, version 3.2.3 (2015-12-10).
+<p>This manual is for R, version 3.3.1 (2016-06-21).
 </p>
-<p>Copyright &copy; 2000&ndash;2015 R Core Team
+<p>Copyright &copy; 2000&ndash;2016 R Core Team
 </p>
 <blockquote>
 <p>Permission is granted to make and distribute verbatim copies of this
@@ -372,13 +371,13 @@ here.
 <p>There are packages to allow functionality developed in languages such as
 <code>Java</code>, <code>perl</code> and <code>python</code> to be directly integrated
 with R code, making the use of facilities in these languages even
-more appropriate.  (See the <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> package from <acronym>CRAN</acronym> and
-the <strong>SJava</strong>, <strong>RSPerl</strong> and <strong>RSPython</strong> packages from the
-Omegahat project, <a href="http://www.omegahat.org">http://www.omegahat.org</a>.)
+more appropriate.  (See the <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> package from <acronym>CRAN</acronym>
+and the <strong>SJava</strong>, <strong>RSPerl</strong> and <strong>RSPython</strong> packages from the
+Omegahat project, <a href="http://www.omegahat.net">http://www.omegahat.net</a>.)
 </p>
 
 <a name="index-Unix-tools"></a>
-<a name="index-AWK"></a>
+<a name="index-awk"></a>
 <a name="index-perl"></a>
 <p>It is also worth remembering that R like S comes from the Unix
 tradition of small re-usable tools, and it can be rewarding to use tools
@@ -428,8 +427,7 @@ on their computers for that purpose).  However, this is not always
 possible, and <a href="#Importing-from-other-statistical-systems">Importing from other statistical systems</a> discusses
 what facilities are available to access such files directly from R.
 For Excel spreadsheets, the available methods are summarized in
-<a href="#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>.  For ODS spreadsheets from Open
-Office, see the Omegahat package<a name="DOCF1" href="#FOOT1"><sup>1</sup></a> <strong>ROpenOffice</strong>.
+<a href="#Reading-Excel-spreadsheets">Reading Excel spreadsheets</a>.  
 </p>
 <p>In a few cases, data have been stored in a binary form for compactness
 and speed of access.  One application of this that we have seen several
@@ -471,7 +469,7 @@ intro.dat: UTF-8 Unicode (with BOM) text
 
 <p>Modern Unix-alike systems, including OS X, are likely to produce
 UTF-8 files.  Windows may produce what it calls &lsquo;Unicode&rsquo; files
-(<code>UCS-2LE</code> or just possibly <code>UTF-16LE</code><a name="DOCF2" href="#FOOT2"><sup>2</sup></a>).  Otherwise most files will be in a
+(<code>UCS-2LE</code> or just possibly <code>UTF-16LE</code><a name="DOCF1" href="#FOOT1"><sup>1</sup></a>).  Otherwise most files will be in a
 8-bit encoding unless from a Chinese/Japanese/Korean locale (which have
 a wide range of encodings in common use).  It is not possible to
 automatically detect with certainty which 8-bit encoding (although
@@ -622,7 +620,7 @@ and <code>write.table</code> has a <code>fileEncoding</code> argument to make th
 easier.
 </p>
 <p>The hard part is to know what file encoding to use.  For use on Windows,
-it is best to use what Windows calls &lsquo;Unicode&rsquo;<a name="DOCF3" href="#FOOT3"><sup>3</sup></a>, that is <code>&quot;UTF-16LE&quot;</code>.  Using UTF-8 is a good way
+it is best to use what Windows calls &lsquo;Unicode&rsquo;<a name="DOCF2" href="#FOOT2"><sup>2</sup></a>, that is <code>&quot;UTF-16LE&quot;</code>.  Using UTF-8 is a good way
 to make portable files that will not easily be confused with any other
 encoding, but even OS X applications (where UTF-8 is the system
 encoding) may not recognize them, and Windows applications are most
@@ -685,12 +683,9 @@ graphical displays, mathematics and so on.
 <p>although it does not require it.
 </p>
 <p>The <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a> package provides general facilities for reading and
-writing <acronym>XML</acronym> documents within R.  A description of the
-facilities of the <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a> package is outside the scope of this
-document: see the package&rsquo;s Web page at
-<a href="http://www.omegahat.org/RSXML">http://www.omegahat.org/RSXML</a> for details and examples.  Package
-<a href="https://CRAN.R-project.org/package=StatDataML"><strong>StatDataML</strong></a> on <acronym>CRAN</acronym> is one example building on
-<a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a>.
+writing <acronym>XML</acronym> documents within R. 
+Package <a href="https://CRAN.R-project.org/package=StatDataML"><strong>StatDataML</strong></a> on <acronym>CRAN</acronym> is one example building
+on <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a>.
 </p>
 <p>NB: <a href="https://CRAN.R-project.org/package=XML"><strong>XML</strong></a> is available as a binary package for Windows, normally
 from the &lsquo;CRAN extras&rsquo; repository (which is selected by default on
@@ -856,7 +851,7 @@ indicate missing cases in a regular layout.
 columns as character vectors and then tries to select a suitable class
 for each variable in the data frame.  It tries in turn <code>logical</code>,
 <code>integer</code>, <code>numeric</code> and <code>complex</code>, moving on if any
-entry is not missing and cannot be converted.<a name="DOCF4" href="#FOOT4"><sup>4</sup></a>
+entry is not missing and cannot be converted.<a name="DOCF3" href="#FOOT3"><sup>3</sup></a>
 If all of these fail, the variable is converted to a factor.
 </p>
 <p>Arguments <code>colClasses</code> and <code>as.is</code> provide greater control.
@@ -1490,7 +1485,7 @@ Next: <a href="#R-interface-packages" accesskey="n" rel="next">R interface packa
 <a href="http://www.ibm.com/db2">IBM&rsquo;s DB2</a>;
 <a href="https://www.microsoft.com/SQL/default.mspx">Microsoft <acronym>SQL</acronym>
 Server</a> on Windows) and academic and small-system databases (such as
-MySQL<a name="DOCF5" href="#FOOT5"><sup>5</sup></a>, PostgreSQL, Microsoft
+MySQL<a name="DOCF4" href="#FOOT4"><sup>4</sup></a>, PostgreSQL, Microsoft
 Access, &hellip;), the former marked out by much greater emphasis on data
 security features.  The line is blurring, with MySQL and PostgreSQL
 having more and more high-end features, and free &lsquo;express&rsquo; versions
@@ -3014,7 +3009,7 @@ Previous: <a href="#Function-and-variable-index" accesskey="p" rel="prev">Functi
 <tr><td></td><th align="left">Index Entry</th><td>&nbsp;</td><th align="left"> Section</th></tr>
 <tr><td colspan="4"> <hr></td></tr>
 <tr><th><a name="Concept-index_cp_letter-A">A</a></th><td></td><td></td></tr>
-<tr><td></td><td valign="top"><a href="#index-AWK">AWK</a>:</td><td>&nbsp;</td><td valign="top"><a href="#Introduction">Introduction</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-awk">awk</a>:</td><td>&nbsp;</td><td valign="top"><a href="#Introduction">Introduction</a></td></tr>
 <tr><td colspan="4"> <hr></td></tr>
 <tr><th><a name="Concept-index_cp_letter-B">B</a></th><td></td><td></td></tr>
 <tr><td></td><td valign="top"><a href="#index-Binary-files">Binary files</a>:</td><td>&nbsp;</td><td valign="top"><a href="#Binary-files">Binary files</a></td></tr>
@@ -3163,23 +3158,19 @@ Previous: <a href="#Function-and-variable-index" accesskey="p" rel="prev">Functi
 <h4 class="footnotes-heading">Footnotes</h4>
 
 <h3><a name="FOOT1" href="#DOCF1">(1)</a></h3>
-<p>Currently not available from
-that repository but as a source package for download from
-<a href="http://www.omegahat.org/ROpenOffice/">http://www.omegahat.org/ROpenOffice/</a>.</p>
-<h3><a name="FOOT2" href="#DOCF2">(2)</a></h3>
 <p>the
 distinction is subtle,
 <a href="https://en.wikipedia.org/wiki/UTF-16/UCS-2">https://en.wikipedia.org/wiki/UTF-16/UCS-2</a>, and the use of
 surrogate pairs is very rare.</p>
-<h3><a name="FOOT3" href="#DOCF3">(3)</a></h3>
+<h3><a name="FOOT2" href="#DOCF2">(2)</a></h3>
 <p>Even then,
 Windows applications may expect a Byte Order Mark which the
 implementation of <code>iconv</code> used by R may or may not add depending
 on the platform.</p>
-<h3><a name="FOOT4" href="#DOCF4">(4)</a></h3>
+<h3><a name="FOOT3" href="#DOCF3">(3)</a></h3>
 <p>This is normally
 fast as looking at the first entry rules out most of the possibilities.</p>
-<h3><a name="FOOT5" href="#DOCF5">(5)</a></h3>
+<h3><a name="FOOT4" href="#DOCF4">(4)</a></h3>
 <p>and forks, notably MariaDB.</p>
 </div>
 <hr>
