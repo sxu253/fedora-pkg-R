@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- This manual is for R, version 3.2.3 (2015-12-10).
+<!-- This manual is for R, version 3.3.1 (2016-06-21).
 
-Copyright (C) 2000-2015 R Core Team
+Copyright (C) 2000-2016 R Core Team
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -17,7 +17,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation
 approved by the R Core Team. -->
-<!-- Created by GNU Texinfo 6.0, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.1, http://www.gnu.org/software/texinfo/ -->
 <head>
 <title>R Language Definition</title>
 
@@ -51,9 +51,8 @@ pre.smalldisplay {font-family: inherit; font-size: smaller}
 pre.smallexample {font-size: smaller}
 pre.smallformat {font-family: inherit; font-size: smaller}
 pre.smalllisp {font-size: smaller}
-span.nocodebreak {white-space: nowrap}
 span.nolinebreak {white-space: nowrap}
-span.roman {font-family: serif; font-weight: normal}
+span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
 ul.no-bullet {list-style: none}
 body {
@@ -342,9 +341,9 @@ Next: <a href="#Introduction" accesskey="n" rel="next">Introduction</a> &nbsp; [
 parsing, object oriented programming, computing on the language, and so
 forth.
 </p>
-<p>This manual is for R, version 3.2.3 (2015-12-10).
+<p>This manual is for R, version 3.3.1 (2016-06-21).
 </p>
-<p>Copyright &copy; 2000&ndash;2015 R Core Team
+<p>Copyright &copy; 2000&ndash;2016 R Core Team
 </p>
 <blockquote>
 <p>Permission is granted to make and distribute verbatim copies of this
@@ -1780,10 +1779,8 @@ Next: <a href="#repeat" accesskey="n" rel="next">repeat</a>, Previous: <a href="
 <p>R has three statements that provide explicit
 looping.<a name="DOCF3" href="#FOOT3"><sup>3</sup></a>  They are <code>for</code>, <code>while</code> and
 <code>repeat</code>.  The two built-in constructs, <code>next</code> and
-<code>break</code>, provide additional control over the evaluation.  Each of
-the three statements returns the value of the last statement that was
-evaluated.  It is possible, although uncommon, to assign the result of
-one of these statements to a symbol.  R provides other functions for
+<code>break</code>, provide additional control over the evaluation. 
+R provides other functions for
 implicit looping such as <code>tapply</code>, <code>apply</code>, and <code>lapply</code>.
 In addition many operations, especially arithmetic ones, are vectorized
 so you may not need to use a loop.
