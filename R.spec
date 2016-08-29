@@ -82,7 +82,7 @@
 
 Name: R
 Version: 3.3.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -236,7 +236,7 @@ Requires: vim-minimal
 %endif
 Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # Make sure we bring the new libRmath with us
-Requires: libRmath%{_isa} = %{version}-%{release}
+Requires: libRmath%{?_isa} = %{version}-%{release}
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -1139,6 +1139,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Aug 29 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-3
+- fix use of _isa to be conditionalized on its existence (looking at you el5)
+
 * Mon Aug  8 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-2
 - add Requires: libmath to R-core
 
