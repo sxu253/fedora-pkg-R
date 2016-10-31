@@ -88,7 +88,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -251,6 +251,7 @@ Requires: libRmath%{?_isa} = %{version}-%{release}
 Requires: openblas
 # I assure you. Lying about this is MUCH easier than filtering it out.
 Provides: libRblas.so()(%{__isa_bits}bit)
+Provides: libRblas.so
 %endif
 
 # These are the submodules that R-core provides. Sometimes R modules say they
@@ -259,20 +260,20 @@ Provides: libRblas.so()(%{__isa_bits}bit)
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.18
 Provides: R-class = 7.3.14
-Provides: R-cluster = 2.0.4
-Provides: R-codetools = 0.2.14
+Provides: R-cluster = 2.0.5
+Provides: R-codetools = 0.2.15
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.66
+Provides: R-foreign = 0.8.67
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
-Provides: R-lattice = 0.20.33
+Provides: R-lattice = 0.20.34
 Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.6
+Provides: R-Matrix = 1.2.7.1
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.12
+Provides: R-mgcv = 1.8.15
 Provides: R-nlme = 3.1.128
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
@@ -281,7 +282,7 @@ Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.39.4
+Provides: R-survival = 2.39.5
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -334,7 +335,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.6
+Provides: R-Matrix-devel = 1.2.7.1
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -559,6 +560,9 @@ export FCFLAGS="%{optflags}"
 # It also results in R using the bundled lapack copy.
 
 ( %configure \
+%if 0%{?rhel} && 0%{?rhel} <= 5
+    --with-readline=no \
+%endif
 %if %{system_tre}
     --with-system-tre \
 %endif
@@ -1161,6 +1165,13 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-2
+- fix provides for openblas hack
+- fix version for recommended components that are included
+
+* Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-1.1
+- disable readline support for el5
+
 * Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-1
 - update to 3.3.2
 
