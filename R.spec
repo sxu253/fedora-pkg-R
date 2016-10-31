@@ -88,7 +88,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -559,6 +559,9 @@ export FCFLAGS="%{optflags}"
 # It also results in R using the bundled lapack copy.
 
 ( %configure \
+%if 0%{?rhel} <= 5
+    --with-readline=no \
+%endif
 %if %{system_tre}
     --with-system-tre \
 %endif
@@ -1161,6 +1164,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-1.1
+- disable readline support for el5
+
 * Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-1
 - update to 3.3.2
 
