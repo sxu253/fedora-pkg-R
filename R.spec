@@ -80,9 +80,15 @@
 
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
+%ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
+%global openblas 1
+%else
+%global openblas 0
+%endif
+
 Name: R
-Version: 3.3.1
-Release: 2%{?dist}
+Version: 3.3.2
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -167,6 +173,9 @@ BuildRequires: java
 BuildRequires: tre-devel
 BuildRequires: autoconf, automake, libtool
 %endif
+%if %{openblas}
+BuildRequires: openblas-devel
+%endif
 
 # We use the bundled lapack and shim for BLAS now.
 %if 0
@@ -236,7 +245,13 @@ Requires: vim-minimal
 %endif
 Requires: perl, sed, gawk, tex(latex), less, make, unzip
 # Make sure we bring the new libRmath with us
-Requires: libRmath%{_isa} = %{version}-%{release}
+Requires: libRmath%{?_isa} = %{version}-%{release}
+
+%if %{openblas}
+Requires: openblas
+# I assure you. Lying about this is MUCH easier than filtering it out.
+Provides: libRblas.so()(%{__isa_bits}bit)
+%endif
 
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for 
@@ -519,7 +534,7 @@ export CFLAGS="%{optflags} -fpic -fPIC -I%{_builddir}/%{name}-%{version}/zlib-%{
 # export LDFLAGS="-L%{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/ -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/"
 export CURL_CFLAGS='-DCURL_STATICLIB -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}'
 export CURL_LIBS=`%{_builddir}/%{name}-%{version}/curl-%{curlv}/target/usr/bin/curl-config --libs`
-export LDFLAGS="-ldl -lpthread -lc -lrt -Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/libz.a %{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/libbz2.a %{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/liblzma.a %{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/libpcre.a %{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/libcurl.a -Wl,--no-whole-archive -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/ $CURL_LIBS"
+export LDFLAGS="-ldl -lpthread -lc -lrt -Wl,--as-needed -Wl,--whole-archive %{_builddir}/%{name}-%{version}/zlib-%{zlibv}/target%{_libdir}/libz.a %{_builddir}/%{name}-%{version}/bzip2-%{bzipv}/target%{_libdir}/libbz2.a %{_builddir}/%{name}-%{version}/xz-%{xzv}/target%{_libdir}/liblzma.a %{_builddir}/%{name}-%{version}/pcre-%{pcrev}/target%{_libdir}/libpcre.a %{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/libcurl.a -Wl,--no-whole-archive -L%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_libdir}/ $CURL_LIBS"
 %endif
 
 %if 0%{?fedora} >= 21
@@ -550,10 +565,10 @@ export FCFLAGS="%{optflags}"
     --with-system-valgrind-headers \
 %if 0%{?fedora}
     --with-lapack \
-    --enable-BLAS-shlib \
 %endif
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
+    --enable-BLAS-shlib \
     --enable-R-shlib \
     --enable-prebuilt-html \
 %if %{with_lto}
@@ -689,6 +704,13 @@ sed -i 's|-ldl -lpthread .* -lldap||g' %{buildroot}%{_libdir}/R/etc/Makeconf
 # ldpaths
 sed -i 's|:/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}||g' %{buildroot}%{_libdir}/R/etc/ldpaths
 sed -i 's|/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}||g' %{buildroot}%{_libdir}/R/etc/ldpaths
+%endif
+
+%if %{openblas}
+# Rename the R blas so.
+mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRrefblas.so
+# Set a symlink to openblas
+ln -s %{_libdir}/libopenblas.so.0 %{buildroot}%{_libdir}/R/lib/libRblas.so
 %endif
 
 %check
@@ -1139,6 +1161,19 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-1
+- update to 3.3.2
+
+* Fri Oct 28 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-5
+- add false Provides in openblas case
+
+* Fri Oct 28 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-4
+- use -Wl,--as-needed on zlibhack targets (bz 1389715)
+- use openblas on architectures where it exists, keep R reference blas as "libRrefblas.so"
+
+* Mon Aug 29 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-3
+- fix use of _isa to be conditionalized on its existence (looking at you el5)
+
 * Mon Aug  8 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.1-2
 - add Requires: libmath to R-core
 
