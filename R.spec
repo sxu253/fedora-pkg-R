@@ -81,14 +81,22 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 %ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
+%if 0%{?rhel} >= 7
 %global openblas 1
+%else
+%if 0%{?fedora} >= 23
+%global openblas 1
+%else
+%global openblas 0
+%endif
+%endif
 %else
 %global openblas 0
 %endif
 
 Name: R
 Version: 3.3.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -248,10 +256,7 @@ Requires: perl, sed, gawk, tex(latex), less, make, unzip
 Requires: libRmath%{?_isa} = %{version}-%{release}
 
 %if %{openblas}
-Requires: openblas
-# I assure you. Lying about this is MUCH easier than filtering it out.
-Provides: libRblas.so()(%{__isa_bits}bit)
-Provides: libRblas.so
+Requires: openblas-Rblas
 %endif
 
 # These are the submodules that R-core provides. Sometimes R modules say they
@@ -713,8 +718,6 @@ sed -i 's|/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/bu
 %if %{openblas}
 # Rename the R blas so.
 mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRrefblas.so
-# Set a symlink to openblas
-ln -s %{_libdir}/libopenblas.so.0 %{buildroot}%{_libdir}/R/lib/libRblas.so
 %endif
 
 %check
@@ -1165,6 +1168,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Dec 14 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-3
+- openblas-Rblas provides libRblas.so now
+
 * Mon Oct 31 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-2
 - fix provides for openblas hack
 - fix version for recommended components that are included
