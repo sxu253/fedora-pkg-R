@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1168,6 +1168,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Jan 12 2017 Igor Gnatenko <ignatenko@redhat.com> - 3.3.2-4
+- Rebuild for readline 7.x
+
 * Wed Dec 14 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-3
 - openblas-Rblas provides libRblas.so now
 
