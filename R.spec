@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1168,6 +1168,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Sat Jan 28 2017 Björn Esser <besser82@fedoraproject.org> - 3.3.2-5
 - Rebuilt for GCC-7
 
