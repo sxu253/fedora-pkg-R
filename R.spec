@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -147,6 +147,8 @@ BuildRequires: stunnel
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
+# see https://bugzilla.redhat.com/show_bug.cgi?id=1418471#c5
+Patch2: https://github.com/wch/r-source/commit/a0fe05ce9d0937ad2334bb370785cb22c71e592b.patch#/R-3.3.2-fix-zlib-detection.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -439,6 +441,7 @@ from the R project.  This package provides the static libRmath library.
 %endif
 %patch0 -p1 -b .disable-backing-store
 %patch1 -p1 -b .fixpath
+%patch2 -p1 -b .zlib-detection
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -1168,6 +1171,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Feb 14 2017 Björn Esser <besser82@fedoraproject.org> - 3.3.2-7
+- Add Patch2 to fix detection of zlib
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
