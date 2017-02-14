@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.3.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -727,9 +727,11 @@ mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRref
 %if 0%{?zlibhack}
 # Most of these tests pass. Some don't. All pieces belong to you.
 %else
+%ifnarch ppc64
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
 make check
+%endif
 %endif
 
 %clean
@@ -1171,6 +1173,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Feb 14 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.2-8
+- disable tests on ppc64 (no real way to debug them)
+
 * Tue Feb 14 2017 Björn Esser <besser82@fedoraproject.org> - 3.3.2-7
 - Add Patch2 to fix detection of zlib
 
