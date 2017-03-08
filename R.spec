@@ -95,8 +95,8 @@
 %endif
 
 Name: R
-Version: 3.3.2
-Release: 8%{?dist}
+Version: 3.3.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -117,11 +117,11 @@ Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
 Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
 %if %{zlibhack}
-%global zlibv 1.2.8
+%global zlibv 1.2.11
 %global bzipv 1.0.6
-%global xzv 5.2.2
-%global pcrev 8.38
-%global curlv 7.48.0
+%global xzv 5.2.3
+%global pcrev 8.40
+%global curlv 7.53.1
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -147,8 +147,6 @@ BuildRequires: stunnel
 Patch0: 0001-Disable-backing-store-in-X11-window.patch
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
-# see https://bugzilla.redhat.com/show_bug.cgi?id=1418471#c5
-Patch2: https://github.com/wch/r-source/commit/a0fe05ce9d0937ad2334bb370785cb22c71e592b.patch#/R-3.3.2-fix-zlib-detection.patch
 License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -277,11 +275,11 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.34
 Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.7.1
+Provides: R-Matrix = 1.2.8
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.15
-Provides: R-nlme = 3.1.128
+Provides: R-mgcv = 1.8.17
+Provides: R-nlme = 3.1.131
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.10
@@ -289,7 +287,7 @@ Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.39.5
+Provides: R-survival = 2.40.1
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -342,7 +340,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.7.1
+Provides: R-Matrix-devel = 1.2.8
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -441,7 +439,6 @@ from the R project.  This package provides the static libRmath library.
 %endif
 %patch0 -p1 -b .disable-backing-store
 %patch1 -p1 -b .fixpath
-%patch2 -p1 -b .zlib-detection
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -1173,6 +1170,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Mar  8 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.3-1
+- update to 3.3.3
+
 * Tue Feb 14 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.2-8
 - disable tests on ppc64/ppc64le (no real way to debug them)
 
