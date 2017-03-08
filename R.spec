@@ -41,11 +41,11 @@
 %global modern 1
 %endif
 
-# R really wants zlib 1.2.5, bzip2 1.0.6, xz 5.0.3, curl 7.28, and pcre 8.10+ 
+# R really wants zlib 1.2.5, bzip2 1.0.6, xz 5.0.3, curl 7.28, and pcre 8.10+
 # These are too new for RHEL 5/6. HACKITY HACK TIME.
 %global zlibhack 0
 
-%if 0%{?rhel} == 5 
+%if 0%{?rhel} == 5
 %global zlibhack 1
 %endif
 
@@ -95,8 +95,8 @@
 %endif
 
 Name: R
-Version: 3.3.2
-Release: 3%{?dist}
+Version: 3.3.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -117,11 +117,11 @@ Source105: https://cran.r-project.org/doc/manuals/r-release/R-ints.html
 Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
 %if %{zlibhack}
-%global zlibv 1.2.8
+%global zlibv 1.2.11
 %global bzipv 1.0.6
-%global xzv 5.2.2
-%global pcrev 8.38
-%global curlv 7.48.0
+%global xzv 5.2.3
+%global pcrev 8.40
+%global curlv 7.53.1
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -151,12 +151,12 @@ License: GPLv2+
 Group: Applications/Engineering
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
-BuildRequires: gcc-c++, tex(latex), texinfo-tex 
+BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: pcre-devel, zlib-devel
 %if 0%{?rhel}
- # RHEL older than 6 
+ # RHEL older than 6
  %if 0%{?rhel} < 7
  # RHEL 5 used to use curl-devel, but it is now too old.
  #BuildRequires: curl-devel
@@ -222,12 +222,12 @@ Requires: R-java = %{version}-%{release}
 %endif
 
 %description
-This is a metapackage that provides both core R userspace and 
+This is a metapackage that provides both core R userspace and
 all R development components.
 
-R is a language and environment for statistical computing and graphics. 
-R is similar to the award-winning S system, which was developed at 
-Bell Laboratories by John Chambers et al. It provides a wide 
+R is a language and environment for statistical computing and graphics.
+R is similar to the award-winning S system, which was developed at
+Bell Laboratories by John Chambers et al. It provides a wide
 variety of statistical and graphical techniques (linear and
 nonlinear modelling, statistical tests, time series analysis,
 classification, clustering, ...).
@@ -260,7 +260,7 @@ Requires: openblas-Rblas
 %endif
 
 # These are the submodules that R-core provides. Sometimes R modules say they
-# depend on one of these submodules rather than just R. These are provided for 
+# depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.18
@@ -275,11 +275,11 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.34
 Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.7.1
+Provides: R-Matrix = 1.2.8
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.15
-Provides: R-nlme = 3.1.128
+Provides: R-mgcv = 1.8.17
+Provides: R-nlme = 3.1.131
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.10
@@ -287,7 +287,7 @@ Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.39.5
+Provides: R-survival = 2.40.1
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -340,7 +340,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.7.1
+Provides: R-Matrix-devel = 1.2.8
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -460,7 +460,7 @@ EOF
 chmod +x %{__perl_requires}
 
 %build
-# If you're seeing this, I'm sorry. This is ugly. 
+# If you're seeing this, I'm sorry. This is ugly.
 # But short of updating RHEL 5/6 (which isn't happening), this is the best worst way to keep R working.
 %if %{zlibhack}
 pushd zlib-%{zlibv}
@@ -526,13 +526,13 @@ case "%{_target_cpu}" in
           export CXX="g++ -m31"
           export F77="gfortran -m31"
           export FC="gfortran -m31"
-      ;;    
+      ;;
       *)
           export CC="gcc -m32"
           export CXX="g++ -m32"
           export F77="gfortran -m32"
           export FC="gfortran -m32"
-      ;;    
+      ;;
 esac
 
 %if 0%{?zlibhack}
@@ -724,9 +724,11 @@ mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRref
 %if 0%{?zlibhack}
 # Most of these tests pass. Some don't. All pieces belong to you.
 %else
+%ifnarch ppc64 ppc64le
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
 make check
+%endif
 %endif
 
 %clean
@@ -1168,6 +1170,24 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Mar  8 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.3-1
+- update to 3.3.3
+
+* Tue Feb 14 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.2-8
+- disable tests on ppc64/ppc64le (no real way to debug them)
+
+* Tue Feb 14 2017 Björn Esser <besser82@fedoraproject.org> - 3.3.2-7
+- Add Patch2 to fix detection of zlib
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Sat Jan 28 2017 Björn Esser <besser82@fedoraproject.org> - 3.3.2-5
+- Rebuilt for GCC-7
+
+* Thu Jan 12 2017 Igor Gnatenko <ignatenko@redhat.com> - 3.3.2-4
+- Rebuild for readline 7.x
+
 * Wed Dec 14 2016 Tom Callaway <spot@fedoraproject.org> - 3.3.2-3
 - openblas-Rblas provides libRblas.so now
 
@@ -1563,11 +1583,11 @@ R CMD javareconf \
 - bump for new tag
 
 * Tue Mar 24 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-6
-- add profile.d scripts to set R_HOME 
+- add profile.d scripts to set R_HOME
 - rpmlint cleanups
 
 * Mon Mar 23 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-5
-- add R-java and R-java-devel "dummy" packages, so that we can get java dependent R-modules 
+- add R-java and R-java-devel "dummy" packages, so that we can get java dependent R-modules
   to build/install
 
 * Wed Mar  4 2009 Tom "spot" Callaway <tcallawa@redhat.com> - 2.8.1-4
@@ -1589,7 +1609,7 @@ R CMD javareconf \
 
 * Sun Oct 26 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.8.0-1
 - Update to 2.8.0
-- New subpackage layout: R-core is functional userspace, R is metapackage 
+- New subpackage layout: R-core is functional userspace, R is metapackage
   requiring everything
 - Fix system bzip2 detection
 
@@ -1616,7 +1636,7 @@ R CMD javareconf \
 - fix poorly constructed file paths in html/packages.html (bz 442727)
 
 * Tue May 13 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.0-2
-- add patch from Martyn Plummer to avoid possible bad path hardcoding in 
+- add patch from Martyn Plummer to avoid possible bad path hardcoding in
   /usr/bin/Rscript
 - properly handle ia64 case (bz 446181)
 
@@ -1636,12 +1656,12 @@ R CMD javareconf \
 - Update indices in the right place.
 
 * Mon Jan  7 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-3
-- move INSTALL back into R main package, as it is useful without the 
+- move INSTALL back into R main package, as it is useful without the
   other -devel bits (e.g. installing noarch package from CRAN)
 
 * Tue Dec 11 2007 Tom "spot" Callaway <tcallawa@redhat.com> 2.6.1-2
 - based on changes from Martyn Plummer <martyn.plummer@r-project.org>
-- use configure options rdocdir, rincludedir, rsharedir 
+- use configure options rdocdir, rincludedir, rsharedir
 - use DESTDIR at installation
 - remove obsolete generation of packages.html
 - move header files and INSTALL R-devel package
@@ -1793,11 +1813,11 @@ R CMD javareconf \
 
 * Tue Oct 12 2004 Martyn Plummer <plummer@iarc.fr> 0:2.0.0-0.fdr.2
 - Info support is now conditional on the macro Rinfo, which is only
-  defined for Fedora 1 and 2. 
+  defined for Fedora 1 and 2.
 
 * Thu Oct 7 2004 Martyn Plummer <plummer@iarc.fr> 0:2.0.0-0.fdr.1
 - Built R 2.0.0
-- There is no longer a BUGS file, so this is not installed as a 
+- There is no longer a BUGS file, so this is not installed as a
   documentation file.
 
 * Mon Aug  9 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.1-0.fdr.4
@@ -1834,14 +1854,14 @@ R CMD javareconf \
 * Mon May 03 2004 Martyn Plummer <plummer@iarc.fr> 0:1.9.0-0.fdr.1
 - R.spec file now has mode 644. Previously it was unreadable by other
   users and this was causing a crash building under mach.
-- Changed version number to conform to Fedora conventions. 
+- Changed version number to conform to Fedora conventions.
 - Removed Provides: and Obsoletes: R-base, R-recommended, which are
-  now several years old. Nobody should have a copy of R-base on a 
+  now several years old. Nobody should have a copy of R-base on a
   supported platform.
 - Changed buildroot to Fedora standard
 - Added Requires(post,preun): info
 - Redirect output from postinstall/uninstall scripts to /dev/null
-- Added BuildRequires tags necessary to install R with full 
+- Added BuildRequires tags necessary to install R with full
   capabilities on a clean mach buildroot. Conditional buildrequires
   for tcl-devel and tk-devel which were not present on RH9 or earlier.
 
@@ -1851,7 +1871,7 @@ R CMD javareconf \
 
 * Mon Mar 15 2004 Martyn Plummer <plummer@iarc.fr>
 - No need to export optimization flags. This is done by %%configure
-- Folded info installation into %%makeinstall 
+- Folded info installation into %%makeinstall
 - Check that RPM_BASE_ROOT is not set to "/" before cleaning up
 
 * Tue Feb 03 2004 Martyn Plummer <plummer@iarc.fr>
