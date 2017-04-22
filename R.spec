@@ -95,7 +95,7 @@
 %endif
 
 Name: R
-Version: 3.3.3
+Version: 3.4.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -263,9 +263,9 @@ Requires: openblas-Rblas
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.18
+Provides: R-boot = 1.3.19
 Provides: R-class = 7.3.14
-Provides: R-cluster = 2.0.5
+Provides: R-cluster = 2.0.6
 Provides: R-codetools = 0.2.15
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8.67
@@ -273,21 +273,21 @@ Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
-Provides: R-lattice = 0.20.34
-Provides: R-MASS = 7.3.45
-Provides: R-Matrix = 1.2.8
+Provides: R-lattice = 0.20.35
+Provides: R-MASS = 7.3.47
+Provides: R-Matrix = 1.2.9
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.8.17
 Provides: R-nlme = 3.1.131
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.10
+Provides: R-rpart = 4.1.11
 Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.40.1
+Provides: R-survival = 2.41.3
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -340,7 +340,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.8
+Provides: R-Matrix-devel = 1.2.9
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -1170,6 +1170,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sat Apr 22 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.0-1
+- update to 3.4.0
+
 * Wed Mar  8 2017 Tom Callaway <spot@fedoraproject.org> - 3.3.3-1
 - update to 3.3.3
 
