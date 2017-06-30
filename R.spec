@@ -727,7 +727,7 @@ mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRref
 %ifnarch ppc64 ppc64le
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
-make check
+TZ="Europe/Paris" make check
 %endif
 %endif
 
@@ -1172,6 +1172,9 @@ R CMD javareconf \
 %changelog
 * Fri Jun 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.1-1
 - update to 3.4.1
+
+* Fri May 12 2017 José Matos <jamatos@fedoraproject.org> - 3.4.0-2
+- add TZ="Europe/Paris" to please make check
 
 * Sat Apr 22 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.0-1
 - update to 3.4.0
