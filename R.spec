@@ -95,7 +95,7 @@
 %endif
 
 Name: R
-Version: 3.4.0
+Version: 3.4.1
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -268,14 +268,14 @@ Provides: R-class = 7.3.14
 Provides: R-cluster = 2.0.6
 Provides: R-codetools = 0.2.15
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.67
+Provides: R-foreign = 0.8.69
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
 Provides: R-MASS = 7.3.47
-Provides: R-Matrix = 1.2.9
+Provides: R-Matrix = 1.2.10
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.8.17
@@ -340,7 +340,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.9
+Provides: R-Matrix-devel = 1.2.10
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -1170,6 +1170,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Jun 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.1-1
+- update to 3.4.1
+
 * Sat Apr 22 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.0-1
 - update to 3.4.0
 
