@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.4.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -251,7 +251,7 @@ Requires: tex(dvips), vi
 %else
 Requires: vim-minimal
 %endif
-Requires: perl, sed, gawk, tex(latex), less, make, unzip
+Requires: perl-interpreter, sed, gawk, tex(latex), less, make, unzip
 # Make sure we bring the new libRmath with us
 Requires: libRmath%{?_isa} = %{version}-%{release}
 
@@ -1170,6 +1170,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Jul 13 2017 Petr Pisar <ppisar@redhat.com> - 3.4.1-2
+- perl dependency renamed to perl-interpreter
+  <https://fedoraproject.org/wiki/Changes/perl_Package_to_Install_Core_Modules>
+
 * Fri Jun 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.1-1
 - update to 3.4.1
 
