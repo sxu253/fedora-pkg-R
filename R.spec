@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.4.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1170,6 +1170,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Thu Jul 13 2017 Petr Pisar <ppisar@redhat.com> - 3.4.1-2
 - perl dependency renamed to perl-interpreter
   <https://fedoraproject.org/wiki/Changes/perl_Package_to_Install_Core_Modules>
