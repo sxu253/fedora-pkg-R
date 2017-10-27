@@ -95,7 +95,7 @@
 %endif
 
 Name: R
-Version: 3.4.1
+Version: 3.4.2
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -120,8 +120,8 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %global zlibv 1.2.11
 %global bzipv 1.0.6
 %global xzv 5.2.3
-%global pcrev 8.40
-%global curlv 7.53.1
+%global pcrev 8.41
+%global curlv 7.56.1
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -144,7 +144,6 @@ BuildRequires: pkgconfig
 BuildRequires: python
 BuildRequires: stunnel
 %endif
-Patch0: 0001-Disable-backing-store-in-X11-window.patch
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
 License: GPLv2+
@@ -251,7 +250,7 @@ Requires: tex(dvips), vi
 %else
 Requires: vim-minimal
 %endif
-Requires: perl, sed, gawk, tex(latex), less, make, unzip
+Requires: perl-interpreter, sed, gawk, tex(latex), less, make, unzip
 # Make sure we bring the new libRmath with us
 Requires: libRmath%{?_isa} = %{version}-%{release}
 
@@ -263,7 +262,7 @@ Requires: openblas-Rblas
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.19
+Provides: R-boot = 1.3.20
 Provides: R-class = 7.3.14
 Provides: R-cluster = 2.0.6
 Provides: R-codetools = 0.2.15
@@ -275,10 +274,10 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
 Provides: R-MASS = 7.3.47
-Provides: R-Matrix = 1.2.10
+Provides: R-Matrix = 1.2.11
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.17
+Provides: R-mgcv = 1.8.20
 Provides: R-nlme = 3.1.131
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
@@ -340,7 +339,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.10
+Provides: R-Matrix-devel = 1.2.11
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -437,7 +436,6 @@ from the R project.  This package provides the static libRmath library.
 %else
 %setup -q -n %{name}-%{version}
 %endif
-%patch0 -p1 -b .disable-backing-store
 %patch1 -p1 -b .fixpath
 
 # Filter false positive provides.
@@ -1170,6 +1168,19 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Oct 27 2017 Tom Callaway <spot@fedoraproject.org>- 3.4.2-1
+- update to 3.4.2
+
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Thu Jul 13 2017 Petr Pisar <ppisar@redhat.com> - 3.4.1-2
+- perl dependency renamed to perl-interpreter
+  <https://fedoraproject.org/wiki/Changes/perl_Package_to_Install_Core_Modules>
+
 * Fri Jun 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.1-1
 - update to 3.4.1
 
