@@ -95,8 +95,8 @@
 %endif
 
 Name: R
-Version: 3.4.2
-Release: 2%{?dist}
+Version: 3.4.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -279,10 +279,10 @@ Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
 Provides: R-MASS = 7.3.47
-Provides: R-Matrix = 1.2.11
+Provides: R-Matrix = 1.2.12
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.20
+Provides: R-mgcv = 1.8.22
 Provides: R-nlme = 3.1.131
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
@@ -344,7 +344,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.11
+Provides: R-Matrix-devel = 1.2.12
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -1173,6 +1173,12 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Nov 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.3-1
+- update to 3.4.3
+
+* Thu Nov 30 2017 Pete Walter <pwalter@fedoraproject.org> - 3.4.2-3
+- Rebuild for ICU 60.1
+
 * Mon Oct 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.2-2
 - conditionalize Requires on perl-interpreter for fedora only
 
