@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.4.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1173,6 +1173,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Nov 30 2017 Pete Walter <pwalter@fedoraproject.org> - 3.4.2-3
+- Rebuild for ICU 60.1
+
 * Mon Oct 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.2-2
 - conditionalize Requires on perl-interpreter for fedora only
 
