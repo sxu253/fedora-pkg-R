@@ -1174,7 +1174,6 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
-<<<<<<< HEAD
 * Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-5
 - fix exec permissions on files in %%{_libdir}/R/bin/
 
