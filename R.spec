@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.4.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -675,6 +675,7 @@ done
 
 # Fix exec bits
 chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
+chmod +x $RPM_BUILD_ROOT%{_libdir}/R/bin/*
 chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 
 
@@ -1173,6 +1174,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-4
+- fix exec permissions on files in %%{_libdir}/R/bin/
+
 * Fri Feb  2 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-3
 - rebuild for new gfortran
 
