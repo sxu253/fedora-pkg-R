@@ -96,7 +96,7 @@
 
 Name: R
 Version: 3.4.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1174,8 +1174,12 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
-* Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-4
+<<<<<<< HEAD
+* Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-5
 - fix exec permissions on files in %%{_libdir}/R/bin/
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.3-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
 * Fri Feb  2 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-3
 - rebuild for new gfortran
