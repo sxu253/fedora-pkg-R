@@ -1,3 +1,6 @@
+# We do not want this.
+%define __brp_mangle_shebangs /usr/bin/true
+
 %ifarch x86_64
 %global java_arch amd64
 %else
@@ -96,7 +99,7 @@
 
 Name: R
 Version: 3.4.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1174,6 +1177,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Feb 12 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-6
+- undefine %%__brp_mangle_shebangs (we need +x on files in %%{_libdir}/R/bin/)
+
 * Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-5
 - fix exec permissions on files in %%{_libdir}/R/bin/
 
