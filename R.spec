@@ -151,7 +151,6 @@ BuildRequires: stunnel
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
 License: GPLv2+
 Group: Applications/Engineering
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
