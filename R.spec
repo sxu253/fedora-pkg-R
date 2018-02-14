@@ -737,9 +737,6 @@ TZ="Europe/Paris" make check
 %endif
 %endif
 
-%clean
-rm -rf ${RPM_BUILD_ROOT}
-
 %post core
 # Create directory entries for info files
 # (optional doc files, so we must check that they are installed)
