@@ -1,3 +1,6 @@
+# We do not want this.
+%define __brp_mangle_shebangs /usr/bin/true
+
 %ifarch x86_64
 %global java_arch amd64
 %else
@@ -95,7 +98,7 @@
 %endif
 
 Name: R
-Version: 3.4.3
+Version: 3.4.4
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -120,8 +123,8 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %global zlibv 1.2.11
 %global bzipv 1.0.6
 %global xzv 5.2.3
-%global pcrev 8.41
-%global curlv 7.56.1
+%global pcrev 8.42
+%global curlv 7.59.0
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -148,7 +151,6 @@ BuildRequires: stunnel
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
 License: GPLv2+
 Group: Applications/Engineering
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
@@ -278,15 +280,15 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
-Provides: R-MASS = 7.3.47
+Provides: R-MASS = 7.3.49
 Provides: R-Matrix = 1.2.12
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.22
-Provides: R-nlme = 3.1.131
+Provides: R-mgcv = 1.8.23
+Provides: R-nlme = 3.1.131.1
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.11
+Provides: R-rpart = 4.1.13
 Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
@@ -675,6 +677,7 @@ done
 
 # Fix exec bits
 chmod +x $RPM_BUILD_ROOT%{_datadir}/R/sh/echo.sh
+chmod +x $RPM_BUILD_ROOT%{_libdir}/R/bin/*
 chmod -x $RPM_BUILD_ROOT%{_libdir}/R/library/mgcv/CITATION ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 
 
@@ -733,9 +736,6 @@ ulimit -s 16384
 TZ="Europe/Paris" make check
 %endif
 %endif
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
 
 %post core
 # Create directory entries for info files
@@ -1173,6 +1173,25 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Mar 28 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.4-1
+- update to 3.4.4
+- update pcre and curl bundles (rhel6 only)
+
+* Mon Feb 12 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-6
+- undefine %%__brp_mangle_shebangs (we need +x on files in %%{_libdir}/R/bin/)
+
+* Wed Feb  7 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-5
+- fix exec permissions on files in %%{_libdir}/R/bin/
+
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.3-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Fri Feb  2 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-3
+- rebuild for new gfortran
+
+* Fri Dec 01 2017 Pete Walter <pwalter@fedoraproject.org> - 3.4.3-2
+- Rebuild once more for ICU 60.1
+
 * Thu Nov 30 2017 Tom Callaway <spot@fedoraproject.org> - 3.4.3-1
 - update to 3.4.3
 
