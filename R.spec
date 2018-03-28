@@ -98,8 +98,8 @@
 %endif
 
 Name: R
-Version: 3.4.3
-Release: 6%{?dist}
+Version: 3.4.4
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -123,8 +123,8 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %global zlibv 1.2.11
 %global bzipv 1.0.6
 %global xzv 5.2.3
-%global pcrev 8.41
-%global curlv 7.56.1
+%global pcrev 8.42
+%global curlv 7.59.0
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -280,15 +280,15 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
-Provides: R-MASS = 7.3.47
+Provides: R-MASS = 7.3.49
 Provides: R-Matrix = 1.2.12
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.22
-Provides: R-nlme = 3.1.131
+Provides: R-mgcv = 1.8.23
+Provides: R-nlme = 3.1.131.1
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.11
+Provides: R-rpart = 4.1.13
 Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
@@ -1173,6 +1173,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Mar 28 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.4-1
+- update to 3.4.4
+- update pcre and curl bundles (rhel6 only)
+
 * Mon Feb 12 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.3-6
 - undefine %%__brp_mangle_shebangs (we need +x on files in %%{_libdir}/R/bin/)
 
