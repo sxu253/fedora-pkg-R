@@ -99,7 +99,7 @@
 
 Name: R
 Version: 3.4.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -1173,6 +1173,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Apr 30 2018 Pete Walter <pwalter@fedoraproject.org> - 3.4.4-2
+- Rebuild for ICU 61.1
+
 * Wed Mar 28 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.4-1
 - update to 3.4.4
 - update pcre and curl bundles (rhel6 only)
