@@ -99,7 +99,7 @@
 
 Name: R
 Version: 3.4.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
@@ -520,7 +520,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|arm*|aarch64|sh*)
+      ia64|alpha|arm*|aarch64|sh*|riscv*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -1173,6 +1173,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sun May 13 2018 Stefan O'Rear <sorear2@gmail.com> - 3.4.4-3
+- Add riscv* to target CPU specs
+
 * Mon Apr 30 2018 Pete Walter <pwalter@fedoraproject.org> - 3.4.4-2
 - Rebuild for ICU 61.1
 
