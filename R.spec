@@ -520,7 +520,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|arm*|aarch64|sh*)
+      ia64|alpha|arm*|aarch64|sh*|riscv*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -1177,6 +1177,9 @@ R CMD javareconf \
 * Thu May 10 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
 - update to 3.5.0
 - update xz bundle (rhel6 only)
+
+* Sun May 13 2018 Stefan O'Rear <sorear2@gmail.com> - 3.4.4-3
+- Add riscv* to target CPU specs
 
 * Mon Apr 30 2018 Pete Walter <pwalter@fedoraproject.org> - 3.4.4-2
 - Rebuild for ICU 61.1
