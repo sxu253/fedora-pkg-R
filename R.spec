@@ -98,11 +98,11 @@
 %endif
 
 Name: R
-Version: 3.4.4
+Version: 3.5.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
-Source0: ftp://cran.r-project.org/pub/R/src/base/R-3/R-%{version}.tar.gz
+Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
 Source1: macros.R
 Source2: R-make-search-index.sh
 %if %{texi2any}
@@ -122,7 +122,7 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %if %{zlibhack}
 %global zlibv 1.2.11
 %global bzipv 1.0.6
-%global xzv 5.2.3
+%global xzv 5.2.4
 %global pcrev 8.42
 %global curlv 7.59.0
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
@@ -271,21 +271,21 @@ Requires: openblas-Rblas
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.20
 Provides: R-class = 7.3.14
-Provides: R-cluster = 2.0.6
+Provides: R-cluster = 2.0.7.1
 Provides: R-codetools = 0.2.15
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.69
+Provides: R-foreign = 0.8.70
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
 Provides: R-MASS = 7.3.49
-Provides: R-Matrix = 1.2.12
+Provides: R-Matrix = 1.2.14
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
 Provides: R-mgcv = 1.8.23
-Provides: R-nlme = 3.1.131.1
+Provides: R-nlme = 3.1.137
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
 Provides: R-rpart = 4.1.13
@@ -346,7 +346,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.12
+Provides: R-Matrix-devel = 1.2.14
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -520,7 +520,7 @@ case "%{_target_cpu}" in
           export F77="gfortran -m64"
           export FC="gfortran -m64"
       ;;
-      ia64|alpha|arm*|aarch64|sh*)
+      ia64|alpha|arm*|aarch64|sh*|riscv*)
           export CC="gcc"
           export CXX="g++"
           export F77="gfortran"
@@ -904,6 +904,7 @@ R CMD javareconf \
 %{_libdir}/R/library/cluster/NAMESPACE
 %{_libdir}/R/library/cluster/NEWS.Rd
 %{_libdir}/R/library/cluster/R/
+%{_libdir}/R/library/cluster/test-tools.R
 %dir %{_libdir}/R/library/cluster/po/
 %lang(de) %{_libdir}/R/library/cluster/po/de/
 %lang(en) %{_libdir}/R/library/cluster/po/en*/
@@ -1173,6 +1174,16 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon May 14 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
+- update to 3.5.0
+- update xz bundle (rhel6 only)
+
+* Sun May 13 2018 Stefan O'Rear <sorear2@gmail.com> - 3.4.4-3
+- Add riscv* to target CPU specs
+
+* Mon Apr 30 2018 Pete Walter <pwalter@fedoraproject.org> - 3.4.4-2
+- Rebuild for ICU 61.1
+
 * Wed Mar 28 2018 Tom Callaway <spot@fedoraproject.org> - 3.4.4-1
 - update to 3.4.4
 - update pcre and curl bundles (rhel6 only)
