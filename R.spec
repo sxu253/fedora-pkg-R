@@ -619,17 +619,24 @@ sed -i 's|@eqn|@math|g' doc/manual/R-intro.texi
 %if %{texi2any}
     make MAKEINFO=texi2any info
 %else
-    make MAKEINFO=makeinfo info
+# Well, this used to work, but now rhel 6 is too old and buggy.
+# make MAKEINFO=makeinfo info
 %endif
 
+%if %{texi2any}
 # Convert to UTF-8
 for i in doc/manual/R-intro.info doc/manual/R-FAQ.info doc/FAQ doc/manual/R-admin.info doc/manual/R-exts.info-1; do
   iconv -f iso-8859-1 -t utf-8 -o $i{.utf8,}
   mv $i{.utf8,}
 done
+%endif
 
 %install
+%if %{texi2any}
 make DESTDIR=${RPM_BUILD_ROOT} install install-info
+%else
+make DESTDIR=${RPM_BUILD_ROOT} install
+%endif
 # And now, undo the hack. :P
 %if 0%{?fedora} >= 19
 mv doc/manual/R-exts.texi.spot doc/manual/R-exts.texi
@@ -730,7 +737,7 @@ mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRref
 %if 0%{?zlibhack}
 # Most of these tests pass. Some don't. All pieces belong to you.
 %else
-%ifnarch ppc64 ppc64le
+%ifnarch ppc64 ppc64le armv7hl
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
 TZ="Europe/Paris" make check
@@ -1134,7 +1141,9 @@ R CMD javareconf \
 # %%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
 /usr/lib/rpm/R-make-search-index.sh
+%if %{texi2any}
 %{_infodir}/R-*.info*
+%endif
 %{macrosdir}/macros.R
 %{_mandir}/man1/*
 %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
@@ -1177,6 +1186,8 @@ R CMD javareconf \
 * Mon May 14 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
 - update to 3.5.0
 - update xz bundle (rhel6 only)
+- disable tests on armv7hl
+- disable info builds on rhel 6
 
 * Sun May 13 2018 Stefan O'Rear <sorear2@gmail.com> - 3.4.4-3
 - Add riscv* to target CPU specs
