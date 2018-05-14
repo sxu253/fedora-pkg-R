@@ -1174,7 +1174,7 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
-* Thu May 10 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
+* Mon May 14 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
 - update to 3.5.0
 - update xz bundle (rhel6 only)
 
