@@ -7,6 +7,7 @@
 %ifarch ppc64 ppc64le
 %global runjavareconf 0
 %endif
+%endif
 
 
 %ifarch x86_64
