@@ -1,6 +1,14 @@
 # We do not want this.
 %define __brp_mangle_shebangs /usr/bin/true
 
+%global runjavareconf 1
+
+%if 0%{?rhel} && 0%{?rhel} <= 6
+%ifarch ppc64 ppc64le
+%global runjavareconf 0
+%endif
+
+
 %ifarch x86_64
 %global java_arch amd64
 %else
@@ -99,7 +107,7 @@
 
 Name: R
 Version: 3.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -754,6 +762,7 @@ for doc in admin exts FAQ intro lang; do
    fi
 done
 /sbin/ldconfig
+%if %{runjavareconf}
 R CMD javareconf \
     JAVA_HOME=%{_jvmdir}/jre \
     JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
@@ -762,6 +771,7 @@ R CMD javareconf \
     -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
     JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
     > /dev/null 2>&1 || exit 0
+%endif
 
 # With 2.10.0, we no longer need to do any of this.
 
@@ -1183,6 +1193,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri May 18 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-2
+- do not run javareconf on el6/ppc64
+
 * Mon May 14 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-1
 - update to 3.5.0
 - update xz bundle (rhel6 only)
