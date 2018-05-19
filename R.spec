@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -809,6 +809,7 @@ fi
 
 %if %{modern}
 %post java
+%if %{runjavareconf}
 R CMD javareconf \
     JAVA_HOME=%{_jvmdir}/jre \
     JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
@@ -817,8 +818,10 @@ R CMD javareconf \
     -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
     JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
     > /dev/null 2>&1 || exit 0
+%endif
 
 %post java-devel
+%if %{runjavareconf}
 R CMD javareconf \
     JAVA_HOME=%{_jvmdir}/jre \
     JAVA_CPPFLAGS='-I%{_jvmdir}/java/include\ -I%{_jvmdir}/java/include/linux' \
@@ -827,6 +830,7 @@ R CMD javareconf \
     -L/usr/java/packages/lib/%{java_arch}\ -L/lib\ -L/usr/lib\ -ljvm' \
     JAVA_LD_LIBRARY_PATH=%{_jvmdir}/jre/lib/%{java_arch}/server:%{_jvmdir}/jre/lib/%{java_arch}:%{_jvmdir}/java/lib/%{java_arch}:/usr/java/packages/lib/%{java_arch}:/lib:/usr/lib \
     > /dev/null 2>&1 || exit 0
+%endif
 %endif
 
 %post -n libRmath -p /sbin/ldconfig
@@ -1194,6 +1198,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri May 18 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-3
+- do not run javareconf on el6/ppc64 EVEN in the java subpackages
+
 * Fri May 18 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-2
 - do not run javareconf on el6/ppc64
 
