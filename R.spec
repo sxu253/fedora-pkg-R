@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -845,7 +845,7 @@ R CMD javareconf \
 %{_bindir}/R
 %{_bindir}/Rscript
 %{_datadir}/R/
-%{_datadir}/texmf/
+%{_datadir}/texmf/tex/latex/R
 # Have to break this out for the translations
 %dir %{_libdir}/R/
 %{_libdir}/R/bin/
@@ -1198,6 +1198,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jun  5 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-4
+- only own /usr/share/texmf/tex/latex/R ... not /usr/share/texmf
+
 * Fri May 18 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-3
 - do not run javareconf on el6/ppc64 EVEN in the java subpackages
 
