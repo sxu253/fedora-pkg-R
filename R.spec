@@ -841,7 +841,6 @@ R CMD javareconf \
 # Metapackage
 
 %files core
-%defattr(-, root, root, -)
 %{_bindir}/R
 %{_bindir}/Rscript
 %{_datadir}/R/
@@ -1166,7 +1165,6 @@ R CMD javareconf \
 /etc/ld.so.conf.d/*
 
 %files core-devel
-%defattr(-, root, root, -)
 %{_libdir}/pkgconfig/libR.pc
 %{_includedir}/R
 # Symlink to %%{_includedir}/R/
@@ -1184,17 +1182,14 @@ R CMD javareconf \
 %endif
 
 %files -n libRmath
-%defattr(-, root, root, -)
 %doc doc/COPYING
 %{_libdir}/libRmath.so
 
 %files -n libRmath-devel
-%defattr(-, root, root, -)
 %{_includedir}/Rmath.h
 %{_libdir}/pkgconfig/libRmath.pc
 
 %files -n libRmath-static
-%defattr(-, root, root, -)
 %{_libdir}/libRmath.a
 
 %changelog
