@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1193,6 +1193,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jul 10 2018 Pete Walter <pwalter@fedoraproject.org> - 3.5.0-5
+- Rebuild for ICU 62
+
 * Tue Jun  5 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.0-4
 - only own /usr/share/texmf/tex/latex/R ... not /usr/share/texmf
 
