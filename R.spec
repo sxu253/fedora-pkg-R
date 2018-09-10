@@ -107,8 +107,8 @@
 %endif
 
 Name: R
-Version: 3.5.0
-Release: 6%{?dist}
+Version: 3.5.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -133,7 +133,7 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %global bzipv 1.0.6
 %global xzv 5.2.4
 %global pcrev 8.42
-%global curlv 7.59.0
+%global curlv 7.61.1
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -289,11 +289,11 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.35
-Provides: R-MASS = 7.3.49
+Provides: R-MASS = 7.3.50
 Provides: R-Matrix = 1.2.14
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.23
+Provides: R-mgcv = 1.8.24
 Provides: R-nlme = 3.1.137
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
@@ -302,7 +302,7 @@ Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.41.3
+Provides: R-survival = 2.42.3
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -1193,6 +1193,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Sep 10 2018 Tom Callaway <spot@fedoraproject.org> - 3.5.1-1
+- update to 3.5.1
+- update bundled curl to 7.61.1
+
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.5.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
