@@ -594,6 +594,7 @@ export FCFLAGS="%{optflags}"
     --enable-BLAS-shlib \
     --enable-R-shlib \
     --enable-prebuilt-html \
+    --enable-memory-profiling \
 %if %{with_lto}
 %ifnarch %{arm}
     --enable-lto \
