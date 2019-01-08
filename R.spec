@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -165,6 +165,10 @@ BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
 BuildRequires: tcl-devel, tk-devel, ncurses-devel
 BuildRequires: pcre-devel, zlib-devel
+%if 0%{modern}
+# Fedora (at least rawhide) pulls this into the buildroot anyways, but lets be explicit for consistency
+BuildRequires: pcre2-devel
+%endif
 %if 0%{?rhel}
  # RHEL older than 6
  %if 0%{?rhel} < 7
@@ -327,8 +331,14 @@ Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
-Requires: bzip2-devel, libX11-devel, pcre-devel, zlib-devel
+Requires: bzip2-devel, libX11-devel, zlib-devel
 Requires: tcl-devel, tk-devel, pkgconfig, xz-devel
+# This may go away at some point, possibly R 3.6?
+Requires: pcre-devel
+%if 0%{modern}
+# Configure picks this up, but despite linking to it, it does not seem to be used as of R 3.5.2.
+Requires: pcre2-devel
+%endif
 # No longer true.
 # Requires: blas-devel >= 3.0, lapack-devel
 %if %{modern}
@@ -1194,6 +1204,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jan  8 2019 Tom Callaway <spot@fedoraproject.org> - 3.5.2-2
+- handle pcre2 use/detection
+
 * Mon Jan  7 2019 Tom Callaway <spot@fedoraproject.org> - 3.5.2-1
 - update to 3.5.2
 
