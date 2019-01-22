@@ -844,9 +844,7 @@ R CMD javareconf \
 %endif
 %endif
 
-%post -n libRmath -p /sbin/ldconfig
-
-%postun -n libRmath -p /sbin/ldconfig
+%ldconfig_scriptlets -n libRmath
 
 %files
 # Metapackage
