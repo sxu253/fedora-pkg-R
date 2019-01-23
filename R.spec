@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1202,6 +1202,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Jan 23 2019 Pete Walter <pwalter@fedoraproject.org> - 3.5.2-3
+- Rebuild for ICU 63
+
 * Tue Jan  8 2019 Tom Callaway <spot@fedoraproject.org> - 3.5.2-2
 - handle pcre2 use/detection
 
