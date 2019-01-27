@@ -765,14 +765,6 @@ TZ="Europe/Paris" make check
 %endif
 
 %post core
-# Create directory entries for info files
-# (optional doc files, so we must check that they are installed)
-for doc in admin exts FAQ intro lang; do
-   file=%{_infodir}/R-${doc}.info.gz
-   if [ -e $file ]; then
-      /sbin/install-info ${file} %{_infodir}/dir 2>/dev/null || :
-   fi
-done
 /sbin/ldconfig
 %if %{runjavareconf}
 R CMD javareconf \
@@ -796,18 +788,6 @@ R CMD javareconf \
 # %__cat %{_datadir}/R/library/*/CONTENTS >> %{_docdir}/R-%{version}/html/search/index.txt 2>/dev/null || exit 0
 # Don't use .. based paths, substitute /usr/share/R
 # sed -i "s!../../..!/usr/share/R!g" %{_docdir}/R-%{version}/html/search/index.txt
-
-
-%preun core
-if [ $1 = 0 ]; then
-   # Delete directory entries for info files (if they were installed)
-   for doc in admin exts FAQ intro lang; do
-      file=%{_infodir}/R-${doc}.info.gz
-      if [ -e ${file} ]; then
-         /sbin/install-info --delete R-${doc} %{_infodir}/dir 2>/dev/null || :
-      fi
-   done
-fi
 
 %postun core
 /sbin/ldconfig
