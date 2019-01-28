@@ -159,7 +159,6 @@ BuildRequires: stunnel
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
 License: GPLv2+
-Group: Applications/Engineering
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
 BuildRequires: libpng-devel, libjpeg-devel, readline-devel
@@ -254,7 +253,6 @@ and called at run time.
 
 %package core
 Summary: The minimal R components necessary for a functional runtime
-Group: Applications/Engineering
 Requires: xdg-utils, cups
 # R inherits the compiler flags it was built with, hence we need this on hardened systems
 %if 0%{hardening}
@@ -327,7 +325,6 @@ and called at run time.
 
 %package core-devel
 Summary: Core files for development of R packages (no Java)
-Group: Applications/Engineering
 Requires: R-core = %{version}-%{release}
 # You need all the BuildRequires for the development version
 Requires: gcc-c++, gcc-gfortran, tex(latex), texinfo-tex
@@ -384,7 +381,6 @@ Requires: R-core-devel = %{version}-%{release}
 %if %{modern}
 Requires: R-java-devel = %{version}-%{release}
 %else
-Group: Development/Libraries
 %endif
 
 %description devel
@@ -394,7 +390,6 @@ environment.
 %if %{modern}
 %package java
 Summary: R with Fedora provided Java Runtime Environment
-Group: Applications/Engineering
 Requires(post): R-core = %{version}-%{release}
 %if %{with_java_headless}
 Requires: java-headless
@@ -421,7 +416,6 @@ Fedora's openJDK.
 
 %package java-devel
 Summary: Development package for use with Java enabled R components
-Group: Applications/Engineering
 Requires(post): R-core-devel = %{version}-%{release}
 Requires(post): java-devel
 
@@ -432,7 +426,6 @@ that assume java is present and configured on the system.
 
 %package -n libRmath
 Summary: Standalone math library from the R project
-Group: Development/Libraries
 
 %description -n libRmath
 A standalone library of mathematical and statistical functions derived
@@ -440,7 +433,6 @@ from the R project.  This package provides the shared libRmath library.
 
 %package -n libRmath-devel
 Summary: Headers from the R Standalone math library
-Group: Development/Libraries
 Requires: libRmath = %{version}-%{release}, pkgconfig
 
 %description -n libRmath-devel
@@ -449,7 +441,6 @@ from the R project.  This package provides the libRmath header files.
 
 %package -n libRmath-static
 Summary: Static R Standalone math library
-Group: Development/Libraries
 Requires: libRmath-devel = %{version}-%{release}
 
 %description -n libRmath-static
