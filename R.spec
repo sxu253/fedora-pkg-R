@@ -108,7 +108,7 @@
 
 Name: R
 Version: 3.5.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1173,6 +1173,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.5.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Wed Jan 23 2019 Pete Walter <pwalter@fedoraproject.org> - 3.5.2-3
 - Rebuild for ICU 63
 
