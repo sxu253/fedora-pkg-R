@@ -9,7 +9,6 @@
 %endif
 %endif
 
-
 %ifarch x86_64
 %global java_arch amd64
 %else
@@ -107,8 +106,8 @@
 %endif
 
 Name: R
-Version: 3.5.2
-Release: 5%{?dist}
+Version: 3.5.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -281,21 +280,21 @@ Requires: openblas-Rblas
 # packager convenience.
 Provides: R-base = %{version}
 Provides: R-boot = 1.3.20
-Provides: R-class = 7.3.14
+Provides: R-class = 7.3.15
 Provides: R-cluster = 2.0.7.1
-Provides: R-codetools = 0.2.15
+Provides: R-codetools = 0.2.16
 Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.70
+Provides: R-foreign = 0.8.71
 Provides: R-graphics = %{version}
 Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
-Provides: R-lattice = 0.20.35
-Provides: R-MASS = 7.3.50
-Provides: R-Matrix = 1.2.14
+Provides: R-lattice = 0.20.38
+Provides: R-MASS = 7.3.51.1
+Provides: R-Matrix = 1.2.15
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.24
+Provides: R-mgcv = 1.8.27
 Provides: R-nlme = 3.1.137
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
@@ -304,7 +303,7 @@ Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.42.3
+Provides: R-survival = 2.43.3
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -362,7 +361,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.14
+Provides: R-Matrix-devel = 1.2.15
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -1173,6 +1172,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Mar 11 2019 Tom Callaway <spot@fedoraproject.org> - 3.5.3-1
+- update to 3.5.3
+
 * Sun Feb 17 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.5.2-5
 - Rebuild for readline 8.0
 
