@@ -279,9 +279,9 @@ Requires: openblas-Rblas
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
 Provides: R-base = %{version}
-Provides: R-boot = 1.3.20
+Provides: R-boot = 1.3.22
 Provides: R-class = 7.3.15
-Provides: R-cluster = 2.0.7.1
+Provides: R-cluster = 2.0.8
 Provides: R-codetools = 0.2.16
 Provides: R-datasets = %{version}
 Provides: R-foreign = 0.8.71
@@ -290,20 +290,20 @@ Provides: R-grDevices = %{version}
 Provides: R-grid = %{version}
 Provides: R-KernSmooth = 2.23.15
 Provides: R-lattice = 0.20.38
-Provides: R-MASS = 7.3.51.1
-Provides: R-Matrix = 1.2.15
+Provides: R-MASS = 7.3.51.4
+Provides: R-Matrix = 1.2.17
 Obsoletes: R-Matrix < 0.999375-7
 Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.27
-Provides: R-nlme = 3.1.137
+Provides: R-mgcv = 1.8.28
+Provides: R-nlme = 3.1.139
 Provides: R-nnet = 7.3.12
 Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.13
+Provides: R-rpart = 4.1.15
 Provides: R-spatial = 7.3.11
 Provides: R-splines = %{version}
 Provides: R-stats = %{version}
 Provides: R-stats4 = %{version}
-Provides: R-survival = 2.43.3
+Provides: R-survival = 2.44.1.1
 Provides: R-tcltk = %{version}
 Provides: R-tools = %{version}
 Provides: R-utils = %{version}
@@ -361,7 +361,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.15
+Provides: R-Matrix-devel = 1.2.17
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -572,7 +572,7 @@ export FCFLAGS="%{optflags}"
 %if 0%{?fedora} >= 30
 # gcc9 needs us to pass --no-optimize-sibling-calls to gfortran
 export FCFLAGS="%{optflags} --no-optimize-sibling-calls"
-export FFLAGS="{optflags} --no-optimize-sibling-calls"
+export FFLAGS="%{optflags} --no-optimize-sibling-calls"
 %endif
 
 # RHEL 5 & 6 & 7 have a broken BLAS, so we need to use the bundled bits in R until
