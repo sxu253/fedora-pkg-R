@@ -106,7 +106,7 @@
 %endif
 
 Name: R
-Version: 3.5.3
+Version: 3.6.0
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -568,6 +568,13 @@ export FCFLAGS="%{optflags} -ffat-lto-objects"
 %else
 export FCFLAGS="%{optflags}"
 %endif
+
+%if 0%{?fedora} >= 30
+# gcc9 needs us to pass --no-optimize-sibling-calls to gfortran
+export FCFLAGS="%{optflags} --no-optimize-sibling-calls"
+export FFLAGS="{optflags} --no-optimize-sibling-calls"
+%endif
+
 # RHEL 5 & 6 & 7 have a broken BLAS, so we need to use the bundled bits in R until
 # they are fixed... and it doesn't look like it will ever be fixed in RHEL 5.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1117491
@@ -1172,6 +1179,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed May 29 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.0-1
+- update to 3.6.0
+- use --no-optimize-sibling-calls for gfortran to work around issues
+
 * Mon Mar 11 2019 Tom Callaway <spot@fedoraproject.org> - 3.5.3-1
 - update to 3.5.3
 
