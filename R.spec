@@ -31,6 +31,21 @@
 %global with_java_headless 1
 %endif
 
+# We need this on old EL for C++11 support.
+%if 0%{?rhel} && 0%{?rhel} <= 7
+%global use_devtoolset 1
+%else
+%global use_devtoolset 0
+%endif
+
+%if 0%{?rhel} == 7
+%global dts_version 8
+%endif
+
+%if 0%{?rhel} == 6
+%global dts_version 7
+%endif
+
 # Using lto breaks debuginfo.
 # %%if 0%%{?fedora} >= 19
 # %%global with_lto 1
@@ -107,7 +122,7 @@
 
 Name: R
 Version: 3.6.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -224,6 +239,10 @@ BuildRequires: less
 BuildRequires: tex(inconsolata.sty)
 BuildRequires: tex(upquote.sty)
 %endif
+%if %{use_devtoolset}
+BuildRequires: devtoolset-%{dts_version}-toolchain
+%endif
+
 # R-devel will pull in R-core
 Requires: R-devel = %{version}-%{release}
 # libRmath-devel will pull in libRmath
@@ -273,6 +292,11 @@ Requires: libRmath%{?_isa} = %{version}-%{release}
 
 %if %{openblas}
 Requires: openblas-Rblas
+%endif
+
+%if %{use_devtoolset}
+# We need it for CXX11 and higher support.
+Requires: devtoolset-%{dts_version}-toolchain
 %endif
 
 # These are the submodules that R-core provides. Sometimes R modules say they
@@ -510,6 +534,9 @@ make DESTDIR=%{_builddir}/%{name}-%{version}/curl-%{curlv}/target INSTALL="insta
 popd
 %endif
 
+%if %{use_devtoolset}
+. /opt/rh/devtoolset-%{dts_version}/enable
+%endif
 
 # Add PATHS to Renviron for R_LIBS_SITE
 echo 'R_LIBS_SITE=${R_LIBS_SITE-'"'/usr/local/lib/R/site-library:/usr/local/lib/R/library:%{_libdir}/R/library:%{_datadir}/R/library'"'}' >> etc/Renviron.in
@@ -1179,6 +1206,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Jun 13 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.0-2
+- use devtoolset toolchain to compile on el6/el7 for C++11 support
+
 * Wed May 29 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.0-1
 - update to 3.6.0
 - use --no-optimize-sibling-calls for gfortran to work around issues
