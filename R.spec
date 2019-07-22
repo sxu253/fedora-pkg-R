@@ -122,7 +122,7 @@
 
 Name: R
 Version: 3.6.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -400,6 +400,7 @@ Install R-core-devel if you are going to develop or compile R packages.
 
 %package devel
 Summary: Full R development environment metapackage
+Requires: R-rpm-macros
 Requires: R-core-devel = %{version}-%{release}
 %if %{modern}
 Requires: R-java-devel = %{version}-%{release}
@@ -1206,6 +1207,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sun Jul 21 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 3.6.0-3
+- Add automated dependency generator to R-devel
+
 * Thu Jun 13 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.0-2
 - use devtoolset toolchain to compile on el6/el7 for C++11 support
 
