@@ -302,35 +302,44 @@ Requires: devtoolset-%{dts_version}-toolchain
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
-Provides: R-base = %{version}
-Provides: R-boot = 1.3.22
-Provides: R-class = 7.3.15
-Provides: R-cluster = 2.0.8
-Provides: R-codetools = 0.2.16
-Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.71
-Provides: R-graphics = %{version}
-Provides: R-grDevices = %{version}
-Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.15
-Provides: R-lattice = 0.20.38
-Provides: R-MASS = 7.3.51.4
-Provides: R-Matrix = 1.2.17
+%define add_submodule() %{lua:
+  local name = rpm.expand("%1")
+  local version = rpm.expand("%2")
+  local rpm_version = string.gsub(version, "-", ".")
+  print("Provides: R-" .. name .. " = " .. rpm_version .. "\\n")
+  print("Provides: R(" .. name .. ") = " .. version)
+}
+%add_submodule base %{version}
+%add_submodule boot 1.3-22
+%add_submodule class 7.3-15
+%add_submodule cluster 2.0.8
+%add_submodule codetools 0.2-16
+%add_submodule compiler %{version}
+%add_submodule datasets %{version}
+%add_submodule foreign 0.8-71
+%add_submodule graphics %{version}
+%add_submodule grDevices %{version}
+%add_submodule grid %{version}
+%add_submodule KernSmooth 2.23-15
+%add_submodule lattice 0.20-38
+%add_submodule MASS 7.3-51.4
+%add_submodule Matrix 1.2-17
 Obsoletes: R-Matrix < 0.999375-7
-Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.28
-Provides: R-nlme = 3.1.139
-Provides: R-nnet = 7.3.12
-Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.15
-Provides: R-spatial = 7.3.11
-Provides: R-splines = %{version}
-Provides: R-stats = %{version}
-Provides: R-stats4 = %{version}
-Provides: R-survival = 2.44.1.1
-Provides: R-tcltk = %{version}
-Provides: R-tools = %{version}
-Provides: R-utils = %{version}
+%add_submodule methods %{version}
+%add_submodule mgcv 1.8-28
+%add_submodule nlme 3.1-139
+%add_submodule nnet 7.3-12
+%add_submodule parallel %{version}
+%add_submodule rpart 4.1-15
+%add_submodule spatial 7.3-11
+%add_submodule splines %{version}
+%add_submodule stats %{version}
+%add_submodule stats4 %{version}
+%add_submodule survival 2.44-1.1
+%add_submodule tcltk %{version}
+%add_submodule tools %{version}
+%add_submodule translations %{version}
+%add_submodule utils %{version}
 
 %description core
 A language and environment for statistical computing and graphics.
@@ -1209,6 +1218,7 @@ R CMD javareconf \
 %changelog
 * Sun Jul 21 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 3.6.0-3
 - Add automated dependency generator to R-devel
+- Add standard Provides for bundled libraries
 
 * Thu Jun 13 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.0-2
 - use devtoolset toolchain to compile on el6/el7 for C++11 support
