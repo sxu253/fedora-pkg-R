@@ -122,7 +122,7 @@
 
 Name: R
 Version: 3.6.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1216,6 +1216,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Sun Jul 21 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 3.6.0-3
 - Add automated dependency generator to R-devel
 - Add standard Provides for bundled libraries
