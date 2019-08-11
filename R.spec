@@ -104,8 +104,6 @@
 %global texi2any 1
 %endif
 
-%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
-
 %ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
 %if 0%{?rhel} >= 7
 %global openblas 1
@@ -122,12 +120,10 @@
 
 Name: R
 Version: 3.6.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
-Source1: macros.R
-Source2: R-make-search-index.sh
 %if %{texi2any}
 # If we have texi2any 5.1+, we can generate the docs on the fly.
 # If not, we're building for a very old target (RHEL 6 or older)
@@ -715,14 +711,6 @@ echo "%{_libdir}/R/lib" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/R/library
 
-# Install rpm helper macros
-mkdir -p $RPM_BUILD_ROOT%{macrosdir}/
-install -m0644 %{SOURCE1} $RPM_BUILD_ROOT%{macrosdir}/
-
-# Install rpm helper script
-mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
-install -m0755 %{SOURCE2} $RPM_BUILD_ROOT/usr/lib/rpm/
-
 # Fix multilib
 touch -r README ${RPM_BUILD_ROOT}%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}/CAPABILITIES
 touch -r README doc/manual/*.pdf
@@ -1177,11 +1165,9 @@ R CMD javareconf \
 %{_libdir}/R/COPYING
 # %%{_libdir}/R/NEWS*
 %{_libdir}/R/SVN-REVISION
-/usr/lib/rpm/R-make-search-index.sh
 %if %{texi2any}
 %{_infodir}/R-*.info*
 %endif
-%{macrosdir}/macros.R
 %{_mandir}/man1/*
 %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
 %docdir %{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}}
@@ -1216,6 +1202,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sun Aug 11 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 3.6.0-5
+- Remove unused and nonfunctional macros and helper script
+
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
