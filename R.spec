@@ -119,8 +119,8 @@
 %endif
 
 Name: R
-Version: 3.6.0
-Release: 5%{?dist}
+Version: 3.6.1
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -226,7 +226,7 @@ BuildRequires: blas-devel >= 3.0
 
 BuildRequires: libSM-devel, libX11-devel, libICE-devel, libXt-devel
 BuildRequires: bzip2-devel, libXmu-devel, cairo-devel, libtiff-devel
-BuildRequires: gcc-objc, pango-devel, xz-devel
+BuildRequires: pango-devel, xz-devel
 %if %{libicu}
 BuildRequires: libicu-devel
 %endif
@@ -1202,6 +1202,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Aug 16 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.1-1
+- update to 3.6.1
+
 * Sun Aug 11 2019 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 3.6.0-5
 - Remove unused and nonfunctional macros and helper script
 
