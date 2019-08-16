@@ -1,0 +1,22 @@
+From bf674ad00579d76d5ade415ee08c62fa4a652f96 Mon Sep 17 00:00:00 2001
+From: Siteshwar Vashisht <svashisht@redhat.com>
+Date: Thu, 17 Sep 2015 10:13:24 -0400
+Subject: [PATCH] Disable backing store in X11 window
+
+Xorg server will not generate Expose events if backing store is enabled. Since implementation of this X11 module relies on Expose events, we should explicitly disable backing store in X11 window.
+---
+ src/modules/X11/devX11.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff -up R-3.3.0/src/modules/X11/devX11.c.disable-backing-store R-3.3.0/src/modules/X11/devX11.c
+--- R-3.3.0/src/modules/X11/devX11.c.disable-backing-store	2016-05-10 09:54:12.440997353 -0400
++++ R-3.3.0/src/modules/X11/devX11.c	2016-05-10 09:54:48.560701316 -0400
+@@ -1479,7 +1479,7 @@ X11_Open(pDevDesc dd, pX11Desc xd, const
+     memset(&attributes, 0, sizeof(attributes));
+     attributes.background_pixel = whitepixel;
+     attributes.border_pixel = blackpixel;
+-    attributes.backing_store = Always;
++    attributes.backing_store = NotUseful;
+     attributes.event_mask = ButtonPressMask 
+       | PointerMotionMask 
+       | PointerMotionHintMask
