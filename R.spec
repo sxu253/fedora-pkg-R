@@ -305,7 +305,6 @@ Requires: openblas-Rblas
 Requires: devtoolset-%{dts_version}-toolchain
 %endif
 
-%if %{usemacros}
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
@@ -347,36 +346,6 @@ Obsoletes: R-Matrix < 0.999375-7
 %add_submodule tools %{version}
 %add_submodule translations %{version}
 %add_submodule utils %{version}
-%else
-Provides: R-base = %{version}
-Provides: R-boot = 1.3.22
-Provides: R-class = 7.3.15
-Provides: R-cluster = 2.1.0
-Provides: R-codetools = 0.2.16
-Provides: R-datasets = %{version}
-Provides: R-foreign = 0.8.71
-Provides: R-graphics = %{version}
-Provides: R-grDevices = %{version}
-Provides: R-grid = %{version}
-Provides: R-KernSmooth = 2.23.15
-Provides: R-lattice = 0.20.38
-Provides: R-MASS = 7.3.51.4
-Provides: R-Matrix = 1.2.17
-Provides: R-methods = %{version}
-Provides: R-mgcv = 1.8.28
-Provides: R-nlme = 3.1.140
-Provides: R-nnet = 7.3.12
-Provides: R-parallel = %{version}
-Provides: R-rpart = 4.1.15
-Provides: R-spatial = 7.3.11
-Provides: R-splines = %{version}
-Provides: R-stats = %{version}
-Provides: R-stats4 = %{version}
-Provides: R-survival = 2.44.1.1
-Provides: R-tcltk = %{version}
-Provides: R-tools = %{version}
-Provides: R-utils = %{version}
-%endif
 
 %description core
 A language and environment for statistical computing and graphics.
