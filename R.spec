@@ -3,7 +3,7 @@
 
 %global runjavareconf 1
 
-%if %{?fedora} >= 31
+%if 0%{?fedora} >= 31
 %global usemacros 1
 %else
 %if 0%{?rhel} && 0%{?rhel} >= 8
