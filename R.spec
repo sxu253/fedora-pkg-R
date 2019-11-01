@@ -130,7 +130,7 @@
 
 Name: R
 Version: 3.6.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1214,6 +1214,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Nov 01 2019 Pete Walter <pwalter@fedoraproject.org> - 3.6.1-3
+- Rebuild for ICU 65
+
 * Fri Aug 30 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.1-2
 - conditionalize macro usage so that it only happens on Fedora 31+ and EPEL-8
 
