@@ -3,6 +3,16 @@
 
 %global runjavareconf 1
 
+%if 0%{?fedora} >= 31
+%global usemacros 1
+%else
+%if 0%{?rhel} && 0%{?rhel} >= 8
+%global usemacros 1
+%else
+%global usemacros 0
+%endif
+%endif
+
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %ifarch ppc64 ppc64le
 %global runjavareconf 0
@@ -119,7 +129,7 @@
 %endif
 
 Name: R
-Version: 3.6.1
+Version: 3.6.2
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
@@ -140,14 +150,14 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %endif
 %if %{zlibhack}
 %global zlibv 1.2.11
-%global bzipv 1.0.6
+%global bzipv 1.0.8
 %global xzv 5.2.4
-%global pcrev 8.42
-%global curlv 7.63.0
+%global pcrev 8.43
+%global curlv 7.67.0
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
-Source1001: http://www.bzip.org/1.0.6/bzip2-%{bzipv}.tar.gz
+Source1001: https://www.sourceware.org/pub/bzip2/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
-Source1003: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcrev}.tar.bz2
+Source1003: https://ftp.pcre.org/pub/pcre/pcre-%{pcrev}.tar.bz2
 Source1004: https://curl.haxx.se/download/curl-%{curlv}.tar.bz2
 BuildRequires: glibc-devel
 BuildRequires: groff
@@ -306,24 +316,24 @@ Requires: devtoolset-%{dts_version}-toolchain
   print("Provides: R(" .. name .. ") = " .. version)
 }
 %add_submodule base %{version}
-%add_submodule boot 1.3-22
+%add_submodule boot 1.3-23
 %add_submodule class 7.3-15
-%add_submodule cluster 2.0.8
+%add_submodule cluster 2.1.0
 %add_submodule codetools 0.2-16
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
-%add_submodule foreign 0.8-71
+%add_submodule foreign 0.8-72
 %add_submodule graphics %{version}
 %add_submodule grDevices %{version}
 %add_submodule grid %{version}
-%add_submodule KernSmooth 2.23-15
+%add_submodule KernSmooth 2.23-16
 %add_submodule lattice 0.20-38
 %add_submodule MASS 7.3-51.4
-%add_submodule Matrix 1.2-17
+%add_submodule Matrix 1.2-18
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
-%add_submodule mgcv 1.8-28
-%add_submodule nlme 3.1-139
+%add_submodule mgcv 1.8-31
+%add_submodule nlme 3.1-142
 %add_submodule nnet 7.3-12
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
@@ -331,7 +341,7 @@ Obsoletes: R-Matrix < 0.999375-7
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
-%add_submodule survival 2.44-1.1
+%add_submodule survival 3.1-8
 %add_submodule tcltk %{version}
 %add_submodule tools %{version}
 %add_submodule translations %{version}
@@ -390,7 +400,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.2.17
+Provides: R-Matrix-devel = 1.2.18
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -405,7 +415,9 @@ Install R-core-devel if you are going to develop or compile R packages.
 
 %package devel
 Summary: Full R development environment metapackage
+%if %{usemacros}
 Requires: R-rpm-macros
+%endif
 Requires: R-core-devel = %{version}-%{release}
 %if %{modern}
 Requires: R-java-devel = %{version}-%{release}
@@ -1202,6 +1214,15 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Thu Dec 12 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.2-1
+- update to 3.6.2
+
+* Fri Nov 01 2019 Pete Walter <pwalter@fedoraproject.org> - 3.6.1-3
+- Rebuild for ICU 65
+
+* Fri Aug 30 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.1-2
+- conditionalize macro usage so that it only happens on Fedora 31+ and EPEL-8
+
 * Fri Aug 16 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.1-1
 - update to 3.6.1
 
