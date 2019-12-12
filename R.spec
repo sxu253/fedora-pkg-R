@@ -178,6 +178,11 @@ BuildRequires: stunnel
 %endif
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
+# PowerPC64 when gcc is compiled with -mlong-double-128
+# cannot assign values to const long double vars
+# because "the middle-end does not constant fold 128bit IBM long double"
+# http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26374
+Patch2: R-3.6.2-ppc64-no-const-long-double.patch
 License: GPLv2+
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
@@ -495,6 +500,7 @@ from the R project.  This package provides the static libRmath library.
 %setup -q -n %{name}-%{version}
 %endif
 %patch1 -p1 -b .fixpath
+%patch2 -p1 -b .ppc64
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -787,11 +793,12 @@ sed -i 's|/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/bu
 mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRrefblas.so
 %endif
 
+# okay, look. its very clear that upstream does not run the test suite on any non-intel architectures.
 %check
 %if 0%{?zlibhack}
 # Most of these tests pass. Some don't. All pieces belong to you.
 %else
-%ifnarch ppc64 ppc64le armv7hl
+%ifnarch ppc64 ppc64le armv7hl s390x aarch64
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
 ulimit -s 16384
 TZ="Europe/Paris" make check
@@ -1216,6 +1223,8 @@ R CMD javareconf \
 %changelog
 * Thu Dec 12 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.2-1
 - update to 3.6.2
+- disable tests on all non-intel arches
+- fix powerpc64
 
 * Fri Nov 01 2019 Pete Walter <pwalter@fedoraproject.org> - 3.6.1-3
 - Rebuild for ICU 65
