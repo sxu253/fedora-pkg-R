@@ -130,7 +130,7 @@
 
 Name: R
 Version: 3.6.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1221,6 +1221,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Dec 18 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.2-2
+- adjust ppc64 patch to reflect upstream fix
+
 * Thu Dec 12 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.2-1
 - update to 3.6.2
 - disable tests on all non-intel arches
