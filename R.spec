@@ -130,7 +130,7 @@
 
 Name: R
 Version: 3.6.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1221,6 +1221,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Wed Dec 18 2019 Tom Callaway <spot@fedoraproject.org> - 3.6.2-2
 - adjust ppc64 patch to reflect upstream fix
 
