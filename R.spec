@@ -14,18 +14,22 @@
 %endif
 %endif
 
-%ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
-%if 0%{?rhel} >= 7
-%global openblas 1
+%if 0%{?rhel} >= 8
+ %global openblas 1
 %else
-%if 0%{?fedora} >= 23
-%global openblas 1
-%else
-%global openblas 0
-%endif
-%endif
-%else
-%global openblas 0
+ %if 0%{?rhel} == 7
+  %ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
+   %global openblas 1
+  %else
+   %global openblas 0
+  %endif
+ %else
+  %if 0%{?fedora}
+   %global openblas 1
+  %else
+   %global openblas 0
+  %endif
+ %endif
 %endif
 
 %if 0%{?fedora} >= 31
@@ -141,7 +145,7 @@
 
 Name: R
 Version: 3.6.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -1233,6 +1237,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Feb 18 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.2-5
+- fix openblas conditionals, openblas has wider arch support everywhere except el7
+
 * Tue Feb 18 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.2-4
 - fix conditionals so that Fedora builds against system openblas for lapack/blas
   and we only generate the R lapack/blas libs on RHEL 5-6-7 (where system lapack/openblas
