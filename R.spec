@@ -3,6 +3,31 @@
 
 %global runjavareconf 1
 
+# lapack comes from openblas, whenever possible.
+%if 0%{?fedora}
+%global syslapack 1
+%else
+%if 0%{?rhel} && 0%{?rhel} >= 8
+%global syslapack 1
+%else
+%global syslapack 0
+%endif
+%endif
+
+%ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
+%if 0%{?rhel} >= 7
+%global openblas 1
+%else
+%if 0%{?fedora} >= 23
+%global openblas 1
+%else
+%global openblas 0
+%endif
+%endif
+%else
+%global openblas 0
+%endif
+
 %if 0%{?fedora} >= 31
 %global usemacros 1
 %else
@@ -114,23 +139,9 @@
 %global texi2any 1
 %endif
 
-%ifarch x86_64 %{ix86} armv7hl %{power64} aarch64
-%if 0%{?rhel} >= 7
-%global openblas 1
-%else
-%if 0%{?fedora} >= 23
-%global openblas 1
-%else
-%global openblas 0
-%endif
-%endif
-%else
-%global openblas 0
-%endif
-
 Name: R
 Version: 3.6.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -223,19 +234,10 @@ BuildRequires: autoconf, automake, libtool
 BuildRequires: openblas-devel
 %endif
 
-# We use the bundled lapack and shim for BLAS now.
-%if 0
-%if 0%{?fedora} >= 21
+%if %{syslapack}
+%if !%{openblas}
 BuildRequires: lapack-devel >= 3.5.0-7
 BuildRequires: blas-devel >= 3.5.0-7
-%else
-%if 0%{?fedora} >= 19
-BuildRequires: lapack-devel >= 3.4.2-7
-BuildRequires: blas-devel >= 3.4.2-7
-%else
-BuildRequires: lapack-devel
-BuildRequires: blas-devel >= 3.0
-%endif
 %endif
 %endif
 
@@ -301,8 +303,10 @@ Requires: sed, gawk, tex(latex), less, make, unzip
 # Make sure we bring the new libRmath with us
 Requires: libRmath%{?_isa} = %{version}-%{release}
 
+%if !%{syslapack}
 %if %{openblas}
 Requires: openblas-Rblas
+%endif
 %endif
 
 %if %{use_devtoolset}
@@ -379,8 +383,11 @@ Requires: pcre-devel
 # Configure picks this up, but despite linking to it, it does not seem to be used as of R 3.5.2.
 Requires: pcre2-devel
 %endif
-# No longer true.
-# Requires: blas-devel >= 3.0, lapack-devel
+%if %{syslapack}
+%if %{openblas}
+Requires: openblas-devel
+%endif
+%endif
 %if %{modern}
 Requires: libicu-devel
 %endif
@@ -632,7 +639,7 @@ export FFLAGS="%{optflags} --no-optimize-sibling-calls"
 # https://bugzilla.redhat.com/show_bug.cgi?id=1117496
 # https://bugzilla.redhat.com/show_bug.cgi?id=1117497
 #
-# We use --enable-BLAS-shlib here. It generates a shared library
+# On old RHEL, we use --enable-BLAS-shlib here. It generates a shared library
 # of the R bundled blas, that can be replaced by an optimized version.
 # It also results in R using the bundled lapack copy.
 
@@ -644,14 +651,17 @@ export FFLAGS="%{optflags} --no-optimize-sibling-calls"
     --with-system-tre \
 %endif
     --with-system-valgrind-headers \
-%if 0%{?fedora}
+%if %{syslapack}
     --with-lapack \
+    --with-blas \
+%else
+    --enable-BLAS-shlib \
 %endif
     --with-tcl-config=%{_libdir}/tclConfig.sh \
     --with-tk-config=%{_libdir}/tkConfig.sh \
-    --enable-BLAS-shlib \
     --enable-R-shlib \
     --enable-prebuilt-html \
+    --enable-R-profiling \
     --enable-memory-profiling \
 %if %{with_lto}
 %ifnarch %{arm}
@@ -788,9 +798,11 @@ sed -i 's|:/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/b
 sed -i 's|/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}||g' %{buildroot}%{_libdir}/R/etc/ldpaths
 %endif
 
+%if !%{syslapack}
 %if %{openblas}
 # Rename the R blas so.
 mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRrefblas.so
+%endif
 %endif
 
 # okay, look. its very clear that upstream does not run the test suite on any non-intel architectures.
@@ -1221,6 +1233,11 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Feb 18 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.2-4
+- fix conditionals so that Fedora builds against system openblas for lapack/blas
+  and we only generate the R lapack/blas libs on RHEL 5-6-7 (where system lapack/openblas
+  is not reliable). Thanks to Dirk Eddelbuettel for pointing out the error.
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
