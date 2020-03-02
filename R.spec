@@ -4,7 +4,10 @@
 %global runjavareconf 1
 
 # lapack comes from openblas, whenever possible.
-%if 0%{?fedora}
+# We decided to implement this change in Fedora 32+ and EPEL-8 only.
+# This was to minimize the impact on end-users who might have R modules
+# installed locally with the old dependency on libRlapack.so
+%if 0%{?fedora} >= 32
 %global syslapack 1
 %else
 %if 0%{?rhel} && 0%{?rhel} >= 8
@@ -144,8 +147,8 @@
 %endif
 
 Name: R
-Version: 3.6.2
-Release: 5%{?dist}
+Version: 3.6.3
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
@@ -193,11 +196,6 @@ BuildRequires: stunnel
 %endif
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
-# PowerPC64 when gcc is compiled with -mlong-double-128
-# cannot assign values to const long double vars
-# because "the middle-end does not constant fold 128bit IBM long double"
-# http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26374
-Patch2: R-3.6.2-ppc64-no-const-long-double.patch
 License: GPLv2+
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
@@ -329,24 +327,24 @@ Requires: devtoolset-%{dts_version}-toolchain
   print("Provides: R(" .. name .. ") = " .. version)
 }
 %add_submodule base %{version}
-%add_submodule boot 1.3-23
+%add_submodule boot 1.3-24
 %add_submodule class 7.3-15
 %add_submodule cluster 2.1.0
 %add_submodule codetools 0.2-16
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
-%add_submodule foreign 0.8-72
+%add_submodule foreign 0.8-75
 %add_submodule graphics %{version}
 %add_submodule grDevices %{version}
 %add_submodule grid %{version}
 %add_submodule KernSmooth 2.23-16
 %add_submodule lattice 0.20-38
-%add_submodule MASS 7.3-51.4
+%add_submodule MASS 7.3-51.5
 %add_submodule Matrix 1.2-18
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
 %add_submodule mgcv 1.8-31
-%add_submodule nlme 3.1-142
+%add_submodule nlme 3.1-144
 %add_submodule nnet 7.3-12
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
@@ -511,7 +509,6 @@ from the R project.  This package provides the static libRmath library.
 %setup -q -n %{name}-%{version}
 %endif
 %patch1 -p1 -b .fixpath
-%patch2 -p1 -b .ppc64
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -1237,6 +1234,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Mar  2 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.3-1
+- update to 3.6.3
+- conditionalize lapack changes from previous commits to Fedora 32+ and EPEL-8
+
 * Tue Feb 18 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.2-5
 - fix openblas conditionals, openblas has wider arch support everywhere except el7
 
