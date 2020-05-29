@@ -146,12 +146,16 @@
 %global texi2any 1
 %endif
 
+%global major_version 4
+%global minor_version 0
+%global patch_version 0
+
 Name: R
-Version: 3.6.3
+Version: %{major_version}.%{minor_version}.%{patch_version}
 Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
-Source0: https://cran.r-project.org/src/base/R-3/R-%{version}.tar.gz
+Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
 %if %{texi2any}
 # If we have texi2any 5.1+, we can generate the docs on the fly.
 # If not, we're building for a very old target (RHEL 6 or older)
@@ -316,6 +320,10 @@ Requires: openblas-Rblas
 Requires: devtoolset-%{dts_version}-toolchain
 %endif
 
+# This is our ABI provides to prevent mismatched installs.
+# R packages should autogenerate a Requires: R(ABI) based on the R they were built against.
+Provides: R(ABI) = %{major_version}.%{minor_version}
+
 # These are the submodules that R-core provides. Sometimes R modules say they
 # depend on one of these submodules rather than just R. These are provided for
 # packager convenience.
@@ -328,31 +336,31 @@ Requires: devtoolset-%{dts_version}-toolchain
 }
 %add_submodule base %{version}
 %add_submodule boot 1.3-24
-%add_submodule class 7.3-15
+%add_submodule class 7.3-16
 %add_submodule cluster 2.1.0
 %add_submodule codetools 0.2-16
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
-%add_submodule foreign 0.8-75
+%add_submodule foreign 0.8-78
 %add_submodule graphics %{version}
 %add_submodule grDevices %{version}
 %add_submodule grid %{version}
 %add_submodule KernSmooth 2.23-16
-%add_submodule lattice 0.20-38
+%add_submodule lattice 0.20-41
 %add_submodule MASS 7.3-51.5
 %add_submodule Matrix 1.2-18
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
 %add_submodule mgcv 1.8-31
-%add_submodule nlme 3.1-144
-%add_submodule nnet 7.3-12
+%add_submodule nlme 3.1-147
+%add_submodule nnet 7.3-13
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
 %add_submodule spatial 7.3-11
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
-%add_submodule survival 3.1-8
+%add_submodule survival 3.1-12
 %add_submodule tcltk %{version}
 %add_submodule tools %{version}
 %add_submodule translations %{version}
@@ -952,6 +960,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/class/po/de/
 %lang(en) %{_libdir}/R/library/class/po/en*/
 %lang(fr) %{_libdir}/R/library/class/po/fr/
+%lang(it) %{_libdir}/R/library/class/po/it/
 %lang(ko) %{_libdir}/R/library/class/po/ko/
 %lang(pl) %{_libdir}/R/library/class/po/pl/
 %{_libdir}/R/library/class/R/
@@ -1234,6 +1243,11 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri May 8 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.0-1
+- update to 4.0.0
+  NOTE: This major release update requires all installed R modules to be rebuilt in order to work.
+  To help with this, we've added an R(ABI) Provides/Requires setup.
+
 * Mon Mar  2 2020 Tom Callaway <spot@fedoraproject.org> - 3.6.3-1
 - update to 3.6.3
 - conditionalize lapack changes from previous commits to Fedora 32+ and EPEL-8
