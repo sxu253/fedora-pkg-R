@@ -1,0 +1,50 @@
+diff -up R-4.0.0/src/main/machar.c.ppc64 R-4.0.0/src/main/machar.c
+--- R-4.0.0/src/main/machar.c.ppc64	2020-06-02 14:42:18.741222048 -0400
++++ R-4.0.0/src/main/machar.c	2020-06-02 14:44:26.523106368 -0400
+@@ -98,21 +98,22 @@ MACH_NAME(int *ibeta, int *it, int *irnd
+ {
+ 	volatile DTYPE a, b, beta, betain, betah, one,
+ 		t, temp, tempa, temp1, two, y, z, zero;
+-	int i, itemp, iz, j, k, mx, nxres;
++	int i, iz, j, k, mx, nxres;
+ 
+ 	one = 1;
+ 	two = one+one;
+ 	zero = one-one;
+ 
+ 		/* determine ibeta, beta ala malcolm. */
+-
+-	a = one;
++	a = one; // a = <large> = 9.0072e+15 for 'double' is used later
+ 	do {
+ 		a = a + a;
+ 		temp = a + one;
+ 		temp1 = temp - a;
+ 	}
+ 	while(temp1 - one == zero);
++#ifdef _no_longer___did_overflow_ // on IBM PowerPPC ('Power 8')
++	int itemp;
+ 	b = one;
+ 	do {
+ 		b = b + b;
+@@ -121,6 +122,9 @@ MACH_NAME(int *ibeta, int *it, int *irnd
+ 	}
+ 	while (itemp == 0);
+ 	*ibeta = itemp;
++#else
++	*ibeta = (int) FLT_RADIX;
++#endif
+ 	beta = *ibeta;
+ 
+ 		/* determine it, irnd */
+diff -up R-4.0.0/src/main/platform.c.ppc64 R-4.0.0/src/main/platform.c
+--- R-4.0.0/src/main/platform.c.ppc64	2020-06-02 14:44:40.940754817 -0400
++++ R-4.0.0/src/main/platform.c	2020-06-02 14:45:08.940072121 -0400
+@@ -43,6 +43,7 @@
+ #include <Rinterface.h>
+ #include <Fileio.h>
+ #include <ctype.h>			/* toupper */
++#include <float.h> // -> FLT_RADIX
+ #include <limits.h>
+ #include <string.h>
+ #include <stdlib.h>			/* for realpath */

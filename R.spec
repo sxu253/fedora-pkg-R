@@ -152,7 +152,7 @@
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -200,6 +200,8 @@ BuildRequires: stunnel
 %endif
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
+# https://github.com/wch/r-source/commit/6857d53313bf7a5afea4e3f0142d69a069b701d0
+Patch2: R-4.0.0-ppc64-infinite-loop-fix.patch
 License: GPLv2+
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
@@ -517,6 +519,7 @@ from the R project.  This package provides the static libRmath library.
 %setup -q -n %{name}-%{version}
 %endif
 %patch1 -p1 -b .fixpath
+%patch2 -p1 -b .ppc64
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -1243,6 +1246,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jun 2 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.0-2
+- apply upstream fix for ppc64 infinite loop
+
 * Fri May 8 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.0-1
 - update to 4.0.0
   NOTE: This major release update requires all installed R modules to be rebuilt in order to work.
