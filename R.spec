@@ -152,7 +152,7 @@
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -1246,6 +1246,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Jun 15 2020 Pete Walter <pwalter@fedoraproject.org> - 4.0.0-3
+- Rebuild for ICU 67
+
 * Tue Jun 2 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.0-2
 - apply upstream fix for ppc64 infinite loop
 
