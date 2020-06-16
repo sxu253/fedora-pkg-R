@@ -148,11 +148,11 @@
 
 %global major_version 4
 %global minor_version 0
-%global patch_version 0
+%global patch_version 1
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 3%{?dist}
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -200,8 +200,6 @@ BuildRequires: stunnel
 %endif
 # see https://bugzilla.redhat.com/show_bug.cgi?id=1324145
 Patch1: R-3.3.0-fix-java_path-in-javareconf.patch
-# https://github.com/wch/r-source/commit/6857d53313bf7a5afea4e3f0142d69a069b701d0
-Patch2: R-4.0.0-ppc64-infinite-loop-fix.patch
 License: GPLv2+
 BuildRequires: gcc-gfortran
 BuildRequires: gcc-c++, tex(latex), texinfo-tex
@@ -519,7 +517,6 @@ from the R project.  This package provides the static libRmath library.
 %setup -q -n %{name}-%{version}
 %endif
 %patch1 -p1 -b .fixpath
-%patch2 -p1 -b .ppc64
 
 # Filter false positive provides.
 cat <<EOF > %{name}-prov
@@ -944,6 +941,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/boot/po/de/
 %lang(en) %{_libdir}/R/library/boot/po/en*/
 %lang(fr) %{_libdir}/R/library/boot/po/fr/
+%lang(it) %{_libdir}/R/library/boot/po/it/
 %lang(ko) %{_libdir}/R/library/boot/po/ko/
 %lang(pl) %{_libdir}/R/library/boot/po/pl/
 %lang(ru) %{_libdir}/R/library/boot/po/ru/
@@ -1015,6 +1013,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/foreign/po/de/
 %lang(en) %{_libdir}/R/library/foreign/po/en*/
 %lang(fr) %{_libdir}/R/library/foreign/po/fr/
+%lang(it) %{_libdir}/R/library/foreign/po/it/
 %lang(pl) %{_libdir}/R/library/foreign/po/pl/
 %{_libdir}/R/library/foreign/R/
 # graphics
@@ -1036,6 +1035,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/KernSmooth/po/de/
 %lang(en) %{_libdir}/R/library/KernSmooth/po/en*/
 %lang(fr) %{_libdir}/R/library/KernSmooth/po/fr/
+%lang(it) %{_libdir}/R/library/KernSmooth/po/it/
 %lang(ko) %{_libdir}/R/library/KernSmooth/po/ko/
 %lang(pl) %{_libdir}/R/library/KernSmooth/po/pl/
 %{_libdir}/R/library/KernSmooth/R/
@@ -1075,6 +1075,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/MASS/po/de/
 %lang(en) %{_libdir}/R/library/MASS/po/en*/
 %lang(fr) %{_libdir}/R/library/MASS/po/fr/
+%lang(it) %{_libdir}/R/library/MASS/po/it/
 %lang(ko) %{_libdir}/R/library/MASS/po/ko/
 %lang(pl) %{_libdir}/R/library/MASS/po/pl/
 %{_libdir}/R/library/MASS/R/
@@ -1146,6 +1147,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/nnet/po/de/
 %lang(en) %{_libdir}/R/library/nnet/po/en*/
 %lang(fr) %{_libdir}/R/library/nnet/po/fr/
+%lang(it) %{_libdir}/R/library/nnet/po/it/
 %lang(ko) %{_libdir}/R/library/nnet/po/ko/
 %lang(pl) %{_libdir}/R/library/nnet/po/pl/
 %{_libdir}/R/library/nnet/R/
@@ -1186,6 +1188,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/spatial/po/de/
 %lang(en) %{_libdir}/R/library/spatial/po/en*/
 %lang(fr) %{_libdir}/R/library/spatial/po/fr/
+%lang(it) %{_libdir}/R/library/spatial/po/it/
 %lang(ko) %{_libdir}/R/library/spatial/po/ko/
 %lang(pl) %{_libdir}/R/library/spatial/po/pl/
 %{_libdir}/R/library/spatial/ppdata/
@@ -1246,6 +1249,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Jun 16 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.1-1
+- update to 4.0.1
+
 * Mon Jun 15 2020 Pete Walter <pwalter@fedoraproject.org> - 4.0.0-3
 - Rebuild for ICU 67
 
