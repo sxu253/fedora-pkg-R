@@ -148,7 +148,7 @@
 
 %global major_version 4
 %global minor_version 0
-%global patch_version 1
+%global patch_version 2
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
@@ -335,28 +335,28 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
   print("Provides: R(" .. name .. ") = " .. version)
 }
 %add_submodule base %{version}
-%add_submodule boot 1.3-24
-%add_submodule class 7.3-16
+%add_submodule boot 1.3-25
+%add_submodule class 7.3-17
 %add_submodule cluster 2.1.0
 %add_submodule codetools 0.2-16
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
-%add_submodule foreign 0.8-78
+%add_submodule foreign 0.8-80
 %add_submodule graphics %{version}
 %add_submodule grDevices %{version}
 %add_submodule grid %{version}
-%add_submodule KernSmooth 2.23-16
+%add_submodule KernSmooth 2.23-17
 %add_submodule lattice 0.20-41
-%add_submodule MASS 7.3-51.5
+%add_submodule MASS 7.3-51.6
 %add_submodule Matrix 1.2-18
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
 %add_submodule mgcv 1.8-31
-%add_submodule nlme 3.1-147
-%add_submodule nnet 7.3-13
+%add_submodule nlme 3.1-148
+%add_submodule nnet 7.3-14
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
-%add_submodule spatial 7.3-11
+%add_submodule spatial 7.3-12
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
@@ -1249,6 +1249,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Jun 22 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.2-1
+- update to 4.0.2
+
 * Tue Jun 16 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.1-1
 - update to 4.0.1
 
