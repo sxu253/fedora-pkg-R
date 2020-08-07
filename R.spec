@@ -7,6 +7,7 @@
 # We decided to implement this change in Fedora 32+ and EPEL-8 only.
 # This was to minimize the impact on end-users who might have R modules
 # installed locally with the old dependency on libRlapack.so
+
 %if 0%{?fedora} >= 32
 %global syslapack 1
 %else
@@ -33,6 +34,12 @@
    %global openblas 0
   %endif
  %endif
+%endif
+
+%if 0%{?fedora} >= 33
+%global flexiblas 1
+%else
+%global flexiblas 0
 %endif
 
 %if 0%{?fedora} >= 31
@@ -152,7 +159,7 @@
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -236,14 +243,20 @@ BuildRequires: java
 BuildRequires: tre-devel
 BuildRequires: autoconf, automake, libtool
 %endif
+%if %{flexiblas}
+BuildRequires: flexiblas-devel
+%else
 %if %{openblas}
 BuildRequires: openblas-devel
 %endif
+%endif
 
 %if %{syslapack}
+%if !%{flexiblas}
 %if !%{openblas}
 BuildRequires: lapack-devel >= 3.5.0-7
 BuildRequires: blas-devel >= 3.5.0-7
+%endif
 %endif
 %endif
 
@@ -310,8 +323,10 @@ Requires: sed, gawk, tex(latex), less, make, unzip
 Requires: libRmath%{?_isa} = %{version}-%{release}
 
 %if !%{syslapack}
+%if !%{flexiblas}
 %if %{openblas}
 Requires: openblas-Rblas
+%endif
 %endif
 %endif
 
@@ -394,8 +409,12 @@ Requires: pcre-devel
 Requires: pcre2-devel
 %endif
 %if %{syslapack}
+%if %{flexiblas}
+Requires: flexiblas-devel
+%else
 %if %{openblas}
 Requires: openblas-devel
+%endif
 %endif
 %endif
 %if %{modern}
@@ -652,6 +671,11 @@ export FFLAGS="%{optflags} --no-optimize-sibling-calls"
 # of the R bundled blas, that can be replaced by an optimized version.
 # It also results in R using the bundled lapack copy.
 
+%if %{flexiblas}
+# avoid this check
+sed -i '/"checking whether the BLAS is complete/i r_cv_complete_blas=yes' configure
+%endif
+
 ( %configure \
 %if 0%{?rhel} && 0%{?rhel} <= 5
     --with-readline=no \
@@ -662,7 +686,11 @@ export FFLAGS="%{optflags} --no-optimize-sibling-calls"
     --with-system-valgrind-headers \
 %if %{syslapack}
     --with-lapack \
+%if %{flexiblas}
+    --with-blas="flexiblas" \
+%else
     --with-blas \
+%endif
 %else
     --enable-BLAS-shlib \
 %endif
@@ -684,8 +712,7 @@ export FFLAGS="%{optflags} --no-optimize-sibling-calls"
 %endif
     rdocdir=%{?_pkgdocdir}%{!?_pkgdocdir:%{_docdir}/%{name}-%{version}} \
     rincludedir=%{_includedir}/R \
-    rsharedir=%{_datadir}/R) \
- > CONFIGURE.log
+    rsharedir=%{_datadir}/R) | tee CONFIGURE.log
 cat CONFIGURE.log | grep -A30 'R is now' - > CAPABILITIES
 %if 0%{?zlibhack}
 make V=1 CURL_CPPFLAGS='-DCURL_STATICLIB -I%{_builddir}/%{name}-%{version}/curl-%{curlv}/target%{_includedir}' CURL_LIBS=`%{_builddir}/%{name}-%{version}/curl-%{curlv}/target/usr/bin/curl-config --libs`
@@ -808,9 +835,11 @@ sed -i 's|/builddir/build/BUILD/R-%{version}/curl-%{curlv}/target%{_libdir}/:/bu
 %endif
 
 %if !%{syslapack}
+%if !%{flexiblas}
 %if %{openblas}
 # Rename the R blas so.
 mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRrefblas.so
+%endif
 %endif
 %endif
 
@@ -1249,6 +1278,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Fri Aug 07 2020 Iñaki Úcar <iucar@fedoraproject.org> - 4.0.2-4
+- https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
+
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
