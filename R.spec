@@ -4,11 +4,11 @@
 %global runjavareconf 1
 
 # lapack comes from openblas, whenever possible.
-# We decided to implement this change in Fedora 32+ and EPEL-8 only.
+# We decided to implement this change in Fedora 31+ and EPEL-8 only.
 # This was to minimize the impact on end-users who might have R modules
 # installed locally with the old dependency on libRlapack.so
 
-%if 0%{?fedora} >= 32
+%if 0%{?fedora} >= 31
 %global syslapack 1
 %else
 %if 0%{?rhel} && 0%{?rhel} >= 8
@@ -303,7 +303,9 @@ and called at run time.
 
 %package core
 Summary: The minimal R components necessary for a functional runtime
-Requires: xdg-utils, cups
+Requires: xdg-utils
+# Bugzilla 1875165
+Recommends: cups
 # R inherits the compiler flags it was built with, hence we need this on hardened systems
 %if 0%{hardening}
 Requires: redhat-rpm-config
@@ -1278,6 +1280,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Tue Sep  8 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.2-5
+- make cups a "Recommends" instead of a "Requires" (bz1875165)
+- even though f31 uses a forked spec file, reflect the systemlapack change there here
+
 * Fri Aug 07 2020 Iñaki Úcar <iucar@fedoraproject.org> - 4.0.2-4
 - https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
 
