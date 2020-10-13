@@ -155,11 +155,11 @@
 
 %global major_version 4
 %global minor_version 0
-%global patch_version 2
+%global patch_version 3
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 5%{?dist}
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -180,9 +180,9 @@ Source106: https://cran.r-project.org/doc/FAQ/R-FAQ.html
 %if %{zlibhack}
 %global zlibv 1.2.11
 %global bzipv 1.0.8
-%global xzv 5.2.4
-%global pcrev 8.43
-%global curlv 7.67.0
+%global xzv 5.2.5
+%global pcrev 8.44
+%global curlv 7.72.0
 Source1000: http://zlib.net/zlib-%{zlibv}.tar.gz
 Source1001: https://www.sourceware.org/pub/bzip2/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
@@ -364,12 +364,12 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
 %add_submodule grid %{version}
 %add_submodule KernSmooth 2.23-17
 %add_submodule lattice 0.20-41
-%add_submodule MASS 7.3-51.6
+%add_submodule MASS 7.3-53
 %add_submodule Matrix 1.2-18
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
-%add_submodule mgcv 1.8-31
-%add_submodule nlme 3.1-148
+%add_submodule mgcv 1.8-33
+%add_submodule nlme 3.1-149
 %add_submodule nnet 7.3-14
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
@@ -377,7 +377,7 @@ Obsoletes: R-Matrix < 0.999375-7
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
-%add_submodule survival 3.1-12
+%add_submodule survival 3.2-7
 %add_submodule tcltk %{version}
 %add_submodule tools %{version}
 %add_submodule translations %{version}
@@ -1280,6 +1280,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Oct 12 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.3-1
+- update to 4.0.3
+
 * Tue Sep  8 2020 Tom Callaway <spot@fedoraproject.org> - 4.0.2-5
 - make cups a "Recommends" instead of a "Requires" (bz1875165)
 - even though f31 uses a forked spec file, reflect the systemlapack change there here
