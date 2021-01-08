@@ -188,6 +188,7 @@ Source1001: https://www.sourceware.org/pub/bzip2/bzip2-%{bzipv}.tar.gz
 Source1002: http://tukaani.org/xz/xz-%{xzv}.tar.bz2
 Source1003: https://ftp.pcre.org/pub/pcre/pcre-%{pcrev}.tar.bz2
 Source1004: https://curl.haxx.se/download/curl-%{curlv}.tar.bz2
+BuildRequires: make
 BuildRequires: glibc-devel
 BuildRequires: groff
 BuildRequires: krb5-libs
