@@ -159,7 +159,7 @@
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -350,7 +350,7 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
   local version = rpm.expand("%2")
   local rpm_version = string.gsub(version, "-", ".")
   print("Provides: R-" .. name .. " = " .. rpm_version .. "\\n")
-  print("Provides: R(" .. name .. ") = " .. version)
+  print("Provides: R(" .. name .. ") = " .. rpm_version)
 }
 %add_submodule base %{version}
 %add_submodule boot 1.3-25
@@ -1281,6 +1281,10 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed Feb 03 2021 Elliott Sales de Andrade <quantum.analyst@gmail.com> - 4.0.3-3
+- Always provide normalized versions of R submodules
+- Fixes rhbz#1924565
+
 * Mon Jan 25 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
