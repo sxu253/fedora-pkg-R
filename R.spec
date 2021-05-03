@@ -155,7 +155,7 @@
 
 %global major_version 4
 %global minor_version 0
-%global patch_version 4
+%global patch_version 5
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
@@ -353,9 +353,9 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
   print("Provides: R(" .. name .. ") = " .. rpm_version)
 }
 %add_submodule base %{version}
-%add_submodule boot 1.3-26
+%add_submodule boot 1.3-27
 %add_submodule class 7.3-18
-%add_submodule cluster 2.1.0
+%add_submodule cluster 2.1.1
 %add_submodule codetools 0.2-18
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
@@ -365,11 +365,11 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
 %add_submodule grid %{version}
 %add_submodule KernSmooth 2.23-18
 %add_submodule lattice 0.20-41
-%add_submodule MASS 7.3-53
+%add_submodule MASS 7.3-53.1
 %add_submodule Matrix 1.3-2
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
-%add_submodule mgcv 1.8-33
+%add_submodule mgcv 1.8-34
 %add_submodule nlme 3.1-152
 %add_submodule nnet 7.3-15
 %add_submodule parallel %{version}
@@ -378,7 +378,7 @@ Obsoletes: R-Matrix < 0.999375-7
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
-%add_submodule survival 3.2-7
+%add_submodule survival 3.2-10
 %add_submodule tcltk %{version}
 %add_submodule tools %{version}
 %add_submodule translations %{version}
@@ -1015,6 +1015,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/cluster/po/de/
 %lang(en) %{_libdir}/R/library/cluster/po/en*/
 %lang(fr) %{_libdir}/R/library/cluster/po/fr/
+%lang(it) %{_libdir}/R/library/cluster/po/it/
 %lang(ko) %{_libdir}/R/library/cluster/po/ko/
 %lang(pl) %{_libdir}/R/library/cluster/po/pl/
 # codetools
@@ -1281,6 +1282,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon May  3 2021 Tom Callaway <spot@fedoraproject.org> - 4.0.5-1
+- update to 4.0.5
+
 * Mon Feb 15 2021 Tom Callaway <spot@fedoraproject.org> - 4.0.4-1
 - update to 4.0.4
 
