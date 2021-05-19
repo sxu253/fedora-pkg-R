@@ -159,7 +159,7 @@
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -1282,6 +1282,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Wed May 19 2021 Pete Walter <pwalter@fedoraproject.org> - 4.0.5-2
+- Rebuild for ICU 69
+
 * Mon May  3 2021 Tom Callaway <spot@fedoraproject.org> - 4.0.5-1
 - update to 4.0.5
 
