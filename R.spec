@@ -154,12 +154,12 @@
 %endif
 
 %global major_version 4
-%global minor_version 0
-%global patch_version 5
+%global minor_version 1
+%global patch_version 0
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 2%{?dist}
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -353,9 +353,9 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
   print("Provides: R(" .. name .. ") = " .. rpm_version)
 }
 %add_submodule base %{version}
-%add_submodule boot 1.3-27
-%add_submodule class 7.3-18
-%add_submodule cluster 2.1.1
+%add_submodule boot 1.3-28
+%add_submodule class 7.3-19
+%add_submodule cluster 2.1.2
 %add_submodule codetools 0.2-18
 %add_submodule compiler %{version}
 %add_submodule datasets %{version}
@@ -363,22 +363,22 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
 %add_submodule graphics %{version}
 %add_submodule grDevices %{version}
 %add_submodule grid %{version}
-%add_submodule KernSmooth 2.23-18
-%add_submodule lattice 0.20-41
-%add_submodule MASS 7.3-53.1
-%add_submodule Matrix 1.3-2
+%add_submodule KernSmooth 2.23-20
+%add_submodule lattice 0.20-44
+%add_submodule MASS 7.3-54
+%add_submodule Matrix 1.3-3
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
-%add_submodule mgcv 1.8-34
+%add_submodule mgcv 1.8-35
 %add_submodule nlme 3.1-152
-%add_submodule nnet 7.3-15
+%add_submodule nnet 7.3-16
 %add_submodule parallel %{version}
 %add_submodule rpart 4.1-15
-%add_submodule spatial 7.3-13
+%add_submodule spatial 7.3-14
 %add_submodule splines %{version}
 %add_submodule stats %{version}
 %add_submodule stats4 %{version}
-%add_submodule survival 3.2-10
+%add_submodule survival 3.2-11
 %add_submodule tcltk %{version}
 %add_submodule tools %{version}
 %add_submodule translations %{version}
@@ -444,7 +444,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.3.2
+Provides: R-Matrix-devel = 1.3.3
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -950,6 +950,7 @@ R CMD javareconf \
 %lang(it) %{_libdir}/R/library/translations/it/
 %lang(ja) %{_libdir}/R/library/translations/ja/
 %lang(ko) %{_libdir}/R/library/translations/ko/
+%lang(lt) %{_libdir}/R/library/translations/lt/
 %lang(nn) %{_libdir}/R/library/translations/nn/
 %lang(pl) %{_libdir}/R/library/translations/pl/
 %lang(pt) %{_libdir}/R/library/translations/pt*/
@@ -1017,6 +1018,7 @@ R CMD javareconf \
 %lang(fr) %{_libdir}/R/library/cluster/po/fr/
 %lang(it) %{_libdir}/R/library/cluster/po/it/
 %lang(ko) %{_libdir}/R/library/cluster/po/ko/
+%lang(lt) %{_libdir}/R/library/cluster/po/lt/
 %lang(pl) %{_libdir}/R/library/cluster/po/pl/
 # codetools
 %dir %{_libdir}/R/library/codetools/
@@ -1089,6 +1091,7 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/lattice/po/de/
 %lang(en) %{_libdir}/R/library/lattice/po/en*/
 %lang(fr) %{_libdir}/R/library/lattice/po/fr/
+%lang(it) %{_libdir}/R/library/lattice/po/it/
 %lang(ko) %{_libdir}/R/library/lattice/po/ko/
 %lang(pl) %{_libdir}/R/library/lattice/po/pl*/
 %{_libdir}/R/library/lattice/R/
@@ -1134,7 +1137,9 @@ R CMD javareconf \
 %lang(de) %{_libdir}/R/library/Matrix/po/de/
 %lang(en) %{_libdir}/R/library/Matrix/po/en*/
 %lang(fr) %{_libdir}/R/library/Matrix/po/fr/
+%lang(it) %{_libdir}/R/library/Matrix/po/it/
 %lang(ko) %{_libdir}/R/library/Matrix/po/ko/
+%lang(lt) %{_libdir}/R/library/Matrix/po/lt/
 %lang(pl) %{_libdir}/R/library/Matrix/po/pl/
 %{_libdir}/R/library/Matrix/R/
 %{_libdir}/R/library/Matrix/test-tools.R
@@ -1282,6 +1287,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Mon Jun  7 2021 Tom Callaway <spot@fedoraproject.org> - 4.1.0-1
+- update to 4.1.0
+
 * Wed May 19 2021 Pete Walter <pwalter@fedoraproject.org> - 4.0.5-2
 - Rebuild for ICU 69
 
