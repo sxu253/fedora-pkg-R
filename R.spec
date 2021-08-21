@@ -155,11 +155,11 @@
 
 %global major_version 4
 %global minor_version 1
-%global patch_version 0
+%global patch_version 1
 
 Name: R
 Version: %{major_version}.%{minor_version}.%{patch_version}
-Release: 2%{?dist}
+Release: 1%{?dist}
 Summary: A language for data analysis and graphics
 URL: http://www.r-project.org
 Source0: https://cran.r-project.org/src/base/R-4/R-%{version}.tar.gz
@@ -366,10 +366,10 @@ Provides: R(ABI) = %{major_version}.%{minor_version}
 %add_submodule KernSmooth 2.23-20
 %add_submodule lattice 0.20-44
 %add_submodule MASS 7.3-54
-%add_submodule Matrix 1.3-3
+%add_submodule Matrix 1.3-4
 Obsoletes: R-Matrix < 0.999375-7
 %add_submodule methods %{version}
-%add_submodule mgcv 1.8-35
+%add_submodule mgcv 1.8-36
 %add_submodule nlme 3.1-152
 %add_submodule nnet 7.3-16
 %add_submodule parallel %{version}
@@ -444,7 +444,7 @@ Requires: tex(cm-super-ts1.enc)
 Requires: qpdf
 %endif
 
-Provides: R-Matrix-devel = 1.3.3
+Provides: R-Matrix-devel = 1.3.4
 Obsoletes: R-Matrix-devel < 0.999375-7
 
 %if %{modern}
@@ -1287,6 +1287,9 @@ R CMD javareconf \
 %{_libdir}/libRmath.a
 
 %changelog
+* Sat Aug 11 2021 Tom Callaway <spot@fedoraproject.org> - 4.1.1-1
+- update to 4.1.1
+
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
