@@ -853,7 +853,6 @@ mv %{buildroot}%{_libdir}/R/lib/libRblas.so %{buildroot}%{_libdir}/R/lib/libRref
 %else
 %ifnarch ppc64 ppc64le armv7hl s390x aarch64
 # Needed by tests/ok-error.R, which will smash the stack on PPC64. This is the purpose of the test.
-ulimit -s 16384
 TZ="Europe/Paris" make check
 %endif
 %endif
